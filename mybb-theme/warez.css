@@ -970,9 +970,24 @@ blockquote, .codeblock, .mycode_quote, .mycode_code {
 
 .yh-cat .thead { background: #000 !important; }
 
+/* Header scale wrapper — zooms the 3 cards to fit phone width */
+.yh-header-scale {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  margin: 8px 0 10px;
+}
+
 /* ========== MOBILE ========== */
 @media (max-width: 920px) {
-  #container { padding: 0 6px 24px !important; }
+  html, body {
+    overflow-x: hidden !important;
+  }
+  #container {
+    padding: 0 8px 24px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
 
   .yh-topnav {
     flex-wrap: wrap !important;
@@ -990,80 +1005,83 @@ blockquote, .codeblock, .mycode_quote, .mycode_code {
     display: none !important;
   }
 
+  /*
+   * HEADER: keep all 3 cards on ONE row (desktop layout), then zoom out to fit.
+   * Do NOT restyle login/servers for phone — that caused the fat blank Login bar.
+   */
+  .yh-header-scale {
+    margin: 6px 0 8px !important;
+  }
   .yh-header {
-    flex-direction: column !important;
+    flex-direction: row !important;
+    align-items: stretch !important;
     gap: 6px !important;
-    margin: 8px 0 !important;
+    margin: 0 !important;
+    width: 900px !important;
+    max-width: none !important;
   }
   .yh-header .yh-box {
-    width: 100% !important;
-    max-width: 100% !important;
-    flex: 0 0 auto !important;
-    min-height: 0 !important;
+    min-height: 88px !important;
   }
   .yh-box-logo {
-    padding: 14px 12px !important;
-    text-align: center !important;
-    justify-content: center !important;
+    flex: 0 0 18% !important;
+    max-width: 18% !important;
+    padding: 10px 12px !important;
+    text-align: left !important;
   }
-  .yh-logo-title {
-    font-size: 30px !important;
-    color: #fff !important;
+  .yh-box-servers {
+    flex: 1 1 auto !important;
+    display: flex !important;
   }
-  .yh-box-servers { display: block !important; }
   .yh-servers-inner {
-    flex-direction: column !important;
+    flex-direction: row !important;
   }
   .yh-widget {
-    width: 100% !important;
-    flex: 0 0 auto !important;
-    border-right: 0 !important;
-    border-bottom: 1px solid #2a2a2a !important;
-    padding: 10px !important;
-  }
-  .yh-widget:last-child { border-bottom: 0 !important; }
-  .yh-widget-meta { display: none !important; }
-  .yh-box-user {
-    padding: 12px !important;
-    display: block !important;
-  }
-  .yh-login-form { min-height: 0 !important; gap: 8px !important; }
-  .yh-login-top {
-    flex-wrap: wrap !important;
-  }
-  .yh-login-fields {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr auto !important;
-    gap: 6px !important;
-    align-items: stretch !important;
-  }
-  .yh-login-input,
-  input.textbox.yh-login-input {
-    width: 100% !important;
-    flex: none !important;
-    height: 36px !important;
-    font-size: 14px !important;
-    padding: 0 10px !important;
-  }
-  .yh-btn-login,
-  input.button.yh-btn-login {
+    flex: 1 1 50% !important;
     width: auto !important;
-    min-width: 64px !important;
-    height: 36px !important;
-    padding: 0 14px !important;
-    font-size: 13px !important;
-    font-weight: 700 !important;
-    color: #fff !important;
-    background: #e10600 !important;
-    line-height: 36px !important;
-    text-indent: 0 !important;
-    overflow: visible !important;
+    border-right: 1px solid #2a2a2a !important;
+    border-bottom: 0 !important;
+    padding: 8px 10px !important;
   }
-  .yh-btn-register {
-    height: 32px !important;
-    min-height: 32px !important;
-    padding: 0 12px !important;
-    font-size: 13px !important;
+  .yh-widget:last-child { border-right: 0 !important; }
+  .yh-widget-meta { display: block !important; }
+  .yh-box-user {
+    flex: 0 0 32% !important;
+    max-width: 32% !important;
+    padding: 8px 10px !important;
+    display: flex !important;
+  }
+  /* Force desktop login chrome inside scaled header */
+  .yh-header .yh-login-fields {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    gap: 4px !important;
+  }
+  .yh-header .yh-login-input,
+  .yh-header input.textbox.yh-login-input {
+    flex: 1 1 0 !important;
+    width: 0 !important;
+    height: 24px !important;
+    font-size: 11px !important;
+  }
+  .yh-header .yh-btn-login,
+  .yh-header input.button.yh-btn-login {
+    width: auto !important;
+    min-width: 44px !important;
+    height: 24px !important;
+    padding: 0 10px !important;
+    font-size: 11px !important;
+    line-height: 24px !important;
+    color: #fff !important;
+  }
+
+  /* ===== EVERYTHING BELOW HEADER: mobile-friendly ===== */
+  #content,
+  #content .wrapper {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
   }
 
   /* hide breadcrumb clutter under header on phones */
@@ -1071,37 +1089,44 @@ blockquote, .codeblock, .mycode_quote, .mycode_code {
     display: none !important;
   }
 
-  /* Forum index: hide cramped Statistics / Last Post on phones */
+  /* Forum index: hide cramped Statistics / Last Post; prevent horizontal clip */
+  table.tborder,
+  table.yh-cat {
+    width: 100% !important;
+    max-width: 100% !important;
+    table-layout: fixed !important;
+  }
   table.yh-cat .tcat:nth-child(3),
   table.yh-cat .tcat:nth-child(4),
   table.yh-cat tr td:nth-child(3),
   table.yh-cat tr td:nth-child(4) {
     display: none !important;
   }
-  table.yh-cat tr td:nth-child(2) { width: auto !important; }
+  table.yh-cat tr td:nth-child(1) {
+    width: 44px !important;
+  }
+  table.yh-cat tr td:nth-child(2) {
+    width: auto !important;
+    word-wrap: break-word !important;
+    overflow-wrap: anywhere !important;
+  }
+  table.yh-cat .smalltext {
+    word-wrap: break-word !important;
+  }
 
   /* Keep classic MyBB postbit beside (not stacked) on phones */
   .post, .post.classic, .yh-post {
     grid-template-columns: 118px minmax(0, 1fr) !important;
+    max-width: 100% !important;
   }
   .post_author { padding: 8px 4px !important; }
   .author_avatar img { width: 72px !important; }
   .yh-user-name, .yh-user-name a { font-size: 12px !important; }
   .yh-user-title, .yh-badge, .yh-user-foot { font-size: 9px !important; }
   .yh-user-stats { font-size: 10px !important; }
-}
 
-@media (max-width: 520px) {
-  .yh-login-fields {
+  .yh-profile-grid {
     grid-template-columns: 1fr !important;
-  }
-  .yh-btn-login,
-  input.button.yh-btn-login {
-    width: 100% !important;
-  }
-  .yh-login-bottom {
-    flex-wrap: wrap !important;
-    gap: 6px !important;
   }
 }
 
