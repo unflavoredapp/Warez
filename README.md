@@ -1,34 +1,34 @@
 # warez.skin
 
-Apache virtual host + Let's Encrypt (Certbot) for **warez.skin** on `146.71.100.41`.
+Node site for **warez.skin** — no static HTML files. Markup is rendered from `index.js`; styles live in `css.js` and are served as `/panel.css`. Apache terminates SSL (Certbot) and reverse-proxies to PM2 on `127.0.0.1:3000`.
 
-## Quick setup (on the VPS)
+## Layout
+
+| File | Role |
+|------|------|
+| `index.js` | Express app + HTML string renderers |
+| `css.js` | Stylesheet module (`module.exports = \`...\``) |
+| `ecosystem.config.cjs` | PM2 process config |
+| `configure-apache.js` | Wire Apache `ProxyPass` → Node |
+| `scripts/setup-warez-skin.sh` | On-VPS install (Node, PM2, Certbot, proxy) |
+
+## Local
+
+```bash
+npm install
+npm start
+# http://127.0.0.1:3000
+```
+
+## VPS
 
 ```bash
 sudo bash scripts/setup-warez-skin.sh
 ```
 
-This will:
-
-1. Install `apache2` + `certbot` + `python3-certbot-apache`
-2. Create `/var/www/warez.skin` and enable the site
-3. Issue a Let's Encrypt cert for `warez.skin` + `www.warez.skin`
-4. Force HTTPS redirect
-
-Optional: `CERTBOT_EMAIL=you@example.com sudo -E bash scripts/setup-warez-skin.sh`
-
-## Remote deploy (from CI / Cursor agent)
+Or from this agent / CI:
 
 ```bash
-export VPS_SSH_PRIVATE_KEY="$(cat ~/.ssh/id_ed25519)"
-# or: export VPS_SSH_PASSWORD='...'
-export VPS_SSH_USER=root
+export VPS_SSH_PASSWORD='…'   # or VPS_SSH_PRIVATE_KEY
 bash scripts/deploy-remote.sh
 ```
-
-## Files
-
-- `apache/warez.skin.conf` — HTTP vhost (Certbot adds the SSL vhost)
-- `public/index.html` — placeholder homepage
-- `scripts/setup-warez-skin.sh` — on-server installer
-- `scripts/deploy-remote.sh` — SCP + remote run helper

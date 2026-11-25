@@ -1,10 +1,6 @@
 #!/usr/bin/env bash
-# Deploy warez.skin Apache + Certbot setup to the VPS from this agent.
-# Requires env:
-#   VPS_SSH_PRIVATE_KEY  (required)  OR  VPS_SSH_PASSWORD (with sshpass)
-#   VPS_HOST             (default 146.71.100.41)
-#   VPS_SSH_USER         (default root)
-#   CERTBOT_EMAIL        (optional)
+# Deploy Node warez.skin app to the VPS and run setup.
+# Requires VPS_SSH_PRIVATE_KEY or VPS_SSH_PASSWORD.
 set -Eeuo pipefail
 
 HOST="${VPS_HOST:-146.71.100.41}"
@@ -32,17 +28,38 @@ else
   exit 1
 fi
 
-echo "Uploading repo to ${USER}@${HOST}:${REMOTE_DIR}"
+echo "Uploading to ${USER}@${HOST}:${REMOTE_DIR}"
 ssh "${SSH_OPTS[@]}" "${USER}@${HOST}" "mkdir -p '${REMOTE_DIR}'"
-scp "${SSH_OPTS[@]}" -r \
-  "${REPO_ROOT}/apache" \
-  "${REPO_ROOT}/public" \
-  "${REPO_ROOT}/scripts" \
-  "${USER}@${HOST}:${REMOTE_DIR}/"
+# Prefer rsync if available locally; else scp tree.
+if command -v rsync >/dev/null 2>&1; then
+  RSYNC_RSH="ssh ${SSH_OPTS[*]}"
+  if [[ -n "${VPS_SSH_PASSWORD:-}" ]]; then
+    RSYNC_RSH="sshpass -e ssh ${SSH_OPTS[*]}"
+  fi
+  rsync -az --delete \
+    --exclude '.git' \
+    --exclude 'node_modules' \
+    --exclude 'public' \
+    -e "${RSYNC_RSH}" \
+    "${REPO_ROOT}/" "${USER}@${HOST}:${REMOTE_DIR}/"
+else
+  scp "${SSH_OPTS[@]}" -r \
+    "${REPO_ROOT}/index.js" \
+    "${REPO_ROOT}/css.js" \
+    "${REPO_ROOT}/package.json" \
+    "${REPO_ROOT}/ecosystem.config.cjs" \
+    "${REPO_ROOT}/configure-apache.js" \
+    "${REPO_ROOT}/apache" \
+    "${REPO_ROOT}/scripts" \
+    "${USER}@${HOST}:${REMOTE_DIR}/"
+fi
 
 echo "Running setup on ${HOST}"
 ssh "${SSH_OPTS[@]}" "${USER}@${HOST}" \
   "CERTBOT_EMAIL='${CERTBOT_EMAIL:-admin@warez.skin}' bash '${REMOTE_DIR}/scripts/setup-warez-skin.sh'"
 
-echo "Verifying HTTPS"
+echo "Verifying"
 curl -fsSI --max-time 20 "https://warez.skin/" | head -20
+curl -fsS --max-time 20 "https://warez.skin/health"
+echo
+curl -fsS --max-time 20 "https://warez.skin/panel.css" | head -5

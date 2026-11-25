@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
-# Configure Apache + Certbot SSL for warez.skin on Ubuntu.
-# Run as root on the VPS (146.71.100.41).
+# Install Node (css.js + index.js) behind Apache + Certbot for warez.skin.
+# Run as root on the VPS.
 set -Eeuo pipefail
 
 DOMAIN="warez.skin"
 WWW_ALIAS="www.warez.skin"
-WEBROOT="/var/www/${DOMAIN}"
-SITE_CONF="/etc/apache2/sites-available/${DOMAIN}.conf"
+INSTALL_ROOT="${INSTALL_ROOT:-/opt/warez.skin}"
 EMAIL="${CERTBOT_EMAIL:-admin@${DOMAIN}}"
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
@@ -17,43 +16,37 @@ fi
 
 export DEBIAN_FRONTEND=noninteractive
 apt-get update -y
-apt-get install -y apache2 certbot python3-certbot-apache
+apt-get install -y curl ca-certificates gnupg git apache2 certbot python3-certbot-apache openssl
 
-a2enmod rewrite headers ssl >/dev/null
-
-mkdir -p "${WEBROOT}"
-if [[ -f "${REPO_ROOT}/public/index.html" ]]; then
-  install -m 0644 "${REPO_ROOT}/public/index.html" "${WEBROOT}/index.html"
-elif [[ ! -f "${WEBROOT}/index.html" ]]; then
-  cat >"${WEBROOT}/index.html" <<'HTML'
-<!DOCTYPE html><html><head><meta charset="utf-8"><title>warez.skin</title></head>
-<body><h1>warez.skin</h1><p>It works.</p></body></html>
-HTML
-fi
-chown -R www-data:www-data "${WEBROOT}"
-
-if [[ -f "${REPO_ROOT}/apache/${DOMAIN}.conf" ]]; then
-  install -m 0644 "${REPO_ROOT}/apache/${DOMAIN}.conf" "${SITE_CONF}"
-else
-  cat >"${SITE_CONF}" <<EOF
-<VirtualHost *:80>
-    ServerName ${DOMAIN}
-    ServerAlias ${WWW_ALIAS}
-    DocumentRoot ${WEBROOT}
-
-    <Directory ${WEBROOT}>
-        Options -Indexes +FollowSymLinks
-        AllowOverride All
-        Require all granted
-    </Directory>
-
-    ErrorLog \${APACHE_LOG_DIR}/${DOMAIN}-error.log
-    CustomLog \${APACHE_LOG_DIR}/${DOMAIN}-access.log combined
-</VirtualHost>
-EOF
+if ! command -v node >/dev/null 2>&1; then
+  curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
+  apt-get install -y nodejs
 fi
 
-# Prefer this site over the default Ubuntu page for this ServerName.
+a2enmod proxy proxy_http rewrite headers ssl >/dev/null
+
+# Sync app into install root (supports running from a cloned copy).
+mkdir -p "${INSTALL_ROOT}"
+rsync -a --delete \
+  --exclude '.git' \
+  --exclude 'node_modules' \
+  --exclude 'public' \
+  "${REPO_ROOT}/" "${INSTALL_ROOT}/"
+
+cd "${INSTALL_ROOT}"
+npm install --omit=dev
+
+npm install -g pm2
+pm2 delete warez-skin >/dev/null 2>&1 || true
+pm2 start "${INSTALL_ROOT}/ecosystem.config.cjs" --update-env
+pm2 save
+pm2 startup systemd -u root --hp /root >/tmp/pm2-startup.txt 2>&1 || true
+# shellcheck disable=SC1090
+eval "$(grep -o 'sudo.*pm2 startup.*' /tmp/pm2-startup.txt | tail -1)" 2>/dev/null || true
+
+# HTTP site first (Certbot needs :80 answering).
+install -m 0644 "${INSTALL_ROOT}/apache/${DOMAIN}.conf" \
+  "/etc/apache2/sites-available/${DOMAIN}.conf"
 a2dissite 000-default.conf >/dev/null 2>&1 || true
 a2ensite "${DOMAIN}.conf" >/dev/null
 
@@ -61,21 +54,36 @@ apache2ctl configtest
 systemctl enable --now apache2
 systemctl reload apache2
 
-# Issue/renew Let's Encrypt cert and auto-configure Apache SSL + HTTP→HTTPS redirect.
-certbot --apache \
-  -d "${DOMAIN}" \
-  -d "${WWW_ALIAS}" \
-  --non-interactive \
-  --agree-tos \
-  --email "${EMAIL}" \
-  --redirect \
-  --keep-until-expiring
+# Issue cert if missing; keep existing otherwise.
+if [[ ! -d "/etc/letsencrypt/live/${DOMAIN}" ]]; then
+  certbot --apache \
+    -d "${DOMAIN}" \
+    -d "${WWW_ALIAS}" \
+    --non-interactive \
+    --agree-tos \
+    --email "${EMAIL}" \
+    --redirect
+else
+  certbot --apache \
+    -d "${DOMAIN}" \
+    -d "${WWW_ALIAS}" \
+    --non-interactive \
+    --agree-tos \
+    --email "${EMAIL}" \
+    --redirect \
+    --keep-until-expiring || true
+fi
 
+# Point both HTTP + HTTPS vhosts at Node :3000.
+node "${INSTALL_ROOT}/configure-apache.js"
+a2enmod proxy proxy_http headers rewrite ssl >/dev/null
 apache2ctl configtest
 systemctl reload apache2
 
 echo
-echo "Done."
-echo "  http://${DOMAIN}  → should redirect to HTTPS"
-echo "  https://${DOMAIN}"
-certbot certificates | sed -n "/Certificate Name: ${DOMAIN}/,/Certificate Path/p" || true
+echo "PM2:"
+pm2 status
+echo
+curl -fsS http://127.0.0.1:3000/health || true
+echo
+echo "https://${DOMAIN}"
