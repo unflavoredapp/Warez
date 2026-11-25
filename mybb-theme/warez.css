@@ -970,15 +970,6 @@ blockquote, .codeblock, .mycode_quote, .mycode_code {
 
 .yh-cat .thead { background: #000 !important; }
 
-/* Header scale wrapper — zooms the 3 cards to fit phone width */
-.yh-header-scale {
-  width: 100%;
-  max-width: 100%;
-  overflow: hidden;
-  margin: 8px 0 10px;
-  position: relative;
-}
-
 /* ========== MOBILE ========== */
 @media (max-width: 920px) {
   html, body {
@@ -1000,134 +991,94 @@ blockquote, .codeblock, .mycode_quote, .mycode_code {
     gap: 8px 12px !important;
     flex: 1 1 auto !important;
   }
-  /* "Type here..." search belongs on desktop only — phones use Subnav → Search */
   .yh-search,
   .yh-search-desktop {
     display: none !important;
   }
 
-  /*
-   * HEADER: keep all 3 cards on ONE row (desktop layout), then scale to fit.
-   * JS sets transform:scale — iOS ignores zoom. Never stack these on phones.
-   */
-  .yh-header-scale {
-    margin: 6px 0 8px !important;
+  /* Mobile header: ONLY the login / account box (hide logo + servers) */
+  .yh-header {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    margin: 8px 0 !important;
+    transform: none !important;
+  }
+  .yh-box-logo,
+  .yh-box-servers {
+    display: none !important;
+  }
+  .yh-box-user {
+    display: block !important;
     width: 100% !important;
     max-width: 100% !important;
-    overflow: hidden !important;
+    flex: none !important;
+    padding: 12px !important;
+    min-height: 0 !important;
   }
-  .yh-header,
-  #yh_header {
+  .yh-login-form {
+    gap: 10px !important;
+    min-height: 0 !important;
+  }
+  .yh-login-top {
     display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
-    align-items: stretch !important;
-    gap: 6px !important;
-    margin: 0 !important;
-    width: 900px !important;
-    max-width: none !important;
-    min-width: 900px !important;
-    box-sizing: border-box !important;
-    transform-origin: top left !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    gap: 8px !important;
   }
-  .yh-header .yh-box {
-    min-height: 88px !important;
-    height: auto !important;
+  .yh-hello { font-size: 14px !important; }
+  .yh-btn-register {
+    height: 36px !important;
+    min-height: 36px !important;
+    padding: 0 14px !important;
+    font-size: 13px !important;
   }
-  .yh-header .yh-box-logo,
-  .yh-box-logo {
-    flex: 0 0 160px !important;
-    max-width: 160px !important;
-    width: 160px !important;
-    padding: 10px 12px !important;
-    text-align: left !important;
-    justify-content: center !important;
-  }
-  .yh-header .yh-box-servers,
-  .yh-box-servers {
-    flex: 1 1 auto !important;
+  .yh-login-fields {
     display: flex !important;
-    width: auto !important;
-    max-width: none !important;
+    flex-direction: column !important;
+    gap: 8px !important;
   }
-  .yh-header .yh-servers-inner,
-  .yh-servers-inner {
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
+  .yh-login-input,
+  input.textbox.yh-login-input {
     width: 100% !important;
+    flex: none !important;
+    height: 42px !important;
+    font-size: 16px !important; /* iOS: avoid input zoom */
+    padding: 0 12px !important;
   }
-  .yh-header .yh-widget,
-  .yh-widget {
-    flex: 1 1 50% !important;
-    width: auto !important;
-    max-width: none !important;
-    border-right: 1px solid #2a2a2a !important;
-    border-bottom: 0 !important;
-    padding: 8px 10px !important;
-  }
-  .yh-header .yh-widget:last-child,
-  .yh-widget:last-child { border-right: 0 !important; border-bottom: 0 !important; }
-  .yh-widget-meta { font-size: 9px !important; }
-  .yh-header .yh-box-user,
-  .yh-box-user {
-    flex: 0 0 280px !important;
-    max-width: 280px !important;
-    width: 280px !important;
-    padding: 8px 10px !important;
-    display: flex !important;
-  }
-  /* Force desktop login chrome inside scaled header */
-  .yh-header .yh-login-form {
-    gap: 5px !important;
-  }
-  .yh-header .yh-login-fields {
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
-    gap: 4px !important;
-  }
-  .yh-header .yh-login-input,
-  .yh-header input.textbox.yh-login-input {
-    flex: 1 1 0 !important;
-    width: 0 !important;
-    max-width: none !important;
-    height: 24px !important;
-    font-size: 11px !important;
-  }
-  .yh-header .yh-btn-login,
-  .yh-header input.button.yh-btn-login {
-    flex: 0 0 auto !important;
-    width: auto !important;
-    min-width: 44px !important;
-    max-width: none !important;
-    height: 24px !important;
-    padding: 0 10px !important;
-    font-size: 11px !important;
-    line-height: 24px !important;
+  .yh-btn-login,
+  input.button.yh-btn-login {
+    width: 100% !important;
+    height: 42px !important;
+    min-width: 0 !important;
+    padding: 0 14px !important;
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    line-height: 42px !important;
     color: #fff !important;
     text-indent: 0 !important;
+    background: #e10600 !important;
   }
-  .yh-header .yh-btn-register {
-    width: auto !important;
-    height: 22px !important;
-    min-height: 22px !important;
+  .yh-login-bottom {
+    display: flex !important;
+    justify-content: space-between !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    font-size: 13px !important;
   }
 
-  /* ===== EVERYTHING BELOW HEADER: mobile-friendly ===== */
+  /* Content below: mobile-friendly */
   #content,
   #content .wrapper {
     width: 100% !important;
     max-width: 100% !important;
     overflow-x: hidden !important;
   }
-
-  /* hide breadcrumb clutter under header on phones */
   #content > .wrapper > .navigation {
     display: none !important;
   }
 
-  /* Forum index: hide cramped Statistics / Last Post; prevent horizontal clip */
   table.tborder,
   table.yh-cat {
     width: 100% !important;
@@ -1140,32 +1091,24 @@ blockquote, .codeblock, .mycode_quote, .mycode_code {
   table.yh-cat tr td:nth-child(4) {
     display: none !important;
   }
-  table.yh-cat tr td:nth-child(1) {
-    width: 44px !important;
-  }
+  table.yh-cat tr td:nth-child(1) { width: 44px !important; }
   table.yh-cat tr td:nth-child(2) {
     width: auto !important;
     word-wrap: break-word !important;
     overflow-wrap: anywhere !important;
   }
-  table.yh-cat .smalltext {
-    word-wrap: break-word !important;
-  }
 
-  /* Keep classic MyBB postbit beside (not stacked) on phones */
   .post, .post.classic, .yh-post {
-    grid-template-columns: 118px minmax(0, 1fr) !important;
+    grid-template-columns: 100px minmax(0, 1fr) !important;
     max-width: 100% !important;
   }
   .post_author { padding: 8px 4px !important; }
-  .author_avatar img { width: 72px !important; }
+  .author_avatar img { width: 64px !important; }
   .yh-user-name, .yh-user-name a { font-size: 12px !important; }
   .yh-user-title, .yh-badge, .yh-user-foot { font-size: 9px !important; }
   .yh-user-stats { font-size: 10px !important; }
 
-  .yh-profile-grid {
-    grid-template-columns: 1fr !important;
-  }
+  .yh-profile-grid { grid-template-columns: 1fr !important; }
 }
 
 /* ========== MEMBER PROFILE (YouHack 3-col) ========== */
