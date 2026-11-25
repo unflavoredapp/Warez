@@ -1049,6 +1049,8 @@ blockquote, .codeblock, .mycode_quote, .mycode_code {
   }
   .yh-btn-login,
   input.button.yh-btn-login {
+    -webkit-appearance: none !important;
+    appearance: none !important;
     width: 100% !important;
     height: 42px !important;
     min-width: 0 !important;
@@ -1058,7 +1060,10 @@ blockquote, .codeblock, .mycode_quote, .mycode_code {
     line-height: 42px !important;
     color: #fff !important;
     text-indent: 0 !important;
+    text-shadow: none !important;
     background: #e10600 !important;
+    background-image: none !important;
+    border: 1px solid #9a0000 !important;
   }
   .yh-login-bottom {
     display: flex !important;
@@ -1079,23 +1084,45 @@ blockquote, .codeblock, .mycode_quote, .mycode_code {
     display: none !important;
   }
 
+  /* Forum index: narrow icon col + full forum col (desktop cols unchanged) */
   table.tborder,
   table.yh-cat {
     width: 100% !important;
     max-width: 100% !important;
     table-layout: fixed !important;
   }
-  table.yh-cat .tcat:nth-child(3),
-  table.yh-cat .tcat:nth-child(4),
-  table.yh-cat tr td:nth-child(3),
-  table.yh-cat tr td:nth-child(4) {
+  table.yh-cat .yh-col-stats,
+  table.yh-cat .yh-col-last {
     display: none !important;
+    width: 0 !important;
+    max-width: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
   }
-  table.yh-cat tr td:nth-child(1) { width: 44px !important; }
-  table.yh-cat tr td:nth-child(2) {
+  table.yh-cat .yh-col-icon {
+    width: 42px !important;
+    max-width: 42px !important;
+    min-width: 42px !important;
+    padding: 8px 4px !important;
+    vertical-align: middle !important;
+  }
+  table.yh-cat .yh-col-forum {
     width: auto !important;
+    padding: 8px 10px !important;
     word-wrap: break-word !important;
     overflow-wrap: anywhere !important;
+  }
+  table.yh-cat .yh-col-forum .smalltext {
+    word-wrap: break-word !important;
+    overflow-wrap: anywhere !important;
+  }
+  table.yh-cat .forum_status {
+    width: 32px !important;
+    height: 32px !important;
+  }
+  /* Hide Icon/Forum label row — category thead is enough on phones */
+  table.yh-cat tr.yh-forum-cols {
+    display: none !important;
   }
 
   .post, .post.classic, .yh-post {
