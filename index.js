@@ -259,7 +259,10 @@ function renderAppDetails(app) {
   const tint = tintRgb(app.tintColor) || "rgb(124,92,255)";
   const heroStyle = `--app-tint:${tint};`;
 
-  return `${shellTop(`${app.name} · warez.skin`)}
+  return `${shellTop(`${app.name} · warez.skin`, {
+    sourceName: app.repoName || "",
+    sourceURL: app.sourceURL || "",
+  })}
     <div class="detail-page" style="${heroStyle}">
       <a class="back-link" href="/#discover">← Back to discovery</a>
 
@@ -284,15 +287,6 @@ function renderAppDetails(app) {
               <a class="btn btn-lg" href="/#discover">All apps</a>
             </div>
           </div>
-          <aside class="hero-source">
-            <div class="hero-source-label">Source</div>
-            <a class="hero-source-name" href="${esc(app.sourceURL || "#")}" target="_blank" rel="noopener noreferrer">${esc(app.repoName || "Source")}</a>
-            ${
-              app.sourceURL
-                ? `<div class="hero-source-url">${esc(app.sourceURL.replace(/^https?:\/\//, ""))}</div>`
-                : ""
-            }
-          </aside>
         </div>
       </section>
 
