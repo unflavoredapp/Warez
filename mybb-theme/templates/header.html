@@ -1,32 +1,62 @@
 <div id="container">
 	<a name="top" id="top"></a>
 
-	<div class="wz-drawer-backdrop" id="wz-backdrop" onclick="wzCloseDrawer()"></div>
-	<aside class="wz-drawer" id="wz-drawer" aria-hidden="true">
-		<div class="wz-drawer-title">Menu</div>
-		<a href="{$mybb->settings['bburl']}/index.php"><svg class="wz-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg> Forums</a>
-		<a href="{$mybb->settings['bburl']}/search.php"><svg class="wz-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg> Search</a>
-		<a href="{$mybb->settings['bburl']}/memberlist.php"><svg class="wz-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> Members</a>
-		<a href="{$mybb->settings['bburl']}/misc.php?action=help"><svg class="wz-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.6 2.2c-.8.4-1.6 1-1.6 2.3"/><path d="M12 17h.01"/></svg> Help</a>
-		<a href="{$mybb->settings['bburl']}/showteam.php"><svg class="wz-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l8 4v5c0 5-3.5 8.5-8 9-4.5-.5-8-4-8-9V7z"/></svg> Team</a>
-		<a href="{$mybb->settings['bburl']}/misc.php?action=markread"><svg class="wz-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 6L9 17l-5-5"/></svg> Mark forums read</a>
-	</aside>
+	<nav class="yh-topnav">
+		<ul class="yh-topnav-links">
+			<li><a class="portal" href="{$mybb->settings['bburl']}/index.php">Portal</a></li>
+			<li><a class="forum" href="{$mybb->settings['bburl']}/index.php">Forum</a></li>
+			<li><a class="credits" href="{$mybb->settings['bburl']}/usercp.php">Credits</a></li>
+			<li><a class="upgrade" href="{$mybb->settings['bburl']}/member.php?action=register">Upgrade</a></li>
+			<li><a class="rules" href="{$mybb->settings['bburl']}/misc.php?action=help">Regulations</a></li>
+			<li><a class="faq" href="{$mybb->settings['bburl']}/misc.php?action=help">FAQ</a></li>
+		</ul>
+		<form class="yh-search" method="post" action="{$mybb->settings['bburl']}/search.php">
+			<input type="hidden" name="action" value="do_search" />
+			<input type="hidden" name="postthread" value="1" />
+			<input type="hidden" name="forums" value="all" />
+			<input type="hidden" name="showresults" value="threads" />
+			<input type="text" name="keywords" class="textbox" placeholder="Type here..." />
+			<button type="submit" title="Search">⌕</button>
+		</form>
+	</nav>
 
-	<header class="wz-topbar">
-		<div class="wz-topbar-left">
-			<button type="button" class="wz-menu-btn" aria-label="Open menu" onclick="wzOpenDrawer()">
-				<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
-			</button>
-			<a class="wz-logo" href="{$mybb->settings['bburl']}/index.php" title="{$mybb->settings['bbname']}">
-				<svg viewBox="0 0 32 32" aria-hidden="true"><path fill="currentColor" d="M4 4h6.2l5.8 11.2L21.8 4H28L18.7 18.4 28 28h-6.3l-5.7-10.8L10.3 28H4l9.3-9.6z"/></svg>
-			</a>
+	<div class="yh-subnav">
+		<a href="{$mybb->settings['bburl']}/search.php">Search</a>
+		<a href="{$mybb->settings['bburl']}/memberlist.php">Memberlist</a>
+		<a href="{$mybb->settings['bburl']}/calendar.php">Calendar</a>
+		<a href="{$mybb->settings['bburl']}/misc.php?action=help">Help</a>
+		<a href="{$mybb->settings['bburl']}/showteam.php">Team</a>
+	</div>
+
+	<div class="yh-header">
+		<a class="yh-logo" href="{$mybb->settings['bburl']}/index.php">
+			<span class="yh-logo-title">warez.skin</span>
+			<span class="yh-logo-tag">unique gaming portal</span>
+		</a>
+		<div class="yh-widgets">
+			<div class="yh-widget">
+				<div class="yh-widget-thumb">◆</div>
+				<div class="yh-widget-body">
+					<div class="yh-widget-title">Community Node</div>
+					<div class="yh-widget-ip">warez.skin</div>
+					<div class="yh-widget-meta">Status: Online</div>
+				</div>
+			</div>
+			<div class="yh-widget">
+				<div class="yh-widget-thumb">▣</div>
+				<div class="yh-widget-body">
+					<div class="yh-widget-title">Board Pulse</div>
+					<div class="yh-widget-ip">MyBB 1.8</div>
+					<div class="yh-widget-meta">Dark / Red theme</div>
+				</div>
+			</div>
 		</div>
-		<div class="wz-topbar-right">
+		<div class="yh-userbox">
 			{$welcomeblock}
 		</div>
-	</header>
+	</div>
 
-	<!-- legacy hooks kept hidden by CSS -->
+	<!-- legacy hooks kept for MyBB internals, hidden via CSS -->
 	<div id="header" style="display:none"></div>
 	<div id="panel" style="display:none"></div>
 
@@ -40,3 +70,4 @@
 			{$pending_joinrequests}
 			{$awaitingusers}
 			<navigation>
+			<br />

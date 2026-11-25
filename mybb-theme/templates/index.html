@@ -2,7 +2,6 @@
 <head>
 <title>{$mybb->settings['bbname']}</title>
 {$headerinclude}
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <script type="text/javascript">
 <!--
 	lang.no_new_posts = "{$lang->no_new_posts}";
@@ -12,37 +11,21 @@
 </head>
 <body>
 {$header}
-<nav class="wz-tabs" id="wz-tabs" aria-label="Categories"></nav>
-<div id="wz-forums">
+<div class="yh-welcome">Welcome to {$mybb->settings['bbname']}</div>
 {$forums}
-</div>
 {$boardstats}
+
+<dl class="forum_legend smalltext">
+	<dt><span class="forum_status forum_on" title="{$lang->new_posts}"></span></dt>
+	<dd>{$lang->new_posts}</dd>
+	<dt><span class="forum_status forum_off" title="{$lang->no_new_posts}"></span></dt>
+	<dd>{$lang->no_new_posts}</dd>
+	<dt><span class="forum_status forum_offclose" title="{$lang->forum_closed}"></span></dt>
+	<dd>{$lang->forum_closed}</dd>
+	<dt><span class="forum_status forum_offlink" title="{$lang->forum_redirect}"></span></dt>
+	<dd>{$lang->forum_redirect}</dd>
+</dl>
+<br class="clear" />
 {$footer}
-<script type="text/javascript">
-(function () {
-	var tabs = document.getElementById('wz-tabs');
-	var cats = document.querySelectorAll('#wz-forums .wz-cat');
-	if (!tabs || !cats.length) return;
-	cats.forEach(function (cat, i) {
-		var name = cat.getAttribute('data-name') || ('Category ' + (i + 1));
-		var btn = document.createElement('button');
-		btn.type = 'button';
-		btn.className = 'wz-tab' + (i === 0 ? ' active' : '');
-		btn.innerHTML = (i === 0
-			? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7h8l2 2h8v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/></svg>'
-			: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6h15l-1.5 9h-12z"/><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M6 6l-2-3H2"/></svg>'
-		) + '<span></span>';
-		btn.querySelector('span').textContent = name;
-		btn.addEventListener('click', function () {
-			document.querySelectorAll('.wz-tab').forEach(function (t) { t.classList.remove('active'); });
-			document.querySelectorAll('.wz-cat').forEach(function (c) { c.classList.remove('active'); });
-			btn.classList.add('active');
-			cat.classList.add('active');
-		});
-		tabs.appendChild(btn);
-		if (i === 0) cat.classList.add('active');
-	});
-})();
-</script>
 </body>
 </html>

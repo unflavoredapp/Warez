@@ -1,3 +1,10 @@
-<a href="{$mybb->settings['bburl']}/usercp.php" class="wz-btn wz-btn-soft">Account</a>
-<a href="{$mybb->settings['bburl']}/member.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}" class="wz-btn wz-btn-ghost">Log out</a>
-{$pmslink}
+<div class="yh-userbox-avatar">★</div>
+<div>
+	<div class="yh-userbox-name">{$mybb->user['username']}</div>
+	<ul class="yh-userbox-links">
+		<li><a href="{$mybb->settings['bburl']}/usercp.php">UserCP</a></li>
+		<li><a href="{$mybb->settings['bburl']}/member.php?action=profile&amp;uid={$mybb->user['uid']}">My Profile</a></li>
+		<li><a href="{$mybb->settings['bburl']}/private.php">Alerts / PMs</a></li>
+		<li><a href="{$mybb->settings['bburl']}/member.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}">Log Out</a></li>
+	</ul>
+</div>

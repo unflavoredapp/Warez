@@ -1,57 +1,27 @@
 	</div>
 </div>
-<footer id="footer">
-	<ul class="menu bottom_links">
-		<li><a href="{$mybb->settings['bburl']}/index.php">Forums</a></li>
-		{$showteamlink}
-		<li><a href="{$mybb->settings['bburl']}/misc.php?action=help">Help</a></li>
-		<li><a href="{$mybb->settings['bburl']}/misc.php?action=markread{$post_code_string}">Mark forums read</a></li>
-		<li><a href="#top">Back to top ↑</a></li>
-	</ul>
-	<div class="lower">
-		<span id="copyright">
-			{$lang->powered_by} <a href="https://mybb.com" target="_blank" rel="noopener">MyBB{$mybbversion}</a>, &copy; 2002-{$copy_year} <a href="https://mybb.com" target="_blank" rel="noopener">MyBB Group</a>.
-		</span>
-		<span>warez.skin</span>
+<div id="footer">
+	<div class="upper">
+		<div class="wrapper">
+			<ul class="menu bottom_links">
+				{$showteamlink}
+				{$contact_us}
+				<li><a href="{$mybb->settings['homeurl']}">{$mybb->settings['homename']}</a></li>
+				<li><a href="#top">{$lang->bottomlinks_returntop}</a></li>
+				<li><a href="{$mybb->settings['bburl']}/misc.php?action=markread{$post_code_string}">{$lang->bottomlinks_markread}</a></li>
+				<li><a href="{$mybb->settings['bburl']}/misc.php?action=syndication">{$lang->bottomlinks_syndication}</a></li>
+			</ul>
+		</div>
 	</div>
-</footer>
+	<div class="lower">
+		<div class="wrapper" style="display:flex;justify-content:space-between;width:100%">
+			<span id="copyright">
+				{$lang->powered_by} <a href="https://mybb.com" target="_blank" rel="noopener">MyBB{$mybbversion}</a>, &copy; 2002-{$copy_year} <a href="https://mybb.com" target="_blank" rel="noopener">MyBB Group</a>.
+			</span>
+			<span>warez.skin</span>
+		</div>
+	</div>
+</div>
 {$task_image}
 {$auto_dst_detection}
 </div>
-<script type="text/javascript">
-function wzOpenDrawer(){
-	document.getElementById('wz-drawer').classList.add('open');
-	document.getElementById('wz-backdrop').classList.add('open');
-	document.getElementById('wz-drawer').setAttribute('aria-hidden','false');
-}
-function wzCloseDrawer(){
-	document.getElementById('wz-drawer').classList.remove('open');
-	document.getElementById('wz-backdrop').classList.remove('open');
-	document.getElementById('wz-drawer').setAttribute('aria-hidden','true');
-}
-(function(){
-	var note = document.querySelector('!--WZ_STATS, body');
-	var html = document.documentElement.innerHTML;
-	var m = html.match(/<!--WZ_STATS\s*(.*?)\s*-->/);
-	if(!m) return;
-	var parts = m[1].split('|');
-	function grabNumber(s){ var x=(s||'').match(/([\d,]+)/); return x?x[1]:'0'; }
-	var threadsEl = document.getElementById('wz-stat-threads');
-	var postsEl = document.getElementById('wz-stat-posts');
-	var membersEl = document.getElementById('wz-stat-members');
-	var newestEl = document.getElementById('wz-stat-newest');
-	if(parts[0] && threadsEl && postsEl){
-		var nums = parts[0].match(/([\d,]+)/g) || [];
-		// MyBB: "There are X posts in Y threads." order varies by language; English is posts then threads
-		postsEl.textContent = nums[0] || '0';
-		threadsEl.textContent = nums[1] || nums[0] || '0';
-	}
-	if(parts[1] && membersEl){ membersEl.textContent = grabNumber(parts[1]); }
-	if(parts[2] && newestEl){
-		var tmp = document.createElement('div');
-		tmp.innerHTML = parts[2];
-		var a = tmp.querySelector('a');
-		newestEl.innerHTML = a ? a.outerHTML : grabNumber(parts[2]);
-	}
-})();
-</script>

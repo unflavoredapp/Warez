@@ -1,5 +1,8 @@
-<a href="{$mybb->settings['bburl']}/member.php?action=login" onclick="$('#quick_login').modal({ fadeDuration: 250, keepelement: true, zIndex: (typeof modal_zindex !== 'undefined' ? modal_zindex : 9999) }); return false;" class="wz-btn wz-btn-ghost">Log in</a>
-<a href="{$mybb->settings['bburl']}/member.php?action=register" class="wz-btn wz-btn-primary">Register</a>
+<div class="yh-guest-actions">
+	<div class="yh-userbox-name">Guest</div>
+	<a href="{$mybb->settings['bburl']}/member.php?action=login" onclick="$('#quick_login').modal({ fadeDuration: 250, keepelement: true, zIndex: (typeof modal_zindex !== 'undefined' ? modal_zindex : 9999) }); return false;" class="button">Log in</a>
+	<a href="{$mybb->settings['bburl']}/member.php?action=register" class="button">Register</a>
+</div>
 <div class="modal" id="quick_login" style="display: none;">
 	<form method="post" action="{$mybb->settings['bburl']}/member.php">
 		<input name="action" type="hidden" value="do_login" />

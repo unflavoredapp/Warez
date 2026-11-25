@@ -21,4 +21,4 @@ The site at **https://warez.skin** now runs **MyBB 1.8** (Apache + PHP + MariaDB
 
 ## Theme notes
 
-See `mybb-theme/README.md`. The live look is a dark orange card UI (Inter, `#0a0a0a` / `#ff7a1a`) with custom templates: sticky header + drawer, General/Market tabs, forum cards with chips, stats grid, and card thread/post layouts. Redeploy with `php /opt/warez-theme/deploy.php`.
+See `mybb-theme/README.md`. The live look is a classic **YouHack-style** dark board: black panels, red accents, lime status text, magenta welcome, top colored nav, skull forum icons, and traditional table forumbit/postbit. Redeploy with `php /opt/warez-theme/deploy.php`.
