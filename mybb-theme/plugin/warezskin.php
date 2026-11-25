@@ -22,6 +22,7 @@ $plugins->add_hook('global_intermediate', 'warezskin_header_avatar');
 $plugins->add_hook('portal_end', 'warezskin_portal_blocks');
 $plugins->add_hook('postbit', 'warezskin_postbit');
 $plugins->add_hook('index_end', 'warezskin_index_stats');
+$plugins->add_hook('member_profile_end', 'warezskin_profile');
 
 function warezskin_header_avatar()
 {
@@ -135,6 +136,70 @@ function warezskin_portal_blocks()
 			</td>
 		</tr>
 	</table>';
+}
+
+function warezskin_profile()
+{
+	global $mybb, $db, $cache, $memprofile, $usertitle, $profilefields;
+	global $yh_profile_banner, $yh_additional_groups, $yh_warning_count, $yh_warning_percent, $yh_profile_referrals;
+
+	$banner = trim(strip_tags((string)$usertitle));
+	if ($banner === '') {
+		$banner = 'WAREZ.SKIN MEMBER';
+	}
+	$yh_profile_banner = htmlspecialchars_uni(my_strtoupper($banner));
+
+	$maxw = max(1, (int)$mybb->settings['maxwarningpoints']);
+	$points = isset($memprofile['warningpoints']) ? (int)$memprofile['warningpoints'] : 0;
+	$yh_warning_percent = (int)round(($points / $maxw) * 100);
+	if ($yh_warning_percent > 100) {
+		$yh_warning_percent = 100;
+	}
+
+	$yh_warning_count = 0;
+	if (!empty($memprofile['uid']) && $db->table_exists('warnings')) {
+		$yh_warning_count = (int)$db->fetch_field(
+			$db->simple_select('warnings', 'COUNT(wid) AS c', "uid=".(int)$memprofile['uid']." AND expired=0"),
+			'c'
+		);
+	}
+
+	$yh_additional_groups = '<span class="yh-muted">None</span>';
+	if (!empty($memprofile['additionalgroups'])) {
+		$groups = $cache->read('usergroups');
+		$parts = array();
+		foreach (explode(',', $memprofile['additionalgroups']) as $gid) {
+			$gid = (int)$gid;
+			if ($gid && isset($groups[$gid]['title'])) {
+				$parts[] = htmlspecialchars_uni($groups[$gid]['title']);
+			}
+		}
+		if ($parts) {
+			$yh_additional_groups = implode(', ', $parts);
+		}
+	}
+
+	$yh_profile_referrals = '';
+	if (!empty($memprofile['referrals'])) {
+		$yh_profile_referrals = '<div class="yh-profile-row"><span class="yh-k">Members Referred</span><span class="yh-v">'.(int)$memprofile['referrals'].'</span></div>';
+	}
+
+	// Always show Sex / Location / Bio rows (YouHack-style), even when empty
+	$sex = '';
+	$location = '';
+	$bio = '';
+	if (!empty($memprofile['uid'])) {
+		$uf = $db->fetch_array($db->simple_select('userfields', '*', 'ufid='.(int)$memprofile['uid'], array('limit' => 1)));
+		if (is_array($uf)) {
+			$location = isset($uf['fid1']) ? trim($uf['fid1']) : '';
+			$bio = isset($uf['fid2']) ? trim($uf['fid2']) : '';
+			$sex = isset($uf['fid3']) ? trim($uf['fid3']) : '';
+		}
+	}
+	$profilefields =
+		'<div class="yh-profile-row"><span class="yh-k">Sex:</span><span class="yh-v">'.($sex !== '' ? htmlspecialchars_uni($sex) : '').'</span></div>'.
+		'<div class="yh-profile-row"><span class="yh-k">Location:</span><span class="yh-v">'.($location !== '' ? htmlspecialchars_uni($location) : '').'</span></div>'.
+		'<div class="yh-profile-row"><span class="yh-k">bio:</span><span class="yh-v">'.($bio !== '' ? nl2br(htmlspecialchars_uni($bio)) : '').'</span></div>';
 }
 
 function warezskin_postbit(&$post)

@@ -349,5 +349,8 @@ function bits_profile()
 {
 	global $memprofile, $bits_display;
 	$bits = isset($memprofile['bits']) ? (int)$memprofile['bits'] : 0;
+	if ($bits === 0 && !empty($memprofile['uid'])) {
+		$bits = bits_get((int)$memprofile['uid']);
+	}
 	$bits_display = bits_format($bits);
 }
