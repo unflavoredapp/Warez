@@ -332,6 +332,15 @@ function renderAppDetails(app) {
           <div class="section-head"><h2>About</h2></div>
           ${featureHtml}
         </section>
+        <section class="panel source-card desktop-source">
+          <div class="section-head"><h2>Source</h2></div>
+          <div class="source-name">${esc(app.repoName || "")}</div>
+          <a class="source-url" href="${esc(app.sourceURL || "#")}" target="_blank" rel="noopener noreferrer">${esc(app.sourceURL || "")}</a>
+          <div class="pill-row" style="margin-top:14px">
+            <span class="pill">${esc(app.bundleIdentifier || "bundle")}</span>
+            ${app.version ? `<span class="pill">v${esc(app.version)}</span>` : ""}
+          </div>
+        </section>
       </div>
 
       ${
