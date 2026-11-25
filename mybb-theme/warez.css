@@ -17,7 +17,7 @@
   --yh-ink: #eeeeee;
   --yh-muted: #9a9a9a;
   --yh-faint: #666666;
-  --yh-width: 1100px;
+  --yh-width: 980px;
   --yh-font: Tahoma, Arial, Helvetica, sans-serif;
 }
 
@@ -146,8 +146,8 @@ img { max-width: 100%; border: 0; }
 
 /* 1) Logo */
 .yh-box-logo {
-  width: 22% !important;
-  padding: 10px 14px !important;
+  width: 20% !important;
+  padding: 10px 12px !important;
   text-align: left !important;
 }
 .yh-logo {
@@ -156,7 +156,7 @@ img { max-width: 100%; border: 0; }
 }
 .yh-logo-title {
   display: block !important;
-  font-size: 36px !important;
+  font-size: 30px !important;
   font-weight: 700 !important;
   letter-spacing: 0.01em !important;
   color: #fff !important;
@@ -179,7 +179,7 @@ img { max-width: 100%; border: 0; }
 
 /* 2) Servers */
 .yh-box-servers {
-  width: 56% !important;
+  width: 52% !important;
   padding: 0 !important;
 }
 .yh-servers-inner {
@@ -201,28 +201,28 @@ img { max-width: 100%; border: 0; }
   width: 58px !important;
   height: 58px !important;
   border: 1px solid #3a3a3a !important;
-  background-color: #0a0a0a !important;
-  background-size: cover !important;
-  background-position: center !important;
   display: inline-block !important;
   vertical-align: middle !important;
   margin-right: 8px !important;
+  object-fit: cover !important;
+  background: #0a0a0a !important;
 }
 .yh-widget-body {
   display: inline-block !important;
   vertical-align: middle !important;
   max-width: calc(100% - 70px);
 }
-.yh-thumb-bf {
-  background-image:
-    linear-gradient(160deg, rgba(40,80,40,.55), rgba(0,0,0,.75)),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect fill='%23111' width='64' height='64'/%3E%3Cpath fill='%234a7' d='M8 40h48v8H8zm6-18h8v18h-8zm18-8h8v26h-8zm18 12h8v14h-8z'/%3E%3C/svg%3E") !important;
+.yh-dot-on,
+.yh-dot-off {
+  display: inline-block !important;
+  width: 7px !important;
+  height: 7px !important;
+  border-radius: 50% !important;
+  margin-right: 4px !important;
+  vertical-align: middle !important;
 }
-.yh-thumb-rs {
-  background-image:
-    linear-gradient(160deg, rgba(90,30,20,.55), rgba(0,0,0,.75)),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect fill='%23111' width='64' height='64'/%3E%3Ccircle cx='32' cy='28' r='14' fill='%23653'/%3E%3Cpath fill='%23864' d='M20 44h24v10H20z'/%3E%3C/svg%3E") !important;
-}
+.yh-dot-on { background: #39ff14 !important; box-shadow: 0 0 4px #39ff14; }
+.yh-dot-off { background: #e10600 !important; box-shadow: 0 0 4px #e10600; }
 .yh-widget-title {
   color: #ccc !important;
   font-weight: 700 !important;
@@ -244,7 +244,7 @@ img { max-width: 100%; border: 0; }
 
 /* 3) User / login */
 .yh-box-user {
-  width: 26% !important;
+  width: 28% !important;
   padding: 8px 10px !important;
 }
 
