@@ -8,8 +8,12 @@ const snippet = `
     RequestHeader set X-Forwarded-Proto "https"
     ProxyPass /health http://127.0.0.1:3000/health
     ProxyPassReverse /health http://127.0.0.1:3000/health
+    ProxyPass /api/ http://127.0.0.1:3000/api/
+    ProxyPassReverse /api/ http://127.0.0.1:3000/api/
     ProxyPass /panel.css http://127.0.0.1:3000/panel.css
     ProxyPassReverse /panel.css http://127.0.0.1:3000/panel.css
+    ProxyPass /sample-source.json http://127.0.0.1:3000/sample-source.json
+    ProxyPassReverse /sample-source.json http://127.0.0.1:3000/sample-source.json
     ProxyPass / http://127.0.0.1:3000/
     ProxyPassReverse / http://127.0.0.1:3000/
     ProxyTimeout 60

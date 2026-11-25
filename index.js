@@ -3,23 +3,67 @@
 
 require("dotenv").config();
 
+const path = require("path");
 const express = require("express");
 const css = require("./css");
+const { Store } = require("./store");
 
 const PORT = Number(process.env.PORT || 3000);
 const HOST = process.env.HOST || "127.0.0.1";
+const DATA_DIR = process.env.WAREZ_DATA || path.join(__dirname, "data");
 const STARTED_AT = Date.now();
 
+const store = new Store(DATA_DIR);
 const app = express();
 app.disable("x-powered-by");
+app.use(express.json({ limit: "256kb" }));
+
+const SAMPLE_SOURCE = {
+  name: "warez.skin Sample Repo",
+  identifier: "skin.warez.sample",
+  subtitle: "Demo IPA catalog for discovery UI",
+  apps: [
+    {
+      name: "Sample Player",
+      bundleIdentifier: "skin.warez.sample.player",
+      developerName: "warez.skin",
+      subtitle: "Demo listing",
+      versions: [
+        {
+          version: "1.0.0",
+          date: "2026-11-25",
+          size: 12_582_912,
+          downloadURL: "https://warez.skin/sample/player.ipa",
+        },
+      ],
+    },
+    {
+      name: "Sample Notes",
+      bundleIdentifier: "skin.warez.sample.notes",
+      developerName: "warez.skin",
+      subtitle: "Demo listing",
+      versions: [
+        {
+          version: "2.1.0",
+          date: "2026-11-20",
+          size: 8_388_608,
+          downloadURL: "https://warez.skin/sample/notes.ipa",
+        },
+      ],
+    },
+  ],
+};
+
+app.get("/sample-source.json", (_req, res) => {
+  res.json(SAMPLE_SOURCE);
+});
 
 app.get("/health", (_req, res) => {
   res.json({
     ok: true,
     service: "warez.skin",
     uptimeSec: Math.floor((Date.now() - STARTED_AT) / 1000),
-    startedAt: STARTED_AT,
-    node: process.version,
+    ...store.stats(),
   });
 });
 
@@ -28,15 +72,57 @@ app.get("/api/status", (_req, res) => {
     ok: true,
     service: "warez.skin",
     status: "online",
-    stack: {
-      runtime: "node",
-      process: "pm2",
-      proxy: "apache",
-      ssl: "letsencrypt",
-    },
+    focus: "ipa-app-repo-discovery",
     uptimeSec: Math.floor((Date.now() - STARTED_AT) / 1000),
     node: process.version,
+    ...store.stats(),
   });
+});
+
+app.get("/api/repos", (req, res) => {
+  const withApps = String(req.query.apps || "") === "1";
+  res.json({ ok: true, repos: store.listRepos({ withApps }), stats: store.stats() });
+});
+
+app.get("/api/repos/:id", (req, res) => {
+  const repo = store.getRepo(req.params.id);
+  if (!repo) return res.status(404).json({ ok: false, error: "repo not found" });
+  return res.json({ ok: true, repo });
+});
+
+app.post("/api/repos", async (req, res) => {
+  try {
+    const sourceURL = String(req.body?.sourceURL || req.body?.url || "").trim();
+    if (!sourceURL) {
+      return res.status(400).json({ ok: false, error: "sourceURL required" });
+    }
+    const repo = await store.addRepo(sourceURL);
+    return res.json({ ok: true, repo });
+  } catch (err) {
+    return res.status(400).json({ ok: false, error: String(err.message || err) });
+  }
+});
+
+app.post("/api/repos/:id/refresh", async (req, res) => {
+  try {
+    const repo = await store.refreshRepo(req.params.id);
+    if (!repo) return res.status(404).json({ ok: false, error: "repo not found" });
+    return res.json({ ok: true, repo });
+  } catch (err) {
+    return res.status(400).json({ ok: false, error: String(err.message || err) });
+  }
+});
+
+app.delete("/api/repos/:id", (req, res) => {
+  const ok = store.removeRepo(req.params.id);
+  if (!ok) return res.status(404).json({ ok: false, error: "repo not found" });
+  return res.json({ ok: true });
+});
+
+app.get("/api/apps", (req, res) => {
+  const q = String(req.query.q || "");
+  const apps = store.searchApps(q);
+  res.json({ ok: true, q, count: apps.length, apps: apps.slice(0, 200) });
 });
 
 app.get("/panel.css", (_req, res) => {
@@ -53,8 +139,8 @@ function renderIndex() {
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="warez.skin — skins, served clean. Node + css.js behind Apache SSL." />
-  <title>warez.skin</title>
+  <meta name="description" content="warez.skin — IPA app repository discovery. Add sources, search apps, refresh catalogs." />
+  <title>warez.skin · IPA repo discovery</title>
   <link rel="stylesheet" href="/panel.css" />
 </head>
 <body>
@@ -65,146 +151,281 @@ function renderIndex() {
         <span class="logo-text">warez.skin</span>
       </a>
       <nav class="nav" aria-label="Primary">
-        <a href="#overview">Overview</a>
-        <a href="#stack">Stack</a>
-        <a href="#status">Status</a>
-        <a href="/health">Health</a>
+        <a href="#discover">Discover</a>
+        <a href="#repos">Repos</a>
+        <a href="#add">Add source</a>
+        <a href="/api/status">API</a>
       </nav>
     </header>
 
-    <h1 class="brand">Warez<span class="dot">.</span>skin</h1>
+    <h1 class="brand">IPA repo<span class="dot">.</span>discovery</h1>
     <p class="tagline">
-      Skins without the static clutter. Pages from <code>index.js</code>, styles from
-      <code>css.js</code>, SSL on Apache, process under PM2.
+      Index AltStore-style IPA sources, search apps across repos, and refresh catalogs.
+      Paste a source JSON URL to pull name, bundle IDs, versions, and listings into one place.
     </p>
 
-    <div class="hero-actions">
-      <a class="btn btn-primary" href="#overview">Open index</a>
-      <a class="btn" href="/api/status">API status</a>
-      <span class="pill" id="live-pill"><span class="dot"></span><span id="live-label">checking…</span></span>
-    </div>
-
-    <div class="meta-row" id="stats" aria-live="polite">
+    <div class="meta-row" id="stats">
       <div class="meta-square">
-        <div class="stat" id="s-status">—</div>
-        <small>service</small>
+        <div class="stat" id="s-repos">—</div>
+        <small>repos indexed</small>
       </div>
       <div class="meta-square">
-        <div class="stat" id="s-uptime">—</div>
-        <small>uptime</small>
+        <div class="stat" id="s-apps">—</div>
+        <small>apps discovered</small>
       </div>
       <div class="meta-square">
-        <div class="stat" id="s-node">—</div>
-        <small>node</small>
+        <div class="stat" id="s-hits">—</div>
+        <small>search hits</small>
       </div>
       <div class="meta-square">
-        <div class="stat" id="s-proxy">Apache</div>
-        <small>edge · certbot</small>
+        <div class="stat" id="s-errors">—</div>
+        <small>source errors</small>
       </div>
     </div>
 
-    <div class="grid" id="overview">
-      <section class="panel span-8">
-        <span class="feature-kicker">Index</span>
-        <h2>Built in JS, not HTML files</h2>
-        <p>
-          The homepage is rendered by Express as a string template. CSS ships from
-          <code>css.js</code> at <code>/panel.css</code>. No <code>public/*.html</code>.
+    <div class="grid">
+      <section class="panel span-12" id="discover">
+        <h2>Discover apps</h2>
+        <label for="q">Search by app name, bundle ID, developer, or repo</label>
+        <input id="q" placeholder="e.g. com.example.app or music player" autocomplete="off" />
+        <div class="row">
+          <button class="btn btn-primary" id="search-btn" type="button">Search</button>
+          <button class="btn btn-ghost" id="clear-btn" type="button">Clear</button>
+          <span class="muted mono" id="search-meta">type to filter indexed apps</span>
+        </div>
+        <div id="apps" class="app-list" style="margin-top:14px"></div>
+      </section>
+
+      <section class="panel span-8" id="repos">
+        <h2>Indexed repos</h2>
+        <div id="repos-list" class="repo-list muted">Loading…</div>
+      </section>
+
+      <section class="panel span-4" id="add">
+        <h2>Add IPA source</h2>
+        <label for="source-url">Source JSON URL</label>
+        <input id="source-url" placeholder="https://example.com/apps.json" />
+        <div class="row">
+          <button class="btn btn-primary" id="add-btn" type="button">Index source</button>
+          <button class="btn btn-ghost" id="sample-btn" type="button">Load sample</button>
+        </div>
+        <div class="msg" id="add-msg"></div>
+        <p class="muted" style="margin:14px 0 0;font-size:0.75rem;line-height:1.5">
+          Expects AltStore-compatible JSON (<code>name</code>, <code>identifier</code>, <code>apps[]</code>).
+          Private/localhost URLs are blocked. Try
+          <code>https://warez.skin/sample-source.json</code>.
         </p>
-        <ul class="list">
-          <li><strong>index.js</strong> — routes, health, and page renderers</li>
-          <li><strong>css.js</strong> — shared stylesheet module</li>
-          <li><strong>PM2</strong> — keeps the Node process online on :3000</li>
-          <li><strong>Apache</strong> — terminates TLS and reverse-proxies to Node</li>
-        </ul>
-      </section>
-
-      <section class="panel span-4" id="status">
-        <span class="feature-kicker">Live</span>
-        <h2>Heartbeat</h2>
-        <p id="heartbeat" class="muted">Polling /api/status…</p>
-        <ul class="list" id="stack-list">
-          <li><strong>runtime</strong> — —</li>
-          <li><strong>process</strong> — —</li>
-          <li><strong>proxy</strong> — —</li>
-          <li><strong>ssl</strong> — —</li>
-        </ul>
-      </section>
-
-      <section class="panel span-4" id="stack">
-        <span class="feature-kicker">Surface</span>
-        <h2>Skin shell</h2>
-        <p>Dark panel layout ready for catalogs, unlocks, or dashboards. Extend panels in <code>renderIndex()</code>.</p>
-      </section>
-
-      <section class="panel span-4">
-        <span class="feature-kicker">Deploy</span>
-        <h2>VPS path</h2>
-        <p><code>/opt/warez.skin</code> · <code>pm2 restart warez-skin</code> after edits · Certbot renews in the background.</p>
-      </section>
-
-      <section class="panel span-4">
-        <span class="feature-kicker">Next</span>
-        <h2>Hook your product</h2>
-        <p>Drop APIs under <code>/api/*</code>, add panels to the grid, keep styles in <code>css.js</code>.</p>
       </section>
     </div>
 
     <footer>
-      <span>warez.skin · index.js + css.js</span>
+      <span>warez.skin · IPA app repo discovery</span>
       <span class="mono" id="foot-stamp">—</span>
     </footer>
   </div>
 
   <script>
-    function formatUptime(sec) {
-      sec = Math.max(0, Number(sec) || 0);
-      const h = Math.floor(sec / 3600);
-      const m = Math.floor((sec % 3600) / 60);
-      const s = sec % 60;
-      if (h) return h + "h " + m + "m";
-      if (m) return m + "m " + s + "s";
-      return s + "s";
+    function bytes(n) {
+      n = Number(n) || 0;
+      if (!n) return "—";
+      const u = ["B","KB","MB","GB"];
+      let i = 0, v = n;
+      while (v >= 1024 && i < u.length - 1) { v /= 1024; i++; }
+      return v.toFixed(i ? 1 : 0) + " " + u[i];
+    }
+    function ago(ts) {
+      if (!ts) return "never";
+      const s = Math.max(0, Math.round((Date.now() - ts) / 1000));
+      if (s < 60) return s + "s ago";
+      if (s < 3600) return Math.floor(s / 60) + "m ago";
+      if (s < 86400) return Math.floor(s / 3600) + "h ago";
+      return Math.floor(s / 86400) + "d ago";
+    }
+    function esc(s) {
+      return String(s || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
     }
 
-    async function refresh() {
-      const pill = document.getElementById("live-pill");
-      const label = document.getElementById("live-label");
-      const heartbeat = document.getElementById("heartbeat");
+    async function refreshStats() {
+      const res = await fetch("/api/status", { cache: "no-store" });
+      const data = await res.json();
+      document.getElementById("s-repos").textContent = data.repos ?? 0;
+      document.getElementById("s-apps").textContent = data.apps ?? 0;
+      document.getElementById("s-errors").textContent = data.errors ?? 0;
+      document.getElementById("foot-stamp").textContent =
+        "uptime " + (data.uptimeSec || 0) + "s · " + new Date().toLocaleTimeString();
+    }
+
+    function renderApps(apps, q) {
+      const root = document.getElementById("apps");
+      document.getElementById("s-hits").textContent = apps.length;
+      document.getElementById("search-meta").textContent = q
+        ? (apps.length + " hit" + (apps.length === 1 ? "" : "s") + " for \\"" + q + "\\"")
+        : (apps.length ? "showing indexed apps" : "no apps indexed yet — add a source");
+      if (!apps.length) {
+        root.innerHTML = "<div class='muted'>No apps matched.</div>";
+        return;
+      }
+      root.innerHTML = apps.map(app => {
+        const icon = app.iconURL
+          ? "<img class='icon' src='" + esc(app.iconURL) + "' alt='' loading='lazy' referrerpolicy='no-referrer' />"
+          : "<div class='icon' aria-hidden='true'></div>";
+        return "<article class='app-card'>" +
+          "<div class='app-card-top'>" +
+            "<div style='display:flex;gap:12px;min-width:0;flex:1'>" +
+              icon +
+              "<div style='min-width:0'>" +
+                "<div class='app-title'>" + esc(app.name) + "</div>" +
+                "<div class='app-meta'>" + esc(app.bundleIdentifier || "—") + "</div>" +
+                "<div class='pill-row'>" +
+                  "<span class='pill'>" + esc(app.repoName || "repo") + "</span>" +
+                  (app.version ? "<span class='pill'>v" + esc(app.version) + "</span>" : "") +
+                  (app.size ? "<span class='pill'>" + bytes(app.size) + "</span>" : "") +
+                  (app.developerName ? "<span class='pill'>" + esc(app.developerName) + "</span>" : "") +
+                "</div>" +
+              "</div>" +
+            "</div>" +
+          "</div>" +
+        "</article>";
+      }).join("");
+    }
+
+    async function searchApps() {
+      const q = document.getElementById("q").value.trim();
+      const res = await fetch("/api/apps?q=" + encodeURIComponent(q), { cache: "no-store" });
+      const data = await res.json();
+      renderApps(data.apps || [], q);
+    }
+
+    function renderRepos(repos) {
+      const root = document.getElementById("repos-list");
+      if (!repos.length) {
+        root.innerHTML = "<div class='muted'>No repos yet. Add an IPA source JSON URL →</div>";
+        return;
+      }
+      root.innerHTML = repos.map(repo => {
+        const errPill = repo.lastError
+          ? "<span class='pill bad'>error</span>"
+          : "<span class='pill good'>ok</span>";
+        const apps = (repo.apps || []).slice(0, 8).map(app => {
+          const icon = app.iconURL
+            ? "<img class='icon' style='width:28px;height:28px;border-radius:7px' src='" + esc(app.iconURL) + "' alt='' loading='lazy' referrerpolicy='no-referrer' />"
+            : "<div class='icon' style='width:28px;height:28px;border-radius:7px' aria-hidden='true'></div>";
+          return "<div class='mini-app'>" + icon +
+            "<div style='min-width:0'>" +
+              "<div class='name'>" + esc(app.name) + "</div>" +
+              "<div class='bid'>" + esc(app.bundleIdentifier || "") +
+                (app.version ? " · v" + esc(app.version) : "") +
+              "</div>" +
+            "</div></div>";
+        }).join("");
+        return "<article class='repo-card' data-id='" + esc(repo.id) + "'>" +
+          "<div class='repo-card-top'>" +
+            "<div style='min-width:0;flex:1'>" +
+              "<div class='repo-title'>" + esc(repo.name) + "</div>" +
+              "<div class='repo-url'>" + esc(repo.sourceURL) + "</div>" +
+              "<div class='pill-row'>" +
+                "<span class='pill'>" + (repo.appCount || 0) + " apps</span>" +
+                "<span class='pill'>refreshed " + ago(repo.refreshedAt) + "</span>" +
+                errPill +
+              "</div>" +
+              (repo.lastError ? "<div class='err' style='margin-top:8px;font-size:0.72rem'>" + esc(repo.lastError) + "</div>" : "") +
+            "</div>" +
+            "<div class='actions'>" +
+              "<button class='btn' data-act='refresh' type='button'>Refresh</button>" +
+              "<button class='btn btn-ghost' data-act='remove' type='button'>Remove</button>" +
+            "</div>" +
+          "</div>" +
+          (apps
+            ? "<details class='repo-apps'><summary>Preview apps</summary><div class='mini-apps'>" + apps + "</div></details>"
+            : "") +
+        "</article>";
+      }).join("");
+    }
+
+    async function loadRepos() {
+      const res = await fetch("/api/repos?apps=1", { cache: "no-store" });
+      const data = await res.json();
+      renderRepos(data.repos || []);
+      await refreshStats();
+      await searchApps();
+    }
+
+    document.getElementById("search-btn").onclick = () => searchApps().catch(console.error);
+    document.getElementById("clear-btn").onclick = () => {
+      document.getElementById("q").value = "";
+      searchApps().catch(console.error);
+    };
+    document.getElementById("q").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") searchApps().catch(console.error);
+    });
+
+    async function indexSource(sourceURL) {
+      const msg = document.getElementById("add-msg");
+      msg.className = "msg";
+      msg.textContent = "Fetching source…";
+      document.getElementById("add-btn").disabled = true;
+      document.getElementById("sample-btn").disabled = true;
       try {
-        const res = await fetch("/api/status", { cache: "no-store" });
-        if (!res.ok) throw new Error("status " + res.status);
+        const res = await fetch("/api/repos", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ sourceURL }),
+        });
         const data = await res.json();
-
-        document.getElementById("s-status").textContent = data.status || "online";
-        document.getElementById("s-uptime").textContent = formatUptime(data.uptimeSec);
-        document.getElementById("s-node").textContent = (data.node || "").replace(/^v/, "v");
-        document.getElementById("foot-stamp").textContent =
-          "uptime " + formatUptime(data.uptimeSec) + " · " + new Date().toLocaleTimeString();
-
-        const stack = data.stack || {};
-        document.getElementById("stack-list").innerHTML = [
-          ["runtime", stack.runtime],
-          ["process", stack.process],
-          ["proxy", stack.proxy],
-          ["ssl", stack.ssl],
-        ].map(([k, v]) => "<li><strong>" + k + "</strong> — " + (v || "—") + "</li>").join("");
-
-        pill.className = "pill online";
-        label.textContent = "online";
-        heartbeat.className = "ok";
-        heartbeat.textContent = "Healthy · " + (data.service || "warez.skin");
+        if (!res.ok || !data.ok) throw new Error(data.error || res.status);
+        msg.className = "msg ok";
+        msg.textContent = "Indexed " + (data.repo.name || "source") + " · " + (data.repo.appCount || 0) + " apps";
+        document.getElementById("source-url").value = "";
+        await loadRepos();
       } catch (err) {
-        pill.className = "pill offline";
-        label.textContent = "offline";
-        document.getElementById("s-status").textContent = "down";
-        heartbeat.className = "err";
-        heartbeat.textContent = String(err.message || err);
+        msg.className = "msg err";
+        msg.textContent = String(err.message || err);
+      } finally {
+        document.getElementById("add-btn").disabled = false;
+        document.getElementById("sample-btn").disabled = false;
       }
     }
 
-    refresh();
-    setInterval(refresh, 5000);
+    document.getElementById("add-btn").onclick = () => {
+      indexSource(document.getElementById("source-url").value.trim()).catch(console.error);
+    };
+    document.getElementById("sample-btn").onclick = () => {
+      document.getElementById("source-url").value = location.origin + "/sample-source.json";
+      indexSource(location.origin + "/sample-source.json").catch(console.error);
+    };
+
+    document.getElementById("repos-list").addEventListener("click", async (e) => {
+      const btn = e.target.closest("button[data-act]");
+      if (!btn) return;
+      const card = btn.closest("[data-id]");
+      const id = card && card.getAttribute("data-id");
+      if (!id) return;
+      btn.disabled = true;
+      try {
+        if (btn.getAttribute("data-act") === "refresh") {
+          const res = await fetch("/api/repos/" + encodeURIComponent(id) + "/refresh", { method: "POST" });
+          const data = await res.json();
+          if (!res.ok || !data.ok) throw new Error(data.error || res.status);
+        } else if (btn.getAttribute("data-act") === "remove") {
+          const res = await fetch("/api/repos/" + encodeURIComponent(id), { method: "DELETE" });
+          const data = await res.json();
+          if (!res.ok || !data.ok) throw new Error(data.error || res.status);
+        }
+        await loadRepos();
+      } catch (err) {
+        alert(String(err.message || err));
+        btn.disabled = false;
+      }
+    });
+
+    loadRepos().catch((err) => {
+      document.getElementById("repos-list").innerHTML = "<span class='err'>" + esc(err) + "</span>";
+    });
+    setInterval(() => refreshStats().catch(() => {}), 10000);
   </script>
 </body>
 </html>`;
@@ -216,5 +437,5 @@ app.use((err, _req, res, _next) => {
 });
 
 app.listen(PORT, HOST, () => {
-  console.log(`warez.skin listening on http://${HOST}:${PORT}`);
+  console.log(`warez.skin IPA discovery on http://${HOST}:${PORT}`);
 });
