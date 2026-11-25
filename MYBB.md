@@ -21,4 +21,4 @@ The site at **https://warez.skin** now runs **MyBB 1.8** (Apache + PHP + MariaDB
 
 ## Theme notes
 
-See `mybb-theme/README.md`. The dark UI (Syne + IBM Plex Mono, purple/cyan gradients) is applied as a global stylesheet override on top of MyBB Default/Master.
+See `mybb-theme/README.md`. The live look is a dark orange card UI (Inter, `#0a0a0a` / `#ff7a1a`) with custom templates: sticky header + drawer, General/Market tabs, forum cards with chips, stats grid, and card thread/post layouts. Redeploy with `php /opt/warez-theme/deploy.php`.
