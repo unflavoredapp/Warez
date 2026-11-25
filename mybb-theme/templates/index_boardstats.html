@@ -1,9 +1,9 @@
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+<table border="0" cellspacing="0" cellpadding="0" class="tborder yh-cat">
 <thead>
 <tr>
 <td class="thead{$collapsedthead['boardstats']}">
 <div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['boardstats']}.png" id="boardstats_img" class="expander" alt="{$expaltext}" title="{$expaltext}" /></div>
-<div><strong>{$lang->boardstats}</strong></div>
+<div><strong>Board Statistics</strong></div>
 </td>
 </tr>
 </thead>
@@ -12,11 +12,8 @@
 {$birthdays}
 {$forumstats}
 <tr>
-	<td class="tfoot" style="text-align: right">
-		<span class="smalltext">
-			{$logoutlink}
-			{$statspage}
-		</span>
+	<td class="tfoot">
+		<span class="smalltext">{$logoutlink} {$statspage}</span>
 	</td>
 </tr>
 </tbody>

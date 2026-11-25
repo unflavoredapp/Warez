@@ -1,6 +1,6 @@
 <html>
 <head>
-<title>{$mybb->settings['bbname']}</title>
+<title>{$mybb->settings['bbname']} - Forum</title>
 {$headerinclude}
 <script type="text/javascript">
 <!--
@@ -11,20 +11,14 @@
 </head>
 <body>
 {$header}
-<div class="yh-welcome">Welcome to {$mybb->settings['bbname']}</div>
+<div class="yh-banners yh-banners-top">
+	<a class="yh-banner yh-banner-green" href="{$mybb->settings['bburl']}/portal.php">Portal</a>
+	<a class="yh-banner yh-banner-orange" href="{$mybb->settings['bburl']}/search.php?action=getnew">New Posts</a>
+	<a class="yh-banner yh-banner-blue" href="{$mybb->settings['bburl']}/member.php?action=register">Register</a>
+	<a class="yh-banner yh-banner-dark" href="{$mybb->settings['bburl']}/misc.php?action=help">Help</a>
+</div>
 {$forums}
 {$boardstats}
-
-<dl class="forum_legend smalltext">
-	<dt><span class="forum_status forum_on" title="{$lang->new_posts}"></span></dt>
-	<dd>{$lang->new_posts}</dd>
-	<dt><span class="forum_status forum_off" title="{$lang->no_new_posts}"></span></dt>
-	<dd>{$lang->no_new_posts}</dd>
-	<dt><span class="forum_status forum_offclose" title="{$lang->forum_closed}"></span></dt>
-	<dd>{$lang->forum_closed}</dd>
-	<dt><span class="forum_status forum_offlink" title="{$lang->forum_redirect}"></span></dt>
-	<dd>{$lang->forum_redirect}</dd>
-</dl>
 <br class="clear" />
 {$footer}
 </body>

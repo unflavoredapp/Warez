@@ -1,0 +1,20 @@
+<html>
+<head>
+<title>{$mybb->settings['bbname']}</title>
+<link rel="alternate" type="application/rss+xml" title="{$lang->latest_announcements} (RSS 2.0)" href="{$mybb->settings['bburl']}/syndication.php?portal=1" />
+<link rel="alternate" type="application/atom+xml" title="{$lang->latest_announcements} (Atom 1.0)" href="{$mybb->settings['bburl']}/syndication.php?portal=1&type=atom1.0" />
+{$headerinclude}
+</head>
+<body>
+{$header}
+<div class="yh-welcome">Welcome to {$mybb->settings['bbname']}</div>
+{$yh_forum_stats}
+<div class="yh-banners">
+	<a class="yh-banner yh-banner-green" href="{$mybb->settings['bburl']}/index.php">Enter Forums</a>
+	<a class="yh-banner yh-banner-orange" href="{$mybb->settings['bburl']}/member.php?action=register">Join / Upgrade</a>
+	<a class="yh-banner yh-banner-blue" href="{$mybb->settings['bburl']}/misc.php?action=help">Rules & FAQ</a>
+	<a class="yh-banner yh-banner-dark" href="{$mybb->settings['bburl']}/memberlist.php">Memberlist</a>
+</div>
+{$footer}
+</body>
+</html>

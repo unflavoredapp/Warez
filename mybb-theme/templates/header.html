@@ -3,7 +3,7 @@
 
 	<nav class="yh-topnav">
 		<ul class="yh-topnav-links">
-			<li><a class="portal" href="{$mybb->settings['bburl']}/index.php">Portal</a></li>
+			<li><a class="portal" href="{$mybb->settings['bburl']}/portal.php">Portal</a></li>
 			<li><a class="forum" href="{$mybb->settings['bburl']}/index.php">Forum</a></li>
 			<li><a class="credits" href="{$mybb->settings['bburl']}/usercp.php">Credits</a></li>
 			<li><a class="upgrade" href="{$mybb->settings['bburl']}/member.php?action=register">Upgrade</a></li>
@@ -16,7 +16,7 @@
 			<input type="hidden" name="forums" value="all" />
 			<input type="hidden" name="showresults" value="threads" />
 			<input type="text" name="keywords" class="textbox" placeholder="Type here..." />
-			<button type="submit" title="Search">⌕</button>
+			<button type="submit" aria-label="Search">⌕</button>
 		</form>
 	</nav>
 
@@ -24,30 +24,28 @@
 		<a href="{$mybb->settings['bburl']}/search.php">Search</a>
 		<a href="{$mybb->settings['bburl']}/memberlist.php">Memberlist</a>
 		<a href="{$mybb->settings['bburl']}/calendar.php">Calendar</a>
-		<a href="{$mybb->settings['bburl']}/misc.php?action=help">Help</a>
-		<a href="{$mybb->settings['bburl']}/showteam.php">Team</a>
 	</div>
 
 	<div class="yh-header">
-		<a class="yh-logo" href="{$mybb->settings['bburl']}/index.php">
+		<a class="yh-logo" href="{$mybb->settings['bburl']}/portal.php">
 			<span class="yh-logo-title">warez.skin</span>
 			<span class="yh-logo-tag">unique gaming portal</span>
 		</a>
 		<div class="yh-widgets">
 			<div class="yh-widget">
-				<div class="yh-widget-thumb">◆</div>
+				<div class="yh-widget-thumb">BF</div>
 				<div class="yh-widget-body">
-					<div class="yh-widget-title">Community Node</div>
-					<div class="yh-widget-ip">warez.skin</div>
-					<div class="yh-widget-meta">Status: Online</div>
+					<div class="yh-widget-title">Battlefield Node</div>
+					<div class="yh-widget-ip">play.warez.skin</div>
+					<div class="yh-widget-meta">Players: — &nbsp; Map: Lobby</div>
 				</div>
 			</div>
 			<div class="yh-widget">
-				<div class="yh-widget-thumb">▣</div>
+				<div class="yh-widget-thumb">RS</div>
 				<div class="yh-widget-body">
-					<div class="yh-widget-title">Board Pulse</div>
-					<div class="yh-widget-ip">MyBB 1.8</div>
-					<div class="yh-widget-meta">Dark / Red theme</div>
+					<div class="yh-widget-title">Rust Node</div>
+					<div class="yh-widget-ip">rust.warez.skin</div>
+					<div class="yh-widget-meta">Players: — &nbsp; Rank: —</div>
 				</div>
 			</div>
 		</div>
@@ -56,7 +54,6 @@
 		</div>
 	</div>
 
-	<!-- legacy hooks kept for MyBB internals, hidden via CSS -->
 	<div id="header" style="display:none"></div>
 	<div id="panel" style="display:none"></div>
 
@@ -70,4 +67,3 @@
 			{$pending_joinrequests}
 			{$awaitingusers}
 			<navigation>
-			<br />

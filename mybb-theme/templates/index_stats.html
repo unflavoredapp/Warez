@@ -1,10 +1,14 @@
-<tr><td class="tcat"><span class="smalltext"><strong>{$lang->boardstats}</strong></span></td></tr>
+<tr><td class="tcat"><span class="smalltext"><strong>Board Statistics</strong></span></td></tr>
 <tr>
-<td class="trow1"><span class="smalltext">
-{$lang->stats_posts_threads}<br />
-{$lang->stats_numusers}<br />
-{$lang->stats_newestuser}<br />
-{$lang->stats_mostonline}
-</span>
+<td class="trow1">
+<div class="yh-boardnums">
+	<span><strong>Posts:</strong> {$stats['numposts']}</span>
+	<span><strong>Threads:</strong> {$stats['numthreads']}</span>
+	<span><strong>Members:</strong> {$stats['numusers']}</span>
+	<span><strong>Most Users Online:</strong> {$mostonline}</span>
+</div>
+<div class="smalltext yh-boardfoot">
+	{$lang->stats_newestuser}
+</div>
 </td>
 </tr>
