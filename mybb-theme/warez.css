@@ -976,6 +976,7 @@ blockquote, .codeblock, .mycode_quote, .mycode_code {
   max-width: 100%;
   overflow: hidden;
   margin: 8px 0 10px;
+  position: relative;
 }
 
 /* ========== MOBILE ========== */
@@ -1006,52 +1007,80 @@ blockquote, .codeblock, .mycode_quote, .mycode_code {
   }
 
   /*
-   * HEADER: keep all 3 cards on ONE row (desktop layout), then zoom out to fit.
-   * Do NOT restyle login/servers for phone — that caused the fat blank Login bar.
+   * HEADER: keep all 3 cards on ONE row (desktop layout), then scale to fit.
+   * JS sets transform:scale — iOS ignores zoom. Never stack these on phones.
    */
   .yh-header-scale {
     margin: 6px 0 8px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
   }
-  .yh-header {
+  .yh-header,
+  #yh_header {
+    display: flex !important;
     flex-direction: row !important;
+    flex-wrap: nowrap !important;
     align-items: stretch !important;
     gap: 6px !important;
     margin: 0 !important;
     width: 900px !important;
     max-width: none !important;
+    min-width: 900px !important;
+    box-sizing: border-box !important;
+    transform-origin: top left !important;
   }
   .yh-header .yh-box {
     min-height: 88px !important;
+    height: auto !important;
   }
+  .yh-header .yh-box-logo,
   .yh-box-logo {
-    flex: 0 0 18% !important;
-    max-width: 18% !important;
+    flex: 0 0 160px !important;
+    max-width: 160px !important;
+    width: 160px !important;
     padding: 10px 12px !important;
     text-align: left !important;
+    justify-content: center !important;
   }
+  .yh-header .yh-box-servers,
   .yh-box-servers {
     flex: 1 1 auto !important;
     display: flex !important;
+    width: auto !important;
+    max-width: none !important;
   }
+  .yh-header .yh-servers-inner,
   .yh-servers-inner {
+    display: flex !important;
     flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    width: 100% !important;
   }
+  .yh-header .yh-widget,
   .yh-widget {
     flex: 1 1 50% !important;
     width: auto !important;
+    max-width: none !important;
     border-right: 1px solid #2a2a2a !important;
     border-bottom: 0 !important;
     padding: 8px 10px !important;
   }
-  .yh-widget:last-child { border-right: 0 !important; }
-  .yh-widget-meta { display: block !important; }
+  .yh-header .yh-widget:last-child,
+  .yh-widget:last-child { border-right: 0 !important; border-bottom: 0 !important; }
+  .yh-widget-meta { font-size: 9px !important; }
+  .yh-header .yh-box-user,
   .yh-box-user {
-    flex: 0 0 32% !important;
-    max-width: 32% !important;
+    flex: 0 0 280px !important;
+    max-width: 280px !important;
+    width: 280px !important;
     padding: 8px 10px !important;
     display: flex !important;
   }
   /* Force desktop login chrome inside scaled header */
+  .yh-header .yh-login-form {
+    gap: 5px !important;
+  }
   .yh-header .yh-login-fields {
     display: flex !important;
     flex-direction: row !important;
@@ -1062,18 +1091,27 @@ blockquote, .codeblock, .mycode_quote, .mycode_code {
   .yh-header input.textbox.yh-login-input {
     flex: 1 1 0 !important;
     width: 0 !important;
+    max-width: none !important;
     height: 24px !important;
     font-size: 11px !important;
   }
   .yh-header .yh-btn-login,
   .yh-header input.button.yh-btn-login {
+    flex: 0 0 auto !important;
     width: auto !important;
     min-width: 44px !important;
+    max-width: none !important;
     height: 24px !important;
     padding: 0 10px !important;
     font-size: 11px !important;
     line-height: 24px !important;
     color: #fff !important;
+    text-indent: 0 !important;
+  }
+  .yh-header .yh-btn-register {
+    width: auto !important;
+    height: 22px !important;
+    min-height: 22px !important;
   }
 
   /* ===== EVERYTHING BELOW HEADER: mobile-friendly ===== */
@@ -1142,6 +1180,9 @@ blockquote, .codeblock, .mycode_quote, .mycode_code {
   padding: 6px 8px;
   margin-bottom: 8px;
   font-size: 11px;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 .yh-profile-role {
   background: #1a1a1a;
@@ -1176,8 +1217,26 @@ blockquote, .codeblock, .mycode_quote, .mycode_code {
 .yh-profile-viewing {
   color: #ddd;
   margin-left: 4px;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .yh-profile-viewing a { color: #fff !important; }
+
+@media (max-width: 920px) {
+  .yh-profile-top {
+    gap: 4px;
+    padding: 6px;
+  }
+  .yh-profile-viewing {
+    flex: 1 1 100%;
+    white-space: normal;
+    margin-left: 0;
+    margin-top: 2px;
+  }
+}
 
 .yh-profile-grid {
   display: grid;

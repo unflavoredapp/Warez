@@ -70,20 +70,38 @@
 		var wrap = document.getElementById('yh_header_scale');
 		if (!header || !wrap) return;
 		function fitHeader() {
-			var vw = wrap.clientWidth || window.innerWidth;
+			var vw = Math.max(wrap.clientWidth || 0, Math.min(window.innerWidth, document.documentElement.clientWidth));
+			header.style.width = '900px';
+			header.style.maxWidth = 'none';
+			header.style.flexDirection = 'row';
+			header.style.transformOrigin = 'top left';
 			if (vw >= 900) {
-				header.style.width = '';
-				header.style.zoom = '';
+				header.style.transform = '';
 				wrap.style.height = '';
+				wrap.style.overflow = '';
 				return;
 			}
-			header.style.width = '900px';
-			header.style.zoom = String(vw / 900);
-			wrap.style.height = '';
+			/* iOS Safari ignores element.zoom — use transform scale */
+			var scale = vw / 900;
+			header.style.transform = 'none';
+			var naturalH = header.offsetHeight || 96;
+			header.style.transform = 'scale(' + scale + ')';
+			wrap.style.overflow = 'hidden';
+			wrap.style.height = Math.ceil(naturalH * scale) + 'px';
 		}
-		fitHeader();
+		function run() {
+			fitHeader();
+			window.setTimeout(fitHeader, 50);
+			window.setTimeout(fitHeader, 300);
+		}
+		if (document.readyState === 'loading') {
+			document.addEventListener('DOMContentLoaded', run);
+		} else {
+			run();
+		}
+		window.addEventListener('load', fitHeader);
 		window.addEventListener('resize', fitHeader);
-		window.addEventListener('orientationchange', fitHeader);
+		window.addEventListener('orientationchange', function () { window.setTimeout(fitHeader, 100); });
 	})();
 	</script>
 
