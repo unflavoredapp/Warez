@@ -1,0 +1,237 @@
+/* warez.skin MyBB theme overrides — dark discovery aesthetic */
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Syne:wght@600;700;800&display=swap');
+
+:root {
+  --wz-bg: #0b0d12;
+  --wz-ink: #e8ecf4;
+  --wz-muted: #9aa3b5;
+  --wz-line: rgba(255, 255, 255, 0.1);
+  --wz-card: #151922;
+  --wz-accent: #7c5cff;
+  --wz-accent-2: #38bdf8;
+  --wz-good: #34d399;
+  --wz-bad: #f87171;
+  --wz-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+}
+
+html {
+  background: var(--wz-bg) !important;
+}
+
+html, body {
+  background:
+    radial-gradient(1200px 600px at 12% -12%, rgba(124, 92, 255, 0.28), transparent 55%),
+    radial-gradient(900px 500px at 100% 0%, rgba(56, 189, 248, 0.16), transparent 50%),
+    var(--wz-bg) !important;
+  color: var(--wz-ink) !important;
+  font-family: "IBM Plex Mono", ui-monospace, monospace !important;
+  min-height: 100% !important;
+}
+
+a { color: var(--wz-accent-2) !important; }
+a:hover { color: #fff !important; }
+
+#container, .wrapper, #content, #header, #footer, #panel, #logo,
+#content .wrapper, body#mybb-body {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+#container {
+  max-width: 1100px !important;
+  margin: 0 auto !important;
+  padding: 18px 16px 40px !important;
+}
+
+#logo strong, #logo a, .logo a {
+  font-family: Syne, sans-serif !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.03em !important;
+  color: var(--wz-ink) !important;
+  font-size: 1.35rem !important;
+  text-decoration: none !important;
+}
+
+#header {
+  margin-bottom: 18px !important;
+}
+
+#panel {
+  background: color-mix(in srgb, var(--wz-card) 92%, transparent) !important;
+  border: 1px solid var(--wz-line) !important;
+  border-radius: 14px !important;
+  box-shadow: var(--wz-shadow) !important;
+  padding: 10px 14px !important;
+  margin-bottom: 14px !important;
+  color: var(--wz-muted) !important;
+}
+
+#panel a { color: var(--wz-ink) !important; }
+#panel a:hover { color: var(--wz-accent-2) !important; }
+#panel .welcome, #panel .remember_me { color: var(--wz-muted) !important; }
+
+.navigation, .breadcrumb {
+  color: var(--wz-muted) !important;
+  margin: 10px 0 16px !important;
+}
+.navigation a { color: var(--wz-accent-2) !important; }
+
+.tborder, table.tborder, .thead, .tcat, .trow1, .trow2, .tfoot,
+.modal, .popup_menu, .pm_alert, .high_warning, .moderate_warning, .low_warning,
+.red_alert, .success_message, .error_message {
+  background: var(--wz-card) !important;
+  border-color: var(--wz-line) !important;
+  color: var(--wz-ink) !important;
+}
+
+.tborder {
+  border: 1px solid var(--wz-line) !important;
+  border-radius: 16px !important;
+  overflow: hidden !important;
+  box-shadow: var(--wz-shadow) !important;
+  margin-bottom: 16px !important;
+}
+
+.thead, .thead a, .thead a:link, .thead a:visited {
+  background: linear-gradient(135deg, rgba(109, 77, 255, 0.35), rgba(79, 124, 255, 0.18)) !important;
+  color: var(--wz-ink) !important;
+  font-family: Syne, sans-serif !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.02em !important;
+  border: 0 !important;
+}
+
+.tcat, .tcat a {
+  background: rgba(255, 255, 255, 0.03) !important;
+  color: var(--wz-muted) !important;
+  border-color: var(--wz-line) !important;
+  font-size: 0.72rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.04em !important;
+}
+
+.trow1, .trow2 {
+  background: rgba(255, 255, 255, 0.02) !important;
+  border-color: var(--wz-line) !important;
+}
+
+.trow1:hover, .trow2:hover {
+  background: rgba(124, 92, 255, 0.08) !important;
+}
+
+.trow_sep {
+  background: rgba(124, 92, 255, 0.12) !important;
+  color: var(--wz-ink) !important;
+  border-color: var(--wz-line) !important;
+  font-family: Syne, sans-serif !important;
+}
+
+.tfoot {
+  background: rgba(0, 0, 0, 0.22) !important;
+}
+
+.forum_on, .forum_off, .forum_offclose, .forum_offlink,
+.forum_status {
+  filter: saturate(1.1) brightness(1.05);
+}
+
+input.textbox, textarea, select, .editor, .messageEditor,
+input.button, button, .button {
+  background: rgba(0, 0, 0, 0.25) !important;
+  border: 1px solid var(--wz-line) !important;
+  border-radius: 12px !important;
+  color: var(--wz-ink) !important;
+  font-family: "IBM Plex Mono", ui-monospace, monospace !important;
+}
+
+input.textbox:focus, textarea:focus, select:focus {
+  border-color: rgba(124, 92, 255, 0.55) !important;
+  box-shadow: 0 0 0 3px rgba(124, 92, 255, 0.18) !important;
+  outline: 0 !important;
+}
+
+input.button, button, .button, a.button {
+  background: linear-gradient(135deg, #6d4dff, #4f7cff) !important;
+  border: 0 !important;
+  color: #fff !important;
+  box-shadow: 0 10px 30px rgba(124, 92, 255, 0.35) !important;
+  padding: 10px 14px !important;
+  cursor: pointer !important;
+}
+
+input.button:hover, button:hover, .button:hover, a.button:hover {
+  filter: brightness(1.06);
+  color: #fff !important;
+}
+
+.pagination .pagination_current,
+.pagination a {
+  background: var(--wz-card) !important;
+  border: 1px solid var(--wz-line) !important;
+  border-radius: 10px !important;
+  color: var(--wz-ink) !important;
+}
+.pagination .pagination_current {
+  background: rgba(124, 92, 255, 0.25) !important;
+  border-color: rgba(124, 92, 255, 0.45) !important;
+}
+
+.post, .post_content, .post_author, .post_head, .post_controls {
+  background: transparent !important;
+  border-color: var(--wz-line) !important;
+  color: var(--wz-ink) !important;
+}
+
+.post.classic, .postbit_classic {
+  border: 1px solid var(--wz-line) !important;
+  border-radius: 14px !important;
+  background: var(--wz-card) !important;
+  box-shadow: var(--wz-shadow) !important;
+  margin-bottom: 12px !important;
+  overflow: hidden !important;
+}
+
+.post_author {
+  background: rgba(0, 0, 0, 0.18) !important;
+}
+
+blockquote, .codeblock, .mycode_quote, .mycode_code {
+  background: rgba(0, 0, 0, 0.28) !important;
+  border: 1px solid var(--wz-line) !important;
+  border-radius: 12px !important;
+  color: var(--wz-ink) !important;
+}
+
+#footer, #footer ul.menu li a, #footer .upper, #footer .lower {
+  background: transparent !important;
+  color: var(--wz-muted) !important;
+  border: 0 !important;
+}
+
+.smalltext, .scaleimages {
+  color: var(--wz-muted) !important;
+}
+
+.expcolimage { filter: invert(1) brightness(1.4); }
+
+.thead_collapsed, .thead_expanded { background: transparent !important; }
+
+.popup_menu .popup_item:hover {
+  background: rgba(124, 92, 255, 0.2) !important;
+}
+
+.pm_alert, .red_alert {
+  border-radius: 12px !important;
+  border: 1px solid rgba(124, 92, 255, 0.35) !important;
+}
+
+/* Mobile */
+@media (max-width: 800px) {
+  body { padding: 8px !important; }
+  #container { padding: 10px 8px 28px !important; }
+  #panel, .tborder { border-radius: 14px !important; }
+  input.button, button, .button, a.button {
+    border-radius: 12px !important;
+  }
+}
