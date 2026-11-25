@@ -1,25 +1,33 @@
-<div class="yh-userpanel yh-userpanel-guest">
-	<div class="yh-userpanel-avatar yh-avatar-guest" aria-hidden="true"></div>
-	<ul class="yh-userpanel-links">
-		<li class="yh-userpanel-name"><span class="yh-ico yh-ico-user"></span>Guest</li>
-		<li><span class="yh-ico yh-ico-login"></span><a href="{$mybb->settings['bburl']}/member.php?action=login" onclick="$('#quick_login').modal({ fadeDuration: 250, keepelement: true, zIndex: (typeof modal_zindex !== 'undefined' ? modal_zindex : 9999) }); return false;">Log in</a></li>
-		<li><span class="yh-ico yh-ico-register"></span><a href="{$mybb->settings['bburl']}/member.php?action=register">Register</a></li>
-	</ul>
-</div>
-<div class="modal" id="quick_login" style="display: none;">
-	<form method="post" action="{$mybb->settings['bburl']}/member.php">
-		<input name="action" type="hidden" value="do_login" />
-		<input name="url" type="hidden" value="" />
-		<input name="quick_login" type="hidden" value="1" />
-		<input name="my_post_key" type="hidden" value="{$mybb->post_code}" />
-		<table width="100%" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" border="0" class="tborder">
-			<tr>
-				<td class="thead" colspan="2"><strong>{$lang->login}</strong></td>
-			</tr>
-			{$loginform}
-		</table>
+<div class="yh-loginbox">
+	<form method="post" action="{$mybb->settings['bburl']}/member.php" class="yh-login-form">
+		<input type="hidden" name="action" value="do_login" />
+		<input type="hidden" name="url" id="yh_login_url" value="" />
+		<input type="hidden" name="quick_login" value="1" />
+		<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
+
+		<div class="yh-login-row yh-login-top">
+			<span class="yh-hello">Hello, Guest ^_^</span>
+			<a class="yh-btn-register" href="{$mybb->settings['bburl']}/member.php?action=register">Registration</a>
+		</div>
+
+		<div class="yh-login-row yh-login-fields">
+			<input type="text" name="quick_username" class="textbox yh-login-input" placeholder="Username" autocomplete="username" />
+			<input type="password" name="quick_password" class="textbox yh-login-input" placeholder="Password" autocomplete="current-password" />
+			<input type="submit" class="button yh-btn-login" name="submit" value="Login" />
+		</div>
+
+		<div class="yh-login-row yh-login-bottom">
+			<a class="yh-lostpw" href="{$mybb->settings['bburl']}/member.php?action=lostpw">Forgot password?</a>
+			<label class="yh-remember" for="yh_quick_remember">
+				<input type="checkbox" name="quick_remember" id="yh_quick_remember" value="yes" checked="checked" />
+				Remember?
+			</label>
+		</div>
 	</form>
 </div>
 <script type="text/javascript">
-	$("#quick_login input[name='url']").val($(location).attr('href'));
+	(function () {
+		var el = document.getElementById('yh_login_url');
+		if (el) el.value = window.location.href;
+	})();
 </script>

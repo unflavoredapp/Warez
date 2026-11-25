@@ -1,12 +1,14 @@
-<div class="yh-userpanel">
-	<a class="yh-userpanel-avatar" href="{$mybb->settings['bburl']}/member.php?action=profile&amp;uid={$mybb->user['uid']}">
-		<img src="{$yh_avatar}" alt="{$mybb->user['username']}" />
-	</a>
-	<ul class="yh-userpanel-links">
-		<li class="yh-userpanel-name"><span class="yh-ico yh-ico-user"></span><a href="{$mybb->settings['bburl']}/member.php?action=profile&amp;uid={$mybb->user['uid']}">{$mybb->user['username']}</a></li>
-		<li><span class="yh-ico yh-ico-cp"></span><a href="{$mybb->settings['bburl']}/usercp.php">UserCP</a></li>
-		<li><span class="yh-ico yh-ico-profile"></span><a href="{$mybb->settings['bburl']}/member.php?action=profile&amp;uid={$mybb->user['uid']}">My Profile</a></li>
-		<li><span class="yh-ico yh-ico-alert"></span><a href="{$mybb->settings['bburl']}/private.php">Alerts ({$mybb->user['pms_unread']})</a></li>
-		<li><span class="yh-ico yh-ico-logout"></span><a href="{$mybb->settings['bburl']}/member.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}">Log Out</a></li>
-	</ul>
+<div class="yh-loginbox yh-loginbox-member">
+	<div class="yh-userpanel">
+		<a class="yh-userpanel-avatar" href="{$mybb->settings['bburl']}/member.php?action=profile&amp;uid={$mybb->user['uid']}">
+			<img src="{$yh_avatar}" alt="{$mybb->user['username']}" />
+		</a>
+		<ul class="yh-userpanel-links">
+			<li class="yh-userpanel-name"><span class="yh-ico yh-ico-user"></span><a href="{$mybb->settings['bburl']}/member.php?action=profile&amp;uid={$mybb->user['uid']}">{$mybb->user['username']}</a></li>
+			<li><span class="yh-ico yh-ico-cp"></span><a href="{$mybb->settings['bburl']}/usercp.php">UserCP</a></li>
+			<li><span class="yh-ico yh-ico-profile"></span><a href="{$mybb->settings['bburl']}/member.php?action=profile&amp;uid={$mybb->user['uid']}">My Profile</a></li>
+			<li><span class="yh-ico yh-ico-alert"></span><a href="{$mybb->settings['bburl']}/private.php">Alerts ({$mybb->user['pms_unread']})</a></li>
+			<li><span class="yh-ico yh-ico-logout"></span><a href="{$mybb->settings['bburl']}/member.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}">Log Out</a></li>
+		</ul>
+	</div>
 </div>

@@ -244,9 +244,115 @@ img { max-width: 100%; border: 0; }
 
 /* 3) User / login */
 .yh-box-user {
-  width: 22% !important;
+  width: 26% !important;
   padding: 8px 10px !important;
 }
+
+/* YouHack-style guest login card */
+.yh-loginbox {
+  width: 100% !important;
+  height: 100% !important;
+}
+.yh-login-form {
+  width: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  min-height: 80px;
+}
+.yh-login-row {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  width: 100% !important;
+}
+.yh-login-top {
+  justify-content: space-between !important;
+  gap: 8px !important;
+}
+.yh-hello {
+  color: #fff !important;
+  font-size: 12px !important;
+  white-space: nowrap !important;
+}
+.yh-btn-register {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: #e10600 !important;
+  color: #fff !important;
+  font-weight: 700 !important;
+  font-size: 11px !important;
+  text-transform: none !important;
+  padding: 5px 12px !important;
+  border: 1px solid #9a0000 !important;
+  border-radius: 0 !important;
+  white-space: nowrap !important;
+  min-height: 24px !important;
+  box-shadow: none !important;
+}
+.yh-btn-register:hover { background: #ff1a1a !important; color: #fff !important; }
+
+.yh-login-fields {
+  gap: 5px !important;
+}
+.yh-login-input,
+input.textbox.yh-login-input {
+  flex: 1 1 auto !important;
+  width: auto !important;
+  min-width: 0 !important;
+  height: 26px !important;
+  background: #2a2a2a !important;
+  border: 1px solid #3a3a3a !important;
+  border-radius: 0 !important;
+  color: #ddd !important;
+  padding: 0 8px !important;
+  font-size: 11px !important;
+  font-family: Tahoma, Arial, sans-serif !important;
+  box-shadow: none !important;
+}
+.yh-login-input::placeholder { color: #888 !important; }
+.yh-btn-login,
+input.button.yh-btn-login {
+  flex: 0 0 auto !important;
+  width: auto !important;
+  min-width: 52px !important;
+  height: 26px !important;
+  padding: 0 12px !important;
+  background: #e10600 !important;
+  border: 1px solid #9a0000 !important;
+  border-radius: 0 !important;
+  color: #fff !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  text-transform: none !important;
+  box-shadow: none !important;
+  cursor: pointer !important;
+}
+.yh-btn-login:hover,
+input.button.yh-btn-login:hover {
+  background: #ff1a1a !important;
+  color: #fff !important;
+}
+
+.yh-login-bottom {
+  justify-content: space-between !important;
+  gap: 8px !important;
+  font-size: 11px !important;
+}
+.yh-lostpw { color: #ccc !important; }
+.yh-lostpw:hover { color: #ff1a1a !important; }
+.yh-remember {
+  color: #ccc !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  cursor: pointer !important;
+  white-space: nowrap !important;
+}
+.yh-remember input { margin: 0 !important; }
+
 .yh-userpanel {
   display: flex !important;
   gap: 10px !important;
