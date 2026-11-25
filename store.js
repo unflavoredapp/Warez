@@ -7,6 +7,9 @@ const dns = require("dns").promises;
 const net = require("net");
 const { URL } = require("url");
 
+const MAX_SOURCE_BYTES = 32 * 1024 * 1024;
+const FETCH_TIMEOUT_MS = 60000;
+
 function now() {
   return Date.now();
 }
@@ -67,33 +70,53 @@ async function assertPublicHttpUrl(raw) {
   return u.toString();
 }
 
-function normalizeSource(json, sourceUrl) {
-  const appsIn = Array.isArray(json?.apps) ? json.apps : [];
-  const apps = appsIn.map((app) => {
-    const versions = Array.isArray(app.versions) ? app.versions : [];
-    const latest = versions[0] || null;
-    return {
-      name: String(app.name || app.bundleIdentifier || "Untitled"),
-      bundleIdentifier: String(app.bundleIdentifier || ""),
-      developerName: String(app.developerName || app.developer || ""),
-      subtitle: String(app.subtitle || ""),
-      localizedDescription: String(app.localizedDescription || app.description || "").slice(0, 2000),
-      iconURL: String(app.iconURL || ""),
-      version: String(latest?.version || app.version || ""),
-      versionDate: String(latest?.date || app.versionDate || ""),
-      size: Number(latest?.size || app.size || 0) || 0,
-      downloadURL: String(latest?.downloadURL || app.downloadURL || ""),
-    };
-  });
+function normalizeApp(app) {
+  const versions = Array.isArray(app.versions) ? app.versions : [];
+  const latest = versions[0] || null;
+  const version = String(latest?.version || app.version || "");
+  const downloadURL = String(latest?.downloadURL || app.downloadURL || "");
+  const size = Number(latest?.size || app.size || 0) || 0;
+  const versionDate = String(latest?.date || app.versionDate || "");
+  const bundleIdentifier = String(app.bundleIdentifier || "");
+  const screenshotURLs = Array.isArray(app.screenshotURLs)
+    ? app.screenshotURLs.map((u) => String(u)).filter(Boolean).slice(0, 24)
+    : [];
+
+  const id = idFrom([bundleIdentifier, version, downloadURL].join("|"));
 
   return {
-    name: String(json?.name || "Untitled source"),
+    id,
+    name: String(app.name || bundleIdentifier || "Untitled"),
+    bundleIdentifier,
+    developerName: String(app.developerName || app.developer || ""),
+    subtitle: String(app.subtitle || ""),
+    localizedDescription: String(
+      app.localizedDescription || app.versionDescription || app.description || ""
+    ).slice(0, 8000),
+    versionDescription: String(app.versionDescription || "").slice(0, 4000),
+    iconURL: String(app.iconURL || ""),
+    version,
+    versionDate,
+    size,
+    downloadURL,
+    featured: Boolean(app.featured),
+    screenshotURLs,
+    tintColor: String(app.tintColor || ""),
+  };
+}
+
+function normalizeSource(json, sourceUrl) {
+  const appsIn = Array.isArray(json?.apps) ? json.apps : [];
+  const apps = appsIn.map(normalizeApp);
+
+  return {
+    name: String(json?.name || json?.META?.repoName || "Untitled source"),
     identifier: String(json?.identifier || idFrom(sourceUrl)),
     sourceURL: sourceUrl,
     website: String(json?.website || ""),
     subtitle: String(json?.subtitle || ""),
     description: String(json?.description || "").slice(0, 4000),
-    iconURL: String(json?.iconURL || ""),
+    iconURL: String(json?.iconURL || json?.sourceicon || json?.META?.repoIcon || ""),
     appCount: apps.length,
     apps,
   };
@@ -115,7 +138,7 @@ class Store {
 
   _write(data) {
     const tmp = `${this.file}.${process.pid}.tmp`;
-    fs.writeFileSync(tmp, JSON.stringify(data, null, 2));
+    fs.writeFileSync(tmp, JSON.stringify(data));
     fs.renameSync(tmp, this.file);
   }
 
@@ -126,6 +149,26 @@ class Store {
   getRepo(id) {
     const repo = this._read().repos.find((r) => r.id === id);
     return repo ? this._publicRepo(repo, true) : null;
+  }
+
+  _ensureApp(app) {
+    if (app && app.id) return app;
+    return normalizeApp(app || {});
+  }
+
+  getApp(repoId, appId) {
+    const repo = this._read().repos.find((r) => r.id === repoId);
+    if (!repo) return null;
+    const app = (repo.apps || [])
+      .map((a) => this._ensureApp(a))
+      .find((a) => a.id === appId);
+    if (!app) return null;
+    return {
+      ...app,
+      repoId: repo.id,
+      repoName: repo.name,
+      sourceURL: repo.sourceURL,
+    };
   }
 
   _publicRepo(repo, withApps = false) {
@@ -143,14 +186,14 @@ class Store {
       refreshedAt: repo.refreshedAt,
       lastError: repo.lastError || null,
     };
-    if (withApps) out.apps = repo.apps || [];
+    if (withApps) out.apps = (repo.apps || []).map((a) => this._ensureApp(a));
     return out;
   }
 
   async fetchSource(sourceUrl) {
     const safeUrl = await assertPublicHttpUrl(sourceUrl);
     const ac = new AbortController();
-    const timer = setTimeout(() => ac.abort(), 12000);
+    const timer = setTimeout(() => ac.abort(), FETCH_TIMEOUT_MS);
     try {
       const res = await fetch(safeUrl, {
         signal: ac.signal,
@@ -162,9 +205,9 @@ class Store {
       });
       if (!res.ok) throw new Error(`fetch failed (${res.status})`);
       const len = Number(res.headers.get("content-length") || 0);
-      if (len > 8 * 1024 * 1024) throw new Error("source too large");
+      if (len > MAX_SOURCE_BYTES) throw new Error("source too large");
       const text = await res.text();
-      if (text.length > 8 * 1024 * 1024) throw new Error("source too large");
+      if (text.length > MAX_SOURCE_BYTES) throw new Error("source too large");
       let json;
       try {
         json = JSON.parse(text);
@@ -231,7 +274,7 @@ class Store {
     return before !== data.repos.length;
   }
 
-  searchApps(query = "") {
+  searchApps(query = "", { limit = 200 } = {}) {
     const q = String(query || "").trim().toLowerCase();
     const repos = this._read().repos;
     const hits = [];
@@ -247,12 +290,25 @@ class Store {
           .join(" ")
           .toLowerCase();
         if (q && !hay.includes(q)) continue;
+        const full = this._ensureApp(app);
         hits.push({
-          ...app,
+          id: full.id,
+          name: full.name,
+          bundleIdentifier: full.bundleIdentifier,
+          developerName: full.developerName,
+          subtitle: full.subtitle,
+          iconURL: full.iconURL,
+          version: full.version,
+          size: full.size,
+          featured: full.featured,
           repoId: repo.id,
           repoName: repo.name,
           sourceURL: repo.sourceURL,
         });
+        if (hits.length >= limit) {
+          hits.sort((a, b) => String(a.name).localeCompare(String(b.name)));
+          return hits;
+        }
       }
     }
     hits.sort((a, b) => String(a.name).localeCompare(String(b.name)));

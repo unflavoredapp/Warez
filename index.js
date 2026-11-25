@@ -28,31 +28,51 @@ const SAMPLE_SOURCE = {
       bundleIdentifier: "skin.warez.sample.player",
       developerName: "warez.skin",
       subtitle: "Demo listing",
-      versions: [
-        {
-          version: "1.0.0",
-          date: "2026-11-25",
-          size: 12_582_912,
-          downloadURL: "https://warez.skin/sample/player.ipa",
-        },
-      ],
+      version: "1.0.0",
+      versionDate: "2026-11-25",
+      size: 12_582_912,
+      downloadURL: "https://warez.skin/sample/player.ipa",
+      screenshotURLs: [],
+      localizedDescription: "Demo app listing used to exercise discovery + details.",
     },
     {
       name: "Sample Notes",
       bundleIdentifier: "skin.warez.sample.notes",
       developerName: "warez.skin",
       subtitle: "Demo listing",
-      versions: [
-        {
-          version: "2.1.0",
-          date: "2026-11-20",
-          size: 8_388_608,
-          downloadURL: "https://warez.skin/sample/notes.ipa",
-        },
-      ],
+      version: "2.1.0",
+      versionDate: "2026-11-20",
+      size: 8_388_608,
+      downloadURL: "https://warez.skin/sample/notes.ipa",
+      screenshotURLs: [],
+      localizedDescription: "Another demo listing for the details page.",
     },
   ],
 };
+
+const VIEWPORT =
+  "width=device-width, initial-scale=0.6, minimum-scale=0.4, maximum-scale=3, user-scalable=yes";
+
+function esc(s) {
+  return String(s || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function formatBytes(n) {
+  const v = Number(n) || 0;
+  if (!v) return "—";
+  const u = ["B", "KB", "MB", "GB"];
+  let i = 0;
+  let x = v;
+  while (x >= 1024 && i < u.length - 1) {
+    x /= 1024;
+    i += 1;
+  }
+  return `${x.toFixed(i ? 1 : 0)} ${u[i]}`;
+}
 
 app.get("/sample-source.json", (_req, res) => {
   res.json(SAMPLE_SOURCE);
@@ -121,8 +141,15 @@ app.delete("/api/repos/:id", (req, res) => {
 
 app.get("/api/apps", (req, res) => {
   const q = String(req.query.q || "");
-  const apps = store.searchApps(q);
-  res.json({ ok: true, q, count: apps.length, apps: apps.slice(0, 200) });
+  const limit = Math.min(500, Math.max(1, Number(req.query.limit) || 200));
+  const apps = store.searchApps(q, { limit });
+  res.json({ ok: true, q, count: apps.length, apps });
+});
+
+app.get("/api/apps/:repoId/:appId", (req, res) => {
+  const found = store.getApp(req.params.repoId, req.params.appId);
+  if (!found) return res.status(404).json({ ok: false, error: "app not found" });
+  return res.json({ ok: true, app: found });
 });
 
 app.get("/panel.css", (_req, res) => {
@@ -133,13 +160,128 @@ app.get("/", (_req, res) => {
   res.type("html").send(renderIndex());
 });
 
+app.get("/app/:repoId/:appId", (req, res) => {
+  const found = store.getApp(req.params.repoId, req.params.appId);
+  if (!found) {
+    return res.status(404).type("html").send(renderNotFound());
+  }
+  return res.type("html").send(renderAppDetails(found));
+});
+
+function shellTop(title) {
+  return `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="${VIEWPORT}" />
+  <meta name="description" content="warez.skin — IPA app repository discovery." />
+  <title>${esc(title)}</title>
+  <link rel="stylesheet" href="/panel.css" />
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <a class="logo" href="/">
+        <span class="logo-mark" aria-hidden="true"></span>
+        <span class="logo-text">warez.skin</span>
+      </a>
+      <nav class="nav" aria-label="Primary">
+        <a href="/#discover">Discover</a>
+        <a href="/#repos">Repos</a>
+        <a href="/#add">Add source</a>
+        <a href="/api/status">API</a>
+      </nav>
+    </header>`;
+}
+
+function shellBottom() {
+  return `
+    <footer>
+      <span>warez.skin · IPA app repo discovery</span>
+      <span class="mono">mobile scale 60%</span>
+    </footer>
+  </div>
+</body>
+</html>`;
+}
+
+function renderNotFound() {
+  return `${shellTop("Not found · warez.skin")}
+    <h1 class="brand">App not found</h1>
+    <p class="tagline">That listing is missing or the repo was removed.</p>
+    <a class="btn btn-primary" href="/">Back to discovery</a>
+  ${shellBottom()}`;
+}
+
+function renderAppDetails(app) {
+  const shots = (app.screenshotURLs || [])
+    .map(
+      (u) =>
+        `<a class="shot" href="${esc(u)}" target="_blank" rel="noopener noreferrer"><img src="${esc(u)}" alt="" loading="lazy" referrerpolicy="no-referrer" /></a>`
+    )
+    .join("");
+
+  const desc = esc(app.localizedDescription || app.versionDescription || "No description.");
+  const icon = app.iconURL
+    ? `<img class="detail-icon" src="${esc(app.iconURL)}" alt="" referrerpolicy="no-referrer" />`
+    : `<div class="detail-icon" aria-hidden="true"></div>`;
+
+  return `${shellTop(`${app.name} · warez.skin`)}
+    <a class="back-link" href="/#discover">← Back to discovery</a>
+    <section class="panel span-12 detail-hero">
+      <div class="detail-top">
+        ${icon}
+        <div style="min-width:0;flex:1">
+          <h1 class="detail-title">${esc(app.name)}</h1>
+          <div class="app-meta">${esc(app.bundleIdentifier || "—")}</div>
+          <div class="pill-row">
+            <span class="pill">${esc(app.repoName || "repo")}</span>
+            ${app.version ? `<span class="pill">v${esc(app.version)}</span>` : ""}
+            ${app.size ? `<span class="pill">${esc(formatBytes(app.size))}</span>` : ""}
+            ${app.developerName ? `<span class="pill">${esc(app.developerName)}</span>` : ""}
+            ${app.featured ? `<span class="pill good">featured</span>` : ""}
+            ${app.versionDate ? `<span class="pill">${esc(app.versionDate)}</span>` : ""}
+          </div>
+          <div class="row" style="margin-top:14px">
+            ${
+              app.downloadURL
+                ? `<a class="btn btn-primary" href="${esc(app.downloadURL)}" target="_blank" rel="noopener noreferrer">Open IPA URL</a>`
+                : ""
+            }
+            <a class="btn" href="/">All apps</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="grid" style="margin-top:16px">
+      <section class="panel span-8">
+        <h2>About</h2>
+        <p class="detail-desc">${desc.replace(/\n/g, "<br/>")}</p>
+      </section>
+      <section class="panel span-4">
+        <h2>Source</h2>
+        <p class="muted" style="font-size:0.8rem;line-height:1.5;word-break:break-all">
+          <strong>${esc(app.repoName || "")}</strong><br/>
+          ${esc(app.sourceURL || "")}
+        </p>
+      </section>
+      ${
+        shots
+          ? `<section class="panel span-12"><h2>Screenshots</h2><div class="shots">${shots}</div></section>`
+          : ""
+      }
+    </div>
+  ${shellBottom()}`;
+}
+
 function renderIndex() {
   return `<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="warez.skin — IPA app repository discovery. Add sources, search apps, refresh catalogs." />
+  <meta name="viewport" content="${VIEWPORT}" />
+  <meta name="description" content="warez.skin — IPA app repository discovery. Add sources, search apps, open details." />
   <title>warez.skin · IPA repo discovery</title>
   <link rel="stylesheet" href="/panel.css" />
 </head>
@@ -160,8 +302,8 @@ function renderIndex() {
 
     <h1 class="brand">IPA repo<span class="dot">.</span>discovery</h1>
     <p class="tagline">
-      Index AltStore-style IPA sources, search apps across repos, and refresh catalogs.
-      Paste a source JSON URL to pull name, bundle IDs, versions, and listings into one place.
+      Index AltStore-style IPA sources, search apps across repos, and open each listing on its own details page.
+      Mobile viewport starts at <strong>60%</strong> zoom so more of the catalog fits on screen.
     </p>
 
     <div class="meta-row" id="stats">
@@ -191,7 +333,7 @@ function renderIndex() {
         <div class="row">
           <button class="btn btn-primary" id="search-btn" type="button">Search</button>
           <button class="btn btn-ghost" id="clear-btn" type="button">Clear</button>
-          <span class="muted mono" id="search-meta">type to filter indexed apps</span>
+          <span class="muted mono" id="search-meta">tap an app for details</span>
         </div>
         <div id="apps" class="app-list" style="margin-top:14px"></div>
       </section>
@@ -248,6 +390,9 @@ function renderIndex() {
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;");
     }
+    function appHref(app) {
+      return "/app/" + encodeURIComponent(app.repoId) + "/" + encodeURIComponent(app.id);
+    }
 
     async function refreshStats() {
       const res = await fetch("/api/status", { cache: "no-store" });
@@ -256,7 +401,7 @@ function renderIndex() {
       document.getElementById("s-apps").textContent = data.apps ?? 0;
       document.getElementById("s-errors").textContent = data.errors ?? 0;
       document.getElementById("foot-stamp").textContent =
-        "uptime " + (data.uptimeSec || 0) + "s · " + new Date().toLocaleTimeString();
+        "uptime " + (data.uptimeSec || 0) + "s · scale 60% · " + new Date().toLocaleTimeString();
     }
 
     function renderApps(apps, q) {
@@ -264,7 +409,7 @@ function renderIndex() {
       document.getElementById("s-hits").textContent = apps.length;
       document.getElementById("search-meta").textContent = q
         ? (apps.length + " hit" + (apps.length === 1 ? "" : "s") + " for \\"" + q + "\\"")
-        : (apps.length ? "showing indexed apps" : "no apps indexed yet — add a source");
+        : (apps.length ? "tap an app for details" : "no apps indexed yet — add a source");
       if (!apps.length) {
         root.innerHTML = "<div class='muted'>No apps matched.</div>";
         return;
@@ -273,7 +418,7 @@ function renderIndex() {
         const icon = app.iconURL
           ? "<img class='icon' src='" + esc(app.iconURL) + "' alt='' loading='lazy' referrerpolicy='no-referrer' />"
           : "<div class='icon' aria-hidden='true'></div>";
-        return "<article class='app-card'>" +
+        return "<a class='app-card app-link' href='" + esc(appHref(app)) + "'>" +
           "<div class='app-card-top'>" +
             "<div style='display:flex;gap:12px;min-width:0;flex:1'>" +
               icon +
@@ -288,8 +433,9 @@ function renderIndex() {
                 "</div>" +
               "</div>" +
             "</div>" +
+            "<div class='chev' aria-hidden='true'>›</div>" +
           "</div>" +
-        "</article>";
+        "</a>";
       }).join("");
     }
 
@@ -314,13 +460,14 @@ function renderIndex() {
           const icon = app.iconURL
             ? "<img class='icon' style='width:28px;height:28px;border-radius:7px' src='" + esc(app.iconURL) + "' alt='' loading='lazy' referrerpolicy='no-referrer' />"
             : "<div class='icon' style='width:28px;height:28px;border-radius:7px' aria-hidden='true'></div>";
-          return "<div class='mini-app'>" + icon +
+          const href = "/app/" + encodeURIComponent(repo.id) + "/" + encodeURIComponent(app.id);
+          return "<a class='mini-app app-link' href='" + esc(href) + "'>" + icon +
             "<div style='min-width:0'>" +
               "<div class='name'>" + esc(app.name) + "</div>" +
               "<div class='bid'>" + esc(app.bundleIdentifier || "") +
                 (app.version ? " · v" + esc(app.version) : "") +
               "</div>" +
-            "</div></div>";
+            "</div></a>";
         }).join("");
         return "<article class='repo-card' data-id='" + esc(repo.id) + "'>" +
           "<div class='repo-card-top'>" +
@@ -401,6 +548,7 @@ function renderIndex() {
     document.getElementById("repos-list").addEventListener("click", async (e) => {
       const btn = e.target.closest("button[data-act]");
       if (!btn) return;
+      e.preventDefault();
       const card = btn.closest("[data-id]");
       const id = card && card.getAttribute("data-id");
       if (!id) return;
