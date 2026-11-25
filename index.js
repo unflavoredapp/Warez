@@ -259,10 +259,7 @@ function renderAppDetails(app) {
   const tint = tintRgb(app.tintColor) || "rgb(124,92,255)";
   const heroStyle = `--app-tint:${tint};`;
 
-  return `${shellTop(`${app.name} · warez.skin`, {
-    sourceName: app.repoName || "",
-    sourceURL: app.sourceURL || "",
-  })}
+  return `${shellTop(`${app.name} · warez.skin`)}
     <div class="detail-page" style="${heroStyle}">
       <a class="back-link" href="/#discover">← Back to discovery</a>
 
@@ -287,6 +284,15 @@ function renderAppDetails(app) {
               <a class="btn btn-lg" href="/#discover">All apps</a>
             </div>
           </div>
+          <aside class="hero-source">
+            <div class="hero-source-label">Source</div>
+            <a class="hero-source-name" href="${esc(app.sourceURL || "#")}" target="_blank" rel="noopener noreferrer">${esc(app.repoName || "Source")}</a>
+            ${
+              app.sourceURL
+                ? `<div class="hero-source-url">${esc(app.sourceURL.replace(/^https?:\/\//, ""))}</div>`
+                : ""
+            }
+          </aside>
         </div>
       </section>
 
@@ -322,18 +328,9 @@ function renderAppDetails(app) {
       }
 
       <div class="detail-grid">
-        <section class="panel">
+        <section class="panel about-panel">
           <div class="section-head"><h2>About</h2></div>
           ${featureHtml}
-        </section>
-        <section class="panel source-card">
-          <div class="section-head"><h2>Source</h2></div>
-          <div class="source-name">${esc(app.repoName || "")}</div>
-          <a class="source-url" href="${esc(app.sourceURL || "#")}" target="_blank" rel="noopener noreferrer">${esc(app.sourceURL || "")}</a>
-          <div class="pill-row" style="margin-top:14px">
-            <span class="pill">${esc(app.bundleIdentifier || "bundle")}</span>
-            ${app.version ? `<span class="pill">v${esc(app.version)}</span>` : ""}
-          </div>
         </section>
       </div>
 

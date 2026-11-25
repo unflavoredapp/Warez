@@ -406,9 +406,49 @@ a.mini-app.app-link:hover {
 
 .detail-top {
   position: relative;
-  display: flex;
-  gap: 18px;
-  align-items: flex-start;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 14px 16px;
+  align-items: start;
+}
+
+.hero-source {
+  justify-self: end;
+  align-self: start;
+  text-align: right;
+  min-width: 0;
+  max-width: 160px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid color-mix(in srgb, var(--app-tint) 28%, var(--line));
+  background: rgba(0,0,0,0.22);
+}
+.hero-source-label {
+  color: var(--muted);
+  font-size: 0.62rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.hero-source-name {
+  display: block;
+  font-family: Syne, sans-serif;
+  font-weight: 800;
+  font-size: 0.95rem;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.hero-source-name:hover { color: var(--accent-2); }
+.hero-source-url {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 0.62rem;
+  line-height: 1.3;
+  word-break: break-all;
 }
 
 .detail-icon {
@@ -490,10 +530,11 @@ a.mini-app.app-link:hover {
 
 .detail-grid {
   display: grid;
-  grid-template-columns: 1.4fr 0.8fr;
+  grid-template-columns: 1fr;
   gap: 14px;
   margin-top: 14px;
 }
+.about-panel { width: 100%; }
 
 .feature-list {
   list-style: none;
@@ -610,19 +651,23 @@ a.mini-app.app-link:hover {
 }
 
 @media (max-width: 800px) {
-  .topbar-with-source {
-    flex-wrap: nowrap;
-    gap: 10px;
-  }
-  .topbar-with-source .nav { display: none; }
-  .topbar-with-source .topbar-source { display: inline-flex; align-items: center; }
-
   .detail-stats-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .detail-grid { grid-template-columns: 1fr; }
   .detail-icon { width: 78px; height: 78px; border-radius: 18px; }
   .desktop-actions { display: none; }
   .shots-rail { grid-auto-columns: minmax(132px, 58vw); }
   .shots-rail img { height: 240px; }
+
+  .detail-top {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 10px 12px;
+  }
+  .hero-source {
+    max-width: 120px;
+    padding: 8px 10px;
+  }
+  .hero-source-name { font-size: 0.8rem; }
+  .hero-source-url { display: none; }
 }
 
 @media (min-width: 801px) {
