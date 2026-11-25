@@ -213,6 +213,24 @@ function renderNotFound() {
   ${shellBottom()}`;
 }
 
+function tintRgb(raw) {
+  const m = String(raw || "")
+    .trim()
+    .match(/^(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})$/);
+  if (!m) return null;
+  const rgb = [m[1], m[2], m[3]].map((n) => Math.max(0, Math.min(255, Number(n))));
+  return `rgb(${rgb.join(",")})`;
+}
+
+function splitFeatureLines(text) {
+  const raw = String(text || "").trim();
+  if (!raw) return [];
+  return raw
+    .split(/\s*[•·]\s*|\n+/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
 function renderAppDetails(app) {
   const shots = (app.screenshotURLs || [])
     .map(
@@ -221,54 +239,106 @@ function renderAppDetails(app) {
     )
     .join("");
 
-  const desc = esc(app.localizedDescription || app.versionDescription || "No description.");
+  const features = splitFeatureLines(
+    app.localizedDescription || app.versionDescription || ""
+  );
+  const featureHtml = features.length
+    ? `<ul class="feature-list">${features
+        .map((line) => `<li><span class="tick" aria-hidden="true"></span><span>${esc(line)}</span></li>`)
+        .join("")}</ul>`
+    : `<p class="detail-desc">No description.</p>`;
+
   const icon = app.iconURL
     ? `<img class="detail-icon" src="${esc(app.iconURL)}" alt="" referrerpolicy="no-referrer" />`
     : `<div class="detail-icon" aria-hidden="true"></div>`;
 
+  const tint = tintRgb(app.tintColor) || "rgb(124,92,255)";
+  const heroStyle = `--app-tint:${tint};`;
+
   return `${shellTop(`${app.name} · warez.skin`)}
-    <a class="back-link" href="/#discover">← Back to discovery</a>
-    <section class="panel span-12 detail-hero">
-      <div class="detail-top">
-        ${icon}
-        <div style="min-width:0;flex:1">
-          <h1 class="detail-title">${esc(app.name)}</h1>
-          <div class="app-meta">${esc(app.bundleIdentifier || "—")}</div>
-          <div class="pill-row">
-            <span class="pill">${esc(app.repoName || "repo")}</span>
-            ${app.version ? `<span class="pill">v${esc(app.version)}</span>` : ""}
-            ${app.size ? `<span class="pill">${esc(formatBytes(app.size))}</span>` : ""}
-            ${app.developerName ? `<span class="pill">${esc(app.developerName)}</span>` : ""}
-            ${app.featured ? `<span class="pill good">featured</span>` : ""}
-            ${app.versionDate ? `<span class="pill">${esc(app.versionDate)}</span>` : ""}
-          </div>
-          <div class="row" style="margin-top:14px">
-            ${
-              app.downloadURL
-                ? `<a class="btn btn-primary" href="${esc(app.downloadURL)}" target="_blank" rel="noopener noreferrer">Open IPA URL</a>`
-                : ""
-            }
-            <a class="btn" href="/">All apps</a>
+    <div class="detail-page" style="${heroStyle}">
+      <a class="back-link" href="/#discover">← Back to discovery</a>
+
+      <section class="detail-hero panel">
+        <div class="detail-glow" aria-hidden="true"></div>
+        <div class="detail-top">
+          ${icon}
+          <div class="detail-copy">
+            <div class="detail-kicker">
+              ${app.featured ? `<span class="pill good">featured</span>` : ""}
+              <span class="pill">${esc(app.repoName || "repo")}</span>
+            </div>
+            <h1 class="detail-title">${esc(app.name)}</h1>
+            <div class="app-meta">${esc(app.bundleIdentifier || "—")}</div>
+            <div class="detail-stats">
+              <div class="stat-chip">
+                <span class="stat-label">Version</span>
+                <span class="stat-value">${esc(app.version ? `v${app.version}` : "—")}</span>
+              </div>
+              <div class="stat-chip">
+                <span class="stat-label">Size</span>
+                <span class="stat-value">${esc(app.size ? formatBytes(app.size) : "—")}</span>
+              </div>
+              <div class="stat-chip">
+                <span class="stat-label">Updated</span>
+                <span class="stat-value">${esc(app.versionDate || "—")}</span>
+              </div>
+              <div class="stat-chip">
+                <span class="stat-label">Developer</span>
+                <span class="stat-value">${esc(app.developerName || "—")}</span>
+              </div>
+            </div>
+            <div class="detail-actions desktop-actions">
+              ${
+                app.downloadURL
+                  ? `<a class="btn btn-primary btn-lg" href="${esc(app.downloadURL)}" target="_blank" rel="noopener noreferrer">Open IPA URL</a>`
+                  : ""
+              }
+              <a class="btn btn-lg" href="/#discover">All apps</a>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <div class="grid" style="margin-top:16px">
-      <section class="panel span-8">
-        <h2>About</h2>
-        <p class="detail-desc">${desc.replace(/\n/g, "<br/>")}</p>
-      </section>
-      <section class="panel span-4">
-        <h2>Source</h2>
-        <p class="muted" style="font-size:0.8rem;line-height:1.5;word-break:break-all">
-          <strong>${esc(app.repoName || "")}</strong><br/>
-          ${esc(app.sourceURL || "")}
-        </p>
-      </section>
       ${
         shots
-          ? `<section class="panel span-12"><h2>Screenshots</h2><div class="shots">${shots}</div></section>`
+          ? `<section class="panel shots-panel">
+              <div class="section-head">
+                <h2>Screenshots</h2>
+                <span class="muted mono">${(app.screenshotURLs || []).length} images</span>
+              </div>
+              <div class="shots-rail">${shots}</div>
+            </section>`
+          : ""
+      }
+
+      <div class="detail-grid">
+        <section class="panel">
+          <div class="section-head"><h2>About</h2></div>
+          ${featureHtml}
+        </section>
+        <section class="panel source-card">
+          <div class="section-head"><h2>Source</h2></div>
+          <div class="source-name">${esc(app.repoName || "")}</div>
+          <a class="source-url" href="${esc(app.sourceURL || "#")}" target="_blank" rel="noopener noreferrer">${esc(app.sourceURL || "")}</a>
+          <div class="pill-row" style="margin-top:14px">
+            <span class="pill">${esc(app.bundleIdentifier || "bundle")}</span>
+            ${app.version ? `<span class="pill">v${esc(app.version)}</span>` : ""}
+          </div>
+        </section>
+      </div>
+
+      ${
+        app.downloadURL
+          ? `<div class="sticky-cta">
+              <div class="sticky-cta-inner">
+                <div class="sticky-meta">
+                  <strong>${esc(app.name)}</strong>
+                  <span>${esc(app.version ? `v${app.version}` : "")}${app.size ? ` · ${esc(formatBytes(app.size))}` : ""}</span>
+                </div>
+                <a class="btn btn-primary" href="${esc(app.downloadURL)}" target="_blank" rel="noopener noreferrer">Open IPA URL</a>
+              </div>
+            </div>`
           : ""
       }
     </div>
