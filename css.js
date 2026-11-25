@@ -629,7 +629,7 @@ a.mini-app.app-link:hover {
   }
 
   .detail-page {
-    padding-bottom: 96px;
+    padding-bottom: 88px;
   }
 
   .float-cta {
@@ -639,26 +639,27 @@ a.mini-app.app-link:hover {
     right: 0;
     bottom: 0;
     z-index: 50;
-    padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px));
-    background: linear-gradient(to top, rgba(11,13,18,0.98) 35%, rgba(11,13,18,0.88));
-    border-top: 1px solid var(--line);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    margin: 0;
+    padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
+    background: rgba(11, 13, 18, 0.94);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
     transform: translate3d(0, 0, 0);
     will-change: transform;
   }
   .float-cta-inner {
+    width: 100%;
     max-width: 1100px;
     margin: 0 auto;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
-    padding: 10px 12px;
-    border-radius: 16px;
-    border: 1px solid var(--line);
-    background: var(--card);
-    box-shadow: var(--shadow);
+    gap: 14px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
   }
   .float-cta-meta {
     min-width: 0;
@@ -668,7 +669,8 @@ a.mini-app.app-link:hover {
   }
   .float-cta-meta strong {
     font-family: Syne, sans-serif;
-    font-size: 0.95rem;
+    font-weight: 800;
+    font-size: 1rem;
     letter-spacing: -0.02em;
     white-space: nowrap;
     overflow: hidden;
@@ -676,11 +678,13 @@ a.mini-app.app-link:hover {
   }
   .float-cta-meta span {
     color: var(--muted);
-    font-size: 0.7rem;
+    font-size: 0.72rem;
   }
   .float-cta-btn {
     flex: 0 0 auto;
     white-space: nowrap;
+    padding: 12px 16px;
+    border-radius: 12px;
   }
 }
 `;
