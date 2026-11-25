@@ -340,14 +340,12 @@ function renderAppDetails(app) {
 
       ${
         app.downloadURL
-          ? `<div class="sticky-cta">
-              <div class="sticky-cta-inner">
-                <div class="sticky-meta">
-                  <strong>${esc(app.name)}</strong>
-                  <span>${esc(app.version ? `v${app.version}` : "")}${app.size ? ` · ${esc(formatBytes(app.size))}` : ""}</span>
-                </div>
-                <a class="btn btn-primary" href="${esc(app.downloadURL)}" target="_blank" rel="noopener noreferrer">Open IPA URL</a>
+          ? `<div class="mobile-cta" role="region" aria-label="Download">
+              <div class="mobile-cta-meta">
+                <strong>${esc(app.name)}</strong>
+                <span>${esc(app.version ? `v${app.version}` : "")}${app.size ? ` · ${esc(formatBytes(app.size))}` : ""}</span>
               </div>
+              <a class="btn btn-primary mobile-cta-btn" href="${esc(app.downloadURL)}" target="_blank" rel="noopener noreferrer">Open IPA URL</a>
             </div>`
           : ""
       }
