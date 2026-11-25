@@ -264,30 +264,13 @@ function renderAppDetails(app) {
         <div class="detail-top">
           ${icon}
           <div class="detail-copy">
-            <div class="detail-kicker">
-              ${app.featured ? `<span class="pill good">featured</span>` : ""}
-              <span class="pill">${esc(app.repoName || "repo")}</span>
-            </div>
+            ${
+              app.featured
+                ? `<div class="detail-kicker"><span class="pill good">featured</span></div>`
+                : ""
+            }
             <h1 class="detail-title">${esc(app.name)}</h1>
             <div class="app-meta">${esc(app.bundleIdentifier || "—")}</div>
-            <div class="detail-stats">
-              <div class="stat-chip">
-                <span class="stat-label">Version</span>
-                <span class="stat-value">${esc(app.version ? `v${app.version}` : "—")}</span>
-              </div>
-              <div class="stat-chip">
-                <span class="stat-label">Size</span>
-                <span class="stat-value">${esc(app.size ? formatBytes(app.size) : "—")}</span>
-              </div>
-              <div class="stat-chip">
-                <span class="stat-label">Updated</span>
-                <span class="stat-value">${esc(app.versionDate || "—")}</span>
-              </div>
-              <div class="stat-chip">
-                <span class="stat-label">Developer</span>
-                <span class="stat-value">${esc(app.developerName || "—")}</span>
-              </div>
-            </div>
             <div class="detail-actions desktop-actions">
               ${
                 app.downloadURL
@@ -299,6 +282,25 @@ function renderAppDetails(app) {
           </div>
         </div>
       </section>
+
+      <div class="detail-stats-row" aria-label="App metadata">
+        <div class="stat-chip">
+          <span class="stat-label">Version</span>
+          <span class="stat-value">${esc(app.version ? `v${app.version}` : "—")}</span>
+        </div>
+        <div class="stat-chip">
+          <span class="stat-label">Size</span>
+          <span class="stat-value">${esc(app.size ? formatBytes(app.size) : "—")}</span>
+        </div>
+        <div class="stat-chip">
+          <span class="stat-label">Updated</span>
+          <span class="stat-value">${esc(app.versionDate || "—")}</span>
+        </div>
+        <div class="stat-chip">
+          <span class="stat-label">Developer</span>
+          <span class="stat-value">${esc(app.developerName || "—")}</span>
+        </div>
+      </div>
 
       ${
         shots

@@ -417,16 +417,17 @@ a.mini-app.app-link:hover {
   line-height: 1.02;
 }
 
-.detail-stats {
+.detail-stats-row {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
-  margin-top: 14px;
+  margin: 0 0 14px;
 }
 
 .stat-chip {
   border: 1px solid var(--line);
-  background: rgba(0,0,0,0.22);
+  background: var(--card);
+  box-shadow: var(--shadow);
   border-radius: 12px;
   padding: 10px 10px 9px;
   min-width: 0;
@@ -586,7 +587,7 @@ a.mini-app.app-link:hover {
 }
 
 @media (max-width: 800px) {
-  .detail-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .detail-stats-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .detail-grid { grid-template-columns: 1fr; }
   .detail-icon { width: 78px; height: 78px; border-radius: 18px; }
   .desktop-actions { display: none; }
