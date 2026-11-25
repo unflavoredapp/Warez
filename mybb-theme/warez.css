@@ -1087,31 +1087,68 @@ blockquote, .codeblock, .mycode_quote, .mycode_code {
     display: none !important;
   }
 
-  /* Forum index: narrow icon col + full forum col (desktop cols unchanged) */
-  table.tborder,
+  /*
+   * Forum index on mobile: do NOT trust table-layout widths (Safari ignores them
+   * when stats/last-post cols are hidden). Turn rows into flex: icon 40px + forum.
+   * Desktop table layout is unchanged (this block is inside max-width:920px only).
+   */
   table.yh-cat {
     width: 100% !important;
     max-width: 100% !important;
-    table-layout: fixed !important;
+    border-collapse: collapse !important;
   }
+  table.yh-cat > thead,
+  table.yh-cat > tbody,
+  table.yh-cat > thead > tr,
+  table.yh-cat > tbody > tr {
+    display: block !important;
+    width: 100% !important;
+  }
+  table.yh-cat > thead > tr > td.thead {
+    display: block !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  /* Hide Icon/Forum label row + stats + last post */
+  table.yh-cat tr.yh-forum-cols,
   table.yh-cat .yh-col-stats,
   table.yh-cat .yh-col-last {
     display: none !important;
-    width: 0 !important;
-    max-width: 0 !important;
-    padding: 0 !important;
-    border: 0 !important;
+  }
+  /* Each forum row: skull | title */
+  table.yh-cat > tbody > tr {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: flex-start !important;
+    gap: 10px !important;
+    box-sizing: border-box !important;
+    padding: 10px 8px !important;
+    border-bottom: 1px solid #2a2a2a !important;
+    background: #141414 !important;
+  }
+  table.yh-cat > tbody > tr:nth-child(even) {
+    background: #101010 !important;
   }
   table.yh-cat .yh-col-icon {
-    width: 42px !important;
-    max-width: 42px !important;
-    min-width: 42px !important;
-    padding: 8px 4px !important;
-    vertical-align: middle !important;
+    display: block !important;
+    flex: 0 0 40px !important;
+    width: 40px !important;
+    max-width: 40px !important;
+    min-width: 40px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: 0 !important;
+    text-align: center !important;
   }
   table.yh-cat .yh-col-forum {
+    display: block !important;
+    flex: 1 1 auto !important;
     width: auto !important;
-    padding: 8px 10px !important;
+    min-width: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: 0 !important;
     word-wrap: break-word !important;
     overflow-wrap: anywhere !important;
   }
@@ -1122,10 +1159,7 @@ blockquote, .codeblock, .mycode_quote, .mycode_code {
   table.yh-cat .forum_status {
     width: 32px !important;
     height: 32px !important;
-  }
-  /* Hide Icon/Forum label row — category thead is enough on phones */
-  table.yh-cat tr.yh-forum-cols {
-    display: none !important;
+    margin: 0 auto !important;
   }
 
   .post, .post.classic, .yh-post {
