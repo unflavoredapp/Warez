@@ -411,6 +411,8 @@ a.mini-app.app-link:hover {
   align-items: flex-start;
 }
 
+.hero-source { display: none; }
+
 .detail-icon {
   width: 96px;
   height: 96px;
@@ -612,33 +614,6 @@ a.mini-app.app-link:hover {
 }
 
 @media (max-width: 800px) {
-  .topbar-with-source {
-    flex-wrap: nowrap;
-    gap: 10px;
-    align-items: center;
-  }
-  .topbar-with-source .nav { display: none; }
-  .topbar-with-source .topbar-source {
-    display: inline-flex;
-    align-items: center;
-    justify-content: flex-end;
-    margin-left: auto;
-    max-width: 58%;
-    padding: 8px 12px;
-    border-radius: 999px;
-    border: 1px solid var(--line);
-    background: rgba(255,255,255,0.04);
-    color: var(--ink);
-    text-decoration: none;
-    font-family: Syne, sans-serif;
-    font-weight: 700;
-    font-size: 0.78rem;
-    letter-spacing: -0.02em;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
   .detail-stats-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .detail-grid { grid-template-columns: 1fr; }
   .detail-icon { width: 78px; height: 78px; border-radius: 18px; }
@@ -646,6 +621,44 @@ a.mini-app.app-link:hover {
   .desktop-source { display: none; }
   .shots-rail { grid-auto-columns: minmax(132px, 58vw); }
   .shots-rail img { height: 240px; }
+
+  .detail-top {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 10px 12px;
+    align-items: start;
+  }
+  .hero-source {
+    display: block;
+    justify-self: end;
+    align-self: start;
+    text-align: right;
+    min-width: 0;
+    max-width: 120px;
+    padding: 8px 10px;
+    border-radius: 14px;
+    border: 1px solid color-mix(in srgb, var(--app-tint) 28%, var(--line));
+    background: rgba(0,0,0,0.22);
+  }
+  .hero-source-label {
+    color: var(--muted);
+    font-size: 0.62rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .hero-source-name {
+    display: block;
+    font-family: Syne, sans-serif;
+    font-weight: 800;
+    font-size: 0.8rem;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    text-decoration: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 
 @media (min-width: 801px) {
