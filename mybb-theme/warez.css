@@ -17,7 +17,7 @@
   --yh-ink: #eeeeee;
   --yh-muted: #9a9a9a;
   --yh-faint: #666666;
-  --yh-width: 980px;
+  --yh-width: 900px;
   --yh-font: Tahoma, Arial, Helvetica, sans-serif;
 }
 
@@ -31,6 +31,7 @@ html, body {
   line-height: 1.4 !important;
   margin: 0 !important;
   min-height: 100%;
+  overflow-x: hidden !important;
 }
 
 a { color: var(--yh-ink) !important; text-decoration: none !important; }
@@ -39,10 +40,10 @@ a:hover { color: var(--yh-red2) !important; }
 img { max-width: 100%; border: 0; }
 
 #container {
-  width: var(--yh-width) !important;
-  max-width: 96vw !important;
+  width: 100% !important;
+  max-width: var(--yh-width) !important;
   margin: 0 auto !important;
-  padding: 0 0 30px !important;
+  padding: 0 8px 30px !important;
   background: transparent !important;
   border: 0 !important;
   box-shadow: none !important;
@@ -129,8 +130,8 @@ img { max-width: 100%; border: 0; }
 .yh-header {
   width: 100% !important;
   border-collapse: separate !important;
-  border-spacing: 8px 0 !important;
-  margin: 10px 0 12px !important;
+  border-spacing: 6px 0 !important;
+  margin: 8px 0 10px !important;
   padding: 0 !important;
   background: transparent !important;
   table-layout: fixed !important;
@@ -140,14 +141,14 @@ img { max-width: 100%; border: 0; }
   background: #111 !important;
   border: 1px solid #2a2a2a !important;
   vertical-align: middle !important;
-  height: 96px !important;
+  height: 88px !important;
   padding: 0 !important;
 }
 
 /* 1) Logo */
 .yh-box-logo {
-  width: 20% !important;
-  padding: 10px 12px !important;
+  width: 18% !important;
+  padding: 8px 10px !important;
   text-align: left !important;
 }
 .yh-logo {
@@ -156,7 +157,7 @@ img { max-width: 100%; border: 0; }
 }
 .yh-logo-title {
   display: block !important;
-  font-size: 30px !important;
+  font-size: 26px !important;
   font-weight: 700 !important;
   letter-spacing: 0.01em !important;
   color: #fff !important;
@@ -179,7 +180,7 @@ img { max-width: 100%; border: 0; }
 
 /* 2) Servers */
 .yh-box-servers {
-  width: 52% !important;
+  width: 50% !important;
   padding: 0 !important;
 }
 .yh-servers-inner {
@@ -244,8 +245,8 @@ img { max-width: 100%; border: 0; }
 
 /* 3) User / login */
 .yh-box-user {
-  width: 28% !important;
-  padding: 8px 10px !important;
+  width: 32% !important;
+  padding: 6px 8px !important;
 }
 
 /* YouHack-style guest login card */
@@ -258,22 +259,23 @@ img { max-width: 100%; border: 0; }
   display: flex !important;
   flex-direction: column !important;
   justify-content: center !important;
-  gap: 7px !important;
-  min-height: 80px;
+  gap: 5px !important;
+  min-height: 76px;
 }
 .yh-login-row {
   display: flex !important;
   flex-direction: row !important;
+  flex-wrap: nowrap !important;
   align-items: center !important;
   width: 100% !important;
 }
 .yh-login-top {
   justify-content: space-between !important;
-  gap: 8px !important;
+  gap: 6px !important;
 }
 .yh-hello {
   color: #fff !important;
-  font-size: 12px !important;
+  font-size: 11px !important;
   white-space: nowrap !important;
 }
 .yh-btn-register {
@@ -285,29 +287,31 @@ img { max-width: 100%; border: 0; }
   font-weight: 700 !important;
   font-size: 11px !important;
   text-transform: none !important;
-  padding: 5px 12px !important;
+  padding: 4px 10px !important;
   border: 1px solid #9a0000 !important;
   border-radius: 0 !important;
   white-space: nowrap !important;
-  min-height: 24px !important;
+  min-height: 22px !important;
   box-shadow: none !important;
+  flex: 0 0 auto !important;
 }
 .yh-btn-register:hover { background: #ff1a1a !important; color: #fff !important; }
 
 .yh-login-fields {
-  gap: 5px !important;
+  gap: 4px !important;
 }
 .yh-login-input,
 input.textbox.yh-login-input {
-  flex: 1 1 auto !important;
-  width: auto !important;
+  flex: 1 1 0 !important;
+  width: 0 !important;
   min-width: 0 !important;
-  height: 26px !important;
+  max-width: none !important;
+  height: 24px !important;
   background: #2a2a2a !important;
   border: 1px solid #3a3a3a !important;
   border-radius: 0 !important;
   color: #ddd !important;
-  padding: 0 8px !important;
+  padding: 0 6px !important;
   font-size: 11px !important;
   font-family: Tahoma, Arial, sans-serif !important;
   box-shadow: none !important;
@@ -317,9 +321,9 @@ input.textbox.yh-login-input {
 input.button.yh-btn-login {
   flex: 0 0 auto !important;
   width: auto !important;
-  min-width: 52px !important;
-  height: 26px !important;
-  padding: 0 12px !important;
+  min-width: 44px !important;
+  height: 24px !important;
+  padding: 0 10px !important;
   background: #e10600 !important;
   border: 1px solid #9a0000 !important;
   border-radius: 0 !important;
@@ -851,31 +855,6 @@ blockquote, .codeblock, .mycode_quote, .mycode_code {
 .yh-side-list a { color: var(--yh-red2) !important; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .yh-side-list span { color: #ccc; flex: 0 0 auto; }
 
-/* Banners */
-.yh-banners {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-  margin: 12px 0 18px;
-}
-.yh-banners-top { margin-top: 0; }
-.yh-banner {
-  display: flex !important;
-  align-items: center;
-  justify-content: center;
-  min-height: 52px;
-  font-weight: 700 !important;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: #fff !important;
-  border: 1px solid #000 !important;
-}
-.yh-banner:hover { filter: brightness(1.08); color: #fff !important; }
-.yh-banner-green { background: #1f8f2e !important; }
-.yh-banner-orange { background: #d45500 !important; }
-.yh-banner-blue { background: #1a4f8c !important; }
-.yh-banner-dark { background: #222 !important; border-color: #444 !important; }
-
 /* Forum statistics box */
 .yh-statbox {
   display: inline-block;
@@ -902,22 +881,105 @@ blockquote, .codeblock, .mycode_quote, .mycode_code {
 
 .yh-cat .thead { background: #000 !important; }
 
-@media (max-width: 900px) {
-  #container { width: 100% !important; max-width: 100% !important; padding: 0 6px 24px !important; }
-  .yh-header { border-spacing: 4px 0 !important; }
-  .yh-box-logo { width: 28% !important; padding: 8px !important; }
-  .yh-logo-title { font-size: 22px !important; }
-  .yh-box-servers { width: 44% !important; }
-  .yh-box-user { width: 28% !important; }
+/* ========== MOBILE ========== */
+@media (max-width: 920px) {
+  #container { padding: 0 6px 24px !important; }
+
+  .yh-topnav {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 8px !important;
+  }
+  .yh-topnav-links { gap: 10px 12px !important; }
+  .yh-search { width: 100% !important; }
+  .yh-search input { width: 100% !important; flex: 1 1 auto !important; }
+
+  /* Stack logo / servers / login so nothing clips */
+  .yh-header,
+  .yh-header > tbody,
+  .yh-header > tbody > tr {
+    display: block !important;
+    width: 100% !important;
+  }
+  .yh-header {
+    border-spacing: 0 !important;
+    margin: 8px 0 !important;
+  }
+  .yh-header > tbody > tr > td.yh-box,
+  .yh-header td.yh-box {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    margin: 0 0 6px !important;
+  }
+  .yh-box-logo {
+    width: 100% !important;
+    padding: 12px !important;
+    text-align: center !important;
+  }
+  .yh-logo-title { font-size: 28px !important; }
+  .yh-box-servers { width: 100% !important; }
+  .yh-servers-inner,
+  .yh-servers-inner > tbody,
+  .yh-servers-inner > tbody > tr {
+    display: block !important;
+    width: 100% !important;
+  }
+  .yh-widget {
+    display: block !important;
+    width: 100% !important;
+    border-right: 0 !important;
+    border-bottom: 1px solid #2a2a2a !important;
+    padding: 10px !important;
+  }
+  .yh-widget:last-child { border-bottom: 0 !important; }
   .yh-widget-meta { display: none !important; }
-  .yh-widget-thumb { width: 40px !important; height: 40px !important; }
-  .yh-statsbox tr { display: block; }
-  .yh-stats-side { width: 100% !important; border-left: 0 !important; border-top: 1px solid #333 !important; }
-  .yh-banners { grid-template-columns: 1fr 1fr; }
+  .yh-box-user {
+    width: 100% !important;
+    padding: 10px !important;
+  }
+  .yh-login-form { min-height: 0 !important; gap: 8px !important; }
+  .yh-login-input,
+  input.textbox.yh-login-input {
+    height: 34px !important;
+    font-size: 14px !important;
+    padding: 0 10px !important;
+  }
+  .yh-btn-login,
+  input.button.yh-btn-login,
+  .yh-btn-register {
+    height: 34px !important;
+    min-height: 34px !important;
+    padding: 0 14px !important;
+    font-size: 13px !important;
+  }
+
+  /* Forum index: hide cramped Statistics / Last Post on phones */
+  table.yh-cat .tcat:nth-child(3),
+  table.yh-cat .tcat:nth-child(4),
+  table.yh-cat tr td:nth-child(3),
+  table.yh-cat tr td:nth-child(4) {
+    display: none !important;
+  }
+  table.yh-cat tr td:nth-child(2) { width: auto !important; }
+
   .post, .post.classic { display: block !important; }
   .post_author, .post_content {
     display: block !important;
     width: auto !important;
   }
   .post_author { border-right: 0 !important; border-bottom: 1px solid var(--yh-line) !important; }
+}
+
+@media (max-width: 520px) {
+  .yh-login-fields { flex-wrap: wrap !important; }
+  .yh-login-fields .yh-login-input,
+  .yh-login-fields input.textbox.yh-login-input {
+    flex: 1 1 100% !important;
+    width: 100% !important;
+  }
+  .yh-login-fields .yh-btn-login,
+  .yh-login-fields input.button.yh-btn-login {
+    width: 100% !important;
+  }
 }
