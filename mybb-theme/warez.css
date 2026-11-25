@@ -640,40 +640,78 @@ a.button span { color: inherit !important; }
   border-color: var(--yh-red) !important;
 }
 
-/* ========== POSTBIT (YouHack exact) ========== */
-.post, .post.classic, .yh-post {
-  display: table !important;
+/* ========== POSTBIT — classic MyBB: author LEFT, message RIGHT ========== */
+.post,
+.post.classic,
+.yh-post {
+  display: grid !important;
+  grid-template-columns: 180px minmax(0, 1fr) !important;
+  grid-template-areas:
+    "author content"
+    "controls controls" !important;
   width: 100% !important;
   background: #1a1a1a !important;
   border: 1px solid #333 !important;
   border-radius: 0 !important;
-  margin-bottom: 10px !important;
+  margin: 0 0 10px !important;
+  padding: 0 !important;
   box-shadow: none !important;
-  overflow: hidden !important;
-  table-layout: fixed;
+  overflow: visible !important;
+  float: none !important;
+  clear: both !important;
 }
+.post .post_author,
+.post.classic .post_author,
 .post_author {
-  display: table-cell !important;
-  width: 210px !important;
+  grid-area: author !important;
+  display: block !important;
+  float: none !important;
+  width: auto !important;
+  max-width: none !important;
+  margin: 0 !important;
   vertical-align: top !important;
   background: #222 !important;
+  border: 0 !important;
   border-right: 1px solid #333 !important;
-  padding: 10px !important;
+  border-bottom: 0 !important;
+  padding: 10px 8px !important;
   text-align: center !important;
+  box-sizing: border-box !important;
+  overflow: visible !important;
 }
+.post .post_content,
+.post.classic .post_content,
 .post_content {
-  display: table-cell !important;
+  grid-area: content !important;
+  display: block !important;
+  float: none !important;
+  width: auto !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  margin: 0 !important;
   vertical-align: top !important;
   background: #1a1a1a !important;
   padding: 0 !important;
   border: 0 !important;
+  box-sizing: border-box !important;
+  overflow: visible !important;
 }
+.post .post_controls,
 .post_controls {
-  display: table-caption !important;
-  caption-side: bottom !important;
+  grid-area: controls !important;
+  display: flex !important;
+  float: none !important;
+  flex-wrap: wrap !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  gap: 6px !important;
+  width: 100% !important;
   background: #101010 !important;
+  border: 0 !important;
   border-top: 1px solid #333 !important;
   padding: 6px 10px !important;
+  box-sizing: border-box !important;
+  clear: both !important;
 }
 
 .yh-user-name, .yh-user-name a {
@@ -697,7 +735,7 @@ a.button span { color: inherit !important; }
   display: block !important;
 }
 .author_avatar img {
-  width: 150px !important;
+  width: 120px !important;
   height: auto !important;
   max-width: 100% !important;
   border: 1px solid #555 !important;
@@ -1042,12 +1080,15 @@ blockquote, .codeblock, .mycode_quote, .mycode_code {
   }
   table.yh-cat tr td:nth-child(2) { width: auto !important; }
 
-  .post, .post.classic { display: block !important; }
-  .post_author, .post_content {
-    display: block !important;
-    width: auto !important;
+  /* Keep classic MyBB postbit beside (not stacked) on phones */
+  .post, .post.classic, .yh-post {
+    grid-template-columns: 118px minmax(0, 1fr) !important;
   }
-  .post_author { border-right: 0 !important; border-bottom: 1px solid var(--yh-line) !important; }
+  .post_author { padding: 8px 4px !important; }
+  .author_avatar img { width: 72px !important; }
+  .yh-user-name, .yh-user-name a { font-size: 12px !important; }
+  .yh-user-title, .yh-badge, .yh-user-foot { font-size: 9px !important; }
+  .yh-user-stats { font-size: 10px !important; }
 }
 
 @media (max-width: 520px) {
