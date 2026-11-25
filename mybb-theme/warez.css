@@ -84,7 +84,46 @@ img { max-width: 100%; border: 0; }
 .yh-topnav-links a { font-weight: 700 !important; }
 .yh-topnav-links a.portal { color: #00e5ff !important; }
 .yh-topnav-links a.forum { color: #ffffff !important; }
-.yh-topnav-links a.credits { color: #ffcc00 !important; }
+.yh-topnav-links a.credits,
+.yh-topnav-links a.bits { color: #ffcc00 !important; }
+
+.yh-bits,
+.yh-bits-inline,
+.yh-bits-pos { color: #ffcc00 !important; font-weight: 700 !important; }
+.yh-bits-neg { color: #ff5555 !important; font-weight: 700 !important; }
+.yh-ico-bits::before { content: "◈"; color: #ffcc00; margin-right: 4px; }
+
+.yh-bits-page { margin: 8px 0 20px; }
+.yh-bits-hero {
+  background: #111;
+  border: 1px solid #2a2a2a;
+  padding: 18px 16px;
+  text-align: center;
+}
+.yh-bits-label {
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 11px;
+  font-weight: 700;
+}
+.yh-bits-amount {
+  color: #ffcc00;
+  font-size: 42px;
+  font-weight: 700;
+  line-height: 1.1;
+  margin: 6px 0;
+  font-family: Impact, Haettenschweiler, Tahoma, sans-serif;
+}
+.yh-bits-user { color: #ddd; font-size: 13px; }
+.yh-bits-note {
+  margin-top: 10px;
+  padding: 10px 12px;
+  background: #151515;
+  border: 1px solid #333;
+  color: #ccc;
+}
+.yh-bits-note a { color: #ffcc00 !important; }
 .yh-topnav-links a.upgrade { color: #39ff14 !important; }
 .yh-topnav-links a.rules { color: #ff1a1a !important; }
 .yh-topnav-links a.faq { color: #39ff14 !important; }

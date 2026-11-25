@@ -143,7 +143,9 @@ function warezskin_postbit(&$post)
 
 	$rep = isset($post['reputation']) ? (int)$post['reputation'] : 0;
 	$post['yh_rep'] = my_number_format($rep);
-	$post['yh_credits'] = number_format(max(0, $rep) * 10 + (int)$post['postnum'], 2);
+	if (!isset($post['yh_bits'])) {
+		$post['yh_bits'] = isset($post['bits']) ? my_number_format((int)$post['bits']) : '0';
+	}
 
 	$online = false;
 	if (!empty($post['uid'])) {

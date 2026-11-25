@@ -33,17 +33,39 @@ $db->update_query('themestylesheets', array(
 	'attachedto' => '',
 ), "name='warez.css' AND tid=3");
 
-// 2) Plugin
+// 2) Plugins
 @mkdir(MYBB_ROOT . 'inc/plugins', 0755, true);
 copy($src . '/plugin/warezskin.php', MYBB_ROOT . 'inc/plugins/warezskin.php');
+if (is_file($src . '/plugin/bits.php')) {
+	copy($src . '/plugin/bits.php', MYBB_ROOT . 'inc/plugins/bits.php');
+}
+if (is_file($src . '/bits-page.php')) {
+	copy($src . '/bits-page.php', MYBB_ROOT . 'bits.php');
+	@chmod(MYBB_ROOT . 'bits.php', 0644);
+}
+
 $active = $cache->read('plugins');
 if (!is_array($active)) {
 	$active = array('active' => array(), 'installed' => array());
 }
 $active['active']['warezskin'] = 'warezskin';
 $active['installed']['warezskin'] = 'warezskin';
+
+// Install + activate Bits currency plugin
+require_once MYBB_ROOT . 'inc/plugins/bits.php';
+if (!bits_is_installed()) {
+	bits_install();
+	echo "Bits plugin installed\n";
+} else {
+	bits_insert_settings();
+	echo "Bits plugin already installed (settings refreshed)\n";
+}
+bits_activate();
+$active['active']['bits'] = 'bits';
+$active['installed']['bits'] = 'bits';
+
 $cache->update('plugins', $active);
-echo "Plugin enabled\n";
+echo "Plugins enabled (warezskin + bits)\n";
 
 // 3) Template set
 $query = $db->simple_select('templatesets', 'sid', "title='warez.skin'");
