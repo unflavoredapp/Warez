@@ -125,60 +125,50 @@ img { max-width: 100%; border: 0; }
 .yh-subnav a { color: #ddd !important; }
 .yh-subnav a:hover { color: var(--yh-red2) !important; }
 
-/* ========== HEADER: LOGO | SERVERS | LOGIN (one row) ========== */
+/* ========== HEADER: LOGO | SERVERS | LOGIN (table row = never stacks) ========== */
 .yh-header {
-  display: flex !important;
-  flex-direction: row !important;
-  flex-wrap: nowrap !important;
-  align-items: stretch !important;
-  gap: 8px !important;
-  padding: 10px 0 12px !important;
-  background: #000 !important;
-  border-bottom: 1px solid #222 !important;
-  margin: 0 0 12px !important;
   width: 100% !important;
+  border-collapse: separate !important;
+  border-spacing: 8px 0 !important;
+  margin: 10px 0 12px !important;
+  padding: 0 !important;
+  background: transparent !important;
+  table-layout: fixed !important;
 }
-
-.yh-box {
+.yh-header > tbody > tr > td.yh-box,
+.yh-header td.yh-box {
   background: #111 !important;
   border: 1px solid #2a2a2a !important;
-  min-height: 92px;
-  float: none !important;
-  display: block !important;
+  vertical-align: middle !important;
+  height: 96px !important;
+  padding: 0 !important;
 }
 
-/* 1) Logo box */
+/* 1) Logo */
 .yh-box-logo {
-  flex: 0 0 240px !important;
-  width: 240px !important;
-  max-width: 240px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  padding: 12px 14px !important;
+  width: 22% !important;
+  padding: 10px 14px !important;
+  text-align: left !important;
 }
 .yh-logo {
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: flex-start !important;
-  justify-content: center !important;
+  display: inline-block !important;
   text-decoration: none !important;
-  width: 100%;
 }
 .yh-logo-title {
-  font-size: 34px !important;
+  display: block !important;
+  font-size: 36px !important;
   font-weight: 700 !important;
   letter-spacing: 0.01em !important;
   color: #fff !important;
-  line-height: 0.92 !important;
+  line-height: 0.95 !important;
   text-transform: uppercase !important;
   font-family: Impact, Haettenschweiler, "Arial Narrow Bold", Tahoma, sans-serif !important;
-  white-space: nowrap;
+  white-space: nowrap !important;
 }
 .yh-logo-tag {
   display: inline-block !important;
   margin-top: 8px !important;
-  background: var(--yh-red) !important;
+  background: #e10600 !important;
   color: #fff !important;
   font-size: 9px !important;
   font-weight: 700 !important;
@@ -187,50 +177,52 @@ img { max-width: 100%; border: 0; }
   text-transform: uppercase !important;
 }
 
-/* 2) Servers box */
+/* 2) Servers */
 .yh-box-servers {
-  flex: 1 1 auto !important;
-  min-width: 0 !important;
-  display: flex !important;
-  flex-direction: row !important;
-  flex-wrap: nowrap !important;
-  gap: 0 !important;
+  width: 56% !important;
   padding: 0 !important;
-  overflow: hidden !important;
+}
+.yh-servers-inner {
+  width: 100% !important;
+  height: 100% !important;
+  border-collapse: collapse !important;
 }
 .yh-widget {
-  flex: 1 1 50% !important;
-  display: flex !important;
-  flex-direction: row !important;
-  gap: 8px !important;
-  align-items: center !important;
+  width: 50% !important;
   padding: 8px 10px !important;
-  min-width: 0 !important;
   border-right: 1px solid #2a2a2a !important;
-  background: transparent !important;
-  border-top: 0 !important;
-  border-bottom: 0 !important;
-  border-left: 0 !important;
+  vertical-align: middle !important;
 }
-.yh-widget:last-child { border-right: 0 !important; }
+.yh-widget:last-child,
+.yh-servers-inner tr td.yh-widget:last-child {
+  border-right: 0 !important;
+}
 .yh-widget-thumb {
-  width: 56px !important;
-  height: 56px !important;
-  flex: 0 0 56px !important;
+  width: 58px !important;
+  height: 58px !important;
   border: 1px solid #3a3a3a !important;
   background-color: #0a0a0a !important;
   background-size: cover !important;
   background-position: center !important;
+  display: inline-block !important;
+  vertical-align: middle !important;
+  margin-right: 8px !important;
+}
+.yh-widget-body {
+  display: inline-block !important;
+  vertical-align: middle !important;
+  max-width: calc(100% - 70px);
 }
 .yh-thumb-bf {
-  background-image: linear-gradient(135deg, #1a3a1a, #0a0a0a 55%),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ctext x='32' y='40' text-anchor='middle' fill='%2366aa66' font-size='18' font-family='Arial'%3EBF4%3C/text%3E%3C/svg%3E") !important;
+  background-image:
+    linear-gradient(160deg, rgba(40,80,40,.55), rgba(0,0,0,.75)),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect fill='%23111' width='64' height='64'/%3E%3Cpath fill='%234a7' d='M8 40h48v8H8zm6-18h8v18h-8zm18-8h8v26h-8zm18 12h8v14h-8z'/%3E%3C/svg%3E") !important;
 }
 .yh-thumb-rs {
-  background-image: linear-gradient(135deg, #3a1a1a, #0a0a0a 55%),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ctext x='32' y='40' text-anchor='middle' fill='%23cc6666' font-size='16' font-family='Arial'%3ERUST%3C/text%3E%3C/svg%3E") !important;
+  background-image:
+    linear-gradient(160deg, rgba(90,30,20,.55), rgba(0,0,0,.75)),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect fill='%23111' width='64' height='64'/%3E%3Ccircle cx='32' cy='28' r='14' fill='%23653'/%3E%3Cpath fill='%23864' d='M20 44h24v10H20z'/%3E%3C/svg%3E") !important;
 }
-.yh-widget-body { min-width: 0; }
 .yh-widget-title {
   color: #ccc !important;
   font-weight: 700 !important;
@@ -250,14 +242,10 @@ img { max-width: 100%; border: 0; }
   margin-top: 2px !important;
 }
 
-/* 3) User / login box */
+/* 3) User / login */
 .yh-box-user {
-  flex: 0 0 220px !important;
-  width: 220px !important;
-  max-width: 220px !important;
+  width: 22% !important;
   padding: 8px 10px !important;
-  display: flex !important;
-  align-items: center !important;
 }
 .yh-userpanel {
   display: flex !important;
@@ -810,12 +798,13 @@ blockquote, .codeblock, .mycode_quote, .mycode_code {
 
 @media (max-width: 900px) {
   #container { width: 100% !important; max-width: 100% !important; padding: 0 6px 24px !important; }
-  /* keep the 3 header cards on ONE row even on smaller screens */
-  .yh-header { flex-wrap: nowrap !important; gap: 6px !important; }
-  .yh-box-logo { flex-basis: 160px !important; width: 160px !important; max-width: 160px !important; padding: 8px !important; }
+  .yh-header { border-spacing: 4px 0 !important; }
+  .yh-box-logo { width: 28% !important; padding: 8px !important; }
   .yh-logo-title { font-size: 22px !important; }
-  .yh-box-user { flex-basis: 170px !important; width: 170px !important; max-width: 170px !important; }
+  .yh-box-servers { width: 44% !important; }
+  .yh-box-user { width: 28% !important; }
   .yh-widget-meta { display: none !important; }
+  .yh-widget-thumb { width: 40px !important; height: 40px !important; }
   .yh-statsbox tr { display: block; }
   .yh-stats-side { width: 100% !important; border-left: 0 !important; border-top: 1px solid #333 !important; }
   .yh-banners { grid-template-columns: 1fr 1fr; }
