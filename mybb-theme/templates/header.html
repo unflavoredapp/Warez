@@ -10,12 +10,12 @@
 			<li><a class="rules" href="{$mybb->settings['bburl']}/misc.php?action=help">Regulations</a></li>
 			<li><a class="faq" href="{$mybb->settings['bburl']}/misc.php?action=help">FAQ</a></li>
 		</ul>
-		<form class="yh-search" method="post" action="{$mybb->settings['bburl']}/search.php">
+		<form class="yh-search yh-search-desktop" method="post" action="{$mybb->settings['bburl']}/search.php">
 			<input type="hidden" name="action" value="do_search" />
 			<input type="hidden" name="postthread" value="1" />
 			<input type="hidden" name="forums" value="all" />
 			<input type="hidden" name="showresults" value="threads" />
-			<input type="text" name="keywords" class="textbox" placeholder="Type here..." />
+			<input type="text" name="keywords" class="textbox" placeholder="Search..." />
 			<button type="submit" aria-label="Search">⌕</button>
 		</form>
 	</nav>
@@ -26,46 +26,42 @@
 		<a href="{$mybb->settings['bburl']}/calendar.php">Calendar</a>
 	</div>
 
-	<table class="yh-header" cellspacing="0" cellpadding="0" border="0" width="100%">
-		<tr>
-			<!-- 1. LOGO -->
-			<td class="yh-box yh-box-logo" valign="middle">
-				<a class="yh-logo" href="{$mybb->settings['bburl']}/portal.php">
-					<span class="yh-logo-title">warez.skin</span>
-					<span class="yh-logo-tag">unique gaming portal</span>
-				</a>
-			</td>
+	<div class="yh-header">
+		<!-- 1. LOGO -->
+		<div class="yh-box yh-box-logo">
+			<a class="yh-logo" href="{$mybb->settings['bburl']}/portal.php">
+				<span class="yh-logo-title">warez.skin</span>
+				<span class="yh-logo-tag">unique gaming portal</span>
+			</a>
+		</div>
 
-			<!-- 2. SERVERS -->
-			<td class="yh-box yh-box-servers" valign="middle">
-				<table class="yh-servers-inner" cellspacing="0" cellpadding="0" border="0" width="100%">
-					<tr>
-						<td class="yh-widget" valign="middle">
-							<img class="yh-widget-thumb" src="{$mybb->settings['bburl']}/images/server-bf4.png" alt="Battlefield 4" width="58" height="58" />
-							<div class="yh-widget-body">
-								<div class="yh-widget-title">Battlefield 4 Server</div>
-								<div class="yh-widget-ip"><span class="yh-dot-on"></span> play.warez.skin:25200</div>
-								<div class="yh-widget-meta">Players: 0/64 &nbsp; Rank: — &nbsp; Map: Lobby</div>
-							</div>
-						</td>
-						<td class="yh-widget" valign="middle">
-							<img class="yh-widget-thumb" src="{$mybb->settings['bburl']}/images/server-rust.png" alt="Rust" width="58" height="58" />
-							<div class="yh-widget-body">
-								<div class="yh-widget-title">Rust Server</div>
-								<div class="yh-widget-ip"><span class="yh-dot-off"></span> rust.warez.skin:28015</div>
-								<div class="yh-widget-meta">Players: 0/50 &nbsp; Rank: — &nbsp; Map: Procedural</div>
-							</div>
-						</td>
-					</tr>
-				</table>
-			</td>
+		<!-- 2. SERVERS -->
+		<div class="yh-box yh-box-servers">
+			<div class="yh-servers-inner">
+				<div class="yh-widget">
+					<img class="yh-widget-thumb" src="{$mybb->settings['bburl']}/images/server-bf4.png" alt="Battlefield 4" width="58" height="58" />
+					<div class="yh-widget-body">
+						<div class="yh-widget-title">Battlefield 4 Server</div>
+						<div class="yh-widget-ip"><span class="yh-dot-on"></span> play.warez.skin:25200</div>
+						<div class="yh-widget-meta">Players: 0/64 &nbsp; Rank: — &nbsp; Map: Lobby</div>
+					</div>
+				</div>
+				<div class="yh-widget">
+					<img class="yh-widget-thumb" src="{$mybb->settings['bburl']}/images/server-rust.png" alt="Rust" width="58" height="58" />
+					<div class="yh-widget-body">
+						<div class="yh-widget-title">Rust Server</div>
+						<div class="yh-widget-ip"><span class="yh-dot-off"></span> rust.warez.skin:28015</div>
+						<div class="yh-widget-meta">Players: 0/50 &nbsp; Rank: — &nbsp; Map: Procedural</div>
+					</div>
+				</div>
+			</div>
+		</div>
 
-			<!-- 3. LOGIN / MY ACCOUNT -->
-			<td class="yh-box yh-box-user" valign="middle">
-				{$welcomeblock}
-			</td>
-		</tr>
-	</table>
+		<!-- 3. LOGIN / MY ACCOUNT -->
+		<div class="yh-box yh-box-user">
+			{$welcomeblock}
+		</div>
+	</div>
 
 	<div id="header" style="display:none"></div>
 	<div id="panel" style="display:none"></div>

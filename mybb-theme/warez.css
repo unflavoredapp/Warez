@@ -165,34 +165,38 @@ img { max-width: 100%; border: 0; }
 .yh-subnav a { color: #ddd !important; }
 .yh-subnav a:hover { color: var(--yh-red2) !important; }
 
-/* ========== HEADER: LOGO | SERVERS | LOGIN (table row = never stacks) ========== */
+/* ========== HEADER: LOGO | SERVERS | LOGIN ========== */
 .yh-header {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: stretch !important;
+  gap: 6px !important;
   width: 100% !important;
-  border-collapse: separate !important;
-  border-spacing: 6px 0 !important;
   margin: 8px 0 10px !important;
   padding: 0 !important;
   background: transparent !important;
-  table-layout: fixed !important;
 }
-.yh-header > tbody > tr > td.yh-box,
-.yh-header td.yh-box {
+.yh-header .yh-box {
   background: #111 !important;
   border: 1px solid #2a2a2a !important;
-  vertical-align: middle !important;
-  height: 88px !important;
+  min-height: 88px !important;
   padding: 0 !important;
+  box-sizing: border-box !important;
 }
 
 /* 1) Logo */
 .yh-box-logo {
-  width: 18% !important;
-  padding: 8px 10px !important;
+  flex: 0 0 18% !important;
+  max-width: 18% !important;
+  padding: 10px 12px !important;
   text-align: left !important;
+  display: flex !important;
+  align-items: center !important;
 }
 .yh-logo {
-  display: inline-block !important;
+  display: block !important;
   text-decoration: none !important;
+  width: 100% !important;
 }
 .yh-logo-title {
   display: block !important;
@@ -219,38 +223,43 @@ img { max-width: 100%; border: 0; }
 
 /* 2) Servers */
 .yh-box-servers {
-  width: 50% !important;
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
   padding: 0 !important;
+  display: flex !important;
 }
 .yh-servers-inner {
+  display: flex !important;
+  flex-direction: row !important;
   width: 100% !important;
   height: 100% !important;
-  border-collapse: collapse !important;
 }
 .yh-widget {
-  width: 50% !important;
+  flex: 1 1 50% !important;
+  display: flex !important;
+  align-items: center !important;
   padding: 8px 10px !important;
   border-right: 1px solid #2a2a2a !important;
-  vertical-align: middle !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
 }
-.yh-widget:last-child,
-.yh-servers-inner tr td.yh-widget:last-child {
+.yh-widget:last-child {
   border-right: 0 !important;
 }
 .yh-widget-thumb {
   width: 58px !important;
   height: 58px !important;
   border: 1px solid #3a3a3a !important;
-  display: inline-block !important;
-  vertical-align: middle !important;
+  display: block !important;
+  flex: 0 0 58px !important;
   margin-right: 8px !important;
   object-fit: cover !important;
   background: #0a0a0a !important;
 }
 .yh-widget-body {
-  display: inline-block !important;
-  vertical-align: middle !important;
-  max-width: calc(100% - 70px);
+  display: block !important;
+  min-width: 0 !important;
+  flex: 1 1 auto !important;
 }
 .yh-dot-on,
 .yh-dot-off {
@@ -284,8 +293,11 @@ img { max-width: 100%; border: 0; }
 
 /* 3) User / login */
 .yh-box-user {
-  width: 32% !important;
-  padding: 6px 8px !important;
+  flex: 0 0 32% !important;
+  max-width: 32% !important;
+  padding: 8px 10px !important;
+  display: flex !important;
+  align-items: center !important;
 }
 
 /* YouHack-style guest login card */
@@ -925,48 +937,48 @@ blockquote, .codeblock, .mycode_quote, .mycode_code {
   #container { padding: 0 6px 24px !important; }
 
   .yh-topnav {
-    flex-direction: column !important;
-    align-items: stretch !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
     gap: 8px !important;
+    padding: 8px !important;
   }
-  .yh-topnav-links { gap: 10px 12px !important; }
-  .yh-search { width: 100% !important; }
-  .yh-search input { width: 100% !important; flex: 1 1 auto !important; }
+  .yh-topnav-links {
+    gap: 8px 12px !important;
+    flex: 1 1 auto !important;
+  }
+  /* "Type here..." search belongs on desktop only — phones use Subnav → Search */
+  .yh-search,
+  .yh-search-desktop {
+    display: none !important;
+  }
 
-  /* Stack logo / servers / login so nothing clips */
-  .yh-header,
-  .yh-header > tbody,
-  .yh-header > tbody > tr {
-    display: block !important;
-    width: 100% !important;
-  }
   .yh-header {
-    border-spacing: 0 !important;
+    flex-direction: column !important;
+    gap: 6px !important;
     margin: 8px 0 !important;
   }
-  .yh-header > tbody > tr > td.yh-box,
-  .yh-header td.yh-box {
-    display: block !important;
+  .yh-header .yh-box {
     width: 100% !important;
-    height: auto !important;
-    margin: 0 0 6px !important;
+    max-width: 100% !important;
+    flex: 0 0 auto !important;
+    min-height: 0 !important;
   }
   .yh-box-logo {
-    width: 100% !important;
-    padding: 12px !important;
+    padding: 14px 12px !important;
     text-align: center !important;
+    justify-content: center !important;
   }
-  .yh-logo-title { font-size: 28px !important; }
-  .yh-box-servers { width: 100% !important; }
-  .yh-servers-inner,
-  .yh-servers-inner > tbody,
-  .yh-servers-inner > tbody > tr {
-    display: block !important;
-    width: 100% !important;
+  .yh-logo-title {
+    font-size: 30px !important;
+    color: #fff !important;
+  }
+  .yh-box-servers { display: block !important; }
+  .yh-servers-inner {
+    flex-direction: column !important;
   }
   .yh-widget {
-    display: block !important;
     width: 100% !important;
+    flex: 0 0 auto !important;
     border-right: 0 !important;
     border-bottom: 1px solid #2a2a2a !important;
     padding: 10px !important;
@@ -974,23 +986,51 @@ blockquote, .codeblock, .mycode_quote, .mycode_code {
   .yh-widget:last-child { border-bottom: 0 !important; }
   .yh-widget-meta { display: none !important; }
   .yh-box-user {
-    width: 100% !important;
-    padding: 10px !important;
+    padding: 12px !important;
+    display: block !important;
   }
   .yh-login-form { min-height: 0 !important; gap: 8px !important; }
+  .yh-login-top {
+    flex-wrap: wrap !important;
+  }
+  .yh-login-fields {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr auto !important;
+    gap: 6px !important;
+    align-items: stretch !important;
+  }
   .yh-login-input,
   input.textbox.yh-login-input {
-    height: 34px !important;
+    width: 100% !important;
+    flex: none !important;
+    height: 36px !important;
     font-size: 14px !important;
     padding: 0 10px !important;
   }
   .yh-btn-login,
-  input.button.yh-btn-login,
-  .yh-btn-register {
-    height: 34px !important;
-    min-height: 34px !important;
+  input.button.yh-btn-login {
+    width: auto !important;
+    min-width: 64px !important;
+    height: 36px !important;
     padding: 0 14px !important;
     font-size: 13px !important;
+    font-weight: 700 !important;
+    color: #fff !important;
+    background: #e10600 !important;
+    line-height: 36px !important;
+    text-indent: 0 !important;
+    overflow: visible !important;
+  }
+  .yh-btn-register {
+    height: 32px !important;
+    min-height: 32px !important;
+    padding: 0 12px !important;
+    font-size: 13px !important;
+  }
+
+  /* hide breadcrumb clutter under header on phones */
+  #content > .wrapper > .navigation {
+    display: none !important;
   }
 
   /* Forum index: hide cramped Statistics / Last Post on phones */
@@ -1011,14 +1051,15 @@ blockquote, .codeblock, .mycode_quote, .mycode_code {
 }
 
 @media (max-width: 520px) {
-  .yh-login-fields { flex-wrap: wrap !important; }
-  .yh-login-fields .yh-login-input,
-  .yh-login-fields input.textbox.yh-login-input {
-    flex: 1 1 100% !important;
+  .yh-login-fields {
+    grid-template-columns: 1fr !important;
+  }
+  .yh-btn-login,
+  input.button.yh-btn-login {
     width: 100% !important;
   }
-  .yh-login-fields .yh-btn-login,
-  .yh-login-fields input.button.yh-btn-login {
-    width: 100% !important;
+  .yh-login-bottom {
+    flex-wrap: wrap !important;
+    gap: 6px !important;
   }
 }

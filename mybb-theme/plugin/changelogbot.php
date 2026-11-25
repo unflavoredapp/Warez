@@ -366,12 +366,19 @@ function changelogbot_post($message, $opts = array())
 		),
 	);
 
+	// Prevent MyBB "post merge" from appending into the previous bot post
+	$old_merge = isset($mybb->settings['postmergemins']) ? $mybb->settings['postmergemins'] : 0;
+	$mybb->settings['postmergemins'] = 0;
+
 	$posthandler->set_data($post);
 	if (!$posthandler->validate_post()) {
+		$mybb->settings['postmergemins'] = $old_merge;
 		return false;
 	}
 
-	return $posthandler->insert_post();
+	$result = $posthandler->insert_post();
+	$mybb->settings['postmergemins'] = $old_merge;
+	return $result;
 }
 
 /* ---------- Admin CP hooks ---------- */
