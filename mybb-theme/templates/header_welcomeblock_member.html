@@ -6,6 +6,9 @@
 		<ul class="yh-userpanel-links">
 			<li class="yh-userpanel-name"><span class="yh-ico yh-ico-user"></span><a href="{$mybb->settings['bburl']}/member.php?action=profile&amp;uid={$mybb->user['uid']}">{$mybb->user['username']}</a></li>
 			<li><span class="yh-ico yh-ico-bits"></span><a href="{$mybb->settings['bburl']}/bits.php"><span class="yh-bits-inline">{$yh_bits_fmt}</span> Bits</a></li>
+			<if $mybb->user['bits'] >= 100 then>
+			<li class="yh-bits-badge">◈ High Roller</li>
+			</if>
 			<li><span class="yh-ico yh-ico-cp"></span><a href="{$mybb->settings['bburl']}/usercp.php">UserCP</a></li>
 			<li><span class="yh-ico yh-ico-profile"></span><a href="{$mybb->settings['bburl']}/member.php?action=profile&amp;uid={$mybb->user['uid']}">My Profile</a></li>
 			<li><span class="yh-ico yh-ico-alert"></span><a href="{$mybb->settings['bburl']}/private.php">Alerts ({$mybb->user['pms_unread']})</a></li>

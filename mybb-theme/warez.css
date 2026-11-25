@@ -90,6 +90,12 @@ img { max-width: 100%; border: 0; }
 .yh-bits,
 .yh-bits-inline,
 .yh-bits-pos { color: #ffcc00 !important; font-weight: 700 !important; }
+.yh-bits-badge {
+  color: #ffcc00 !important;
+  font-weight: 700 !important;
+  font-size: 11px !important;
+  letter-spacing: 0.04em;
+}
 .yh-bits-neg { color: #ff5555 !important; font-weight: 700 !important; }
 .yh-ico-bits::before { content: "◈"; color: #ffcc00; margin-right: 4px; }
 
@@ -996,7 +1002,7 @@ blockquote, .codeblock, .mycode_quote, .mycode_code {
     display: none !important;
   }
 
-  /* Mobile header: ONLY the login / account box (hide logo + servers) */
+  /* Mobile header: template conditionals output login box only */
   .yh-header {
     display: block !important;
     width: 100% !important;
@@ -1005,11 +1011,8 @@ blockquote, .codeblock, .mycode_quote, .mycode_code {
     margin: 8px 0 !important;
     transform: none !important;
   }
-  .yh-box-logo,
-  .yh-box-servers {
-    display: none !important;
-  }
-  .yh-box-user {
+  .yh-box-user,
+  .yh-box-user-mobile {
     display: block !important;
     width: 100% !important;
     max-width: 100% !important;

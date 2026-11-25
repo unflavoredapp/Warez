@@ -27,15 +27,19 @@
 	</div>
 
 	<div class="yh-header">
-		<!-- 1. LOGO (desktop) -->
+	<if $mybb->ismobile then>
+		<!-- Mobile: login / account only -->
+		<div class="yh-box yh-box-user yh-box-user-mobile">
+			{$welcomeblock}
+		</div>
+	<else>
+		<!-- Desktop: logo | servers | login -->
 		<div class="yh-box yh-box-logo">
 			<a class="yh-logo" href="{$mybb->settings['bburl']}/portal.php">
 				<span class="yh-logo-title">warez.skin</span>
 				<span class="yh-logo-tag">unique gaming portal</span>
 			</a>
 		</div>
-
-		<!-- 2. SERVERS (desktop) -->
 		<div class="yh-box yh-box-servers">
 			<div class="yh-servers-inner">
 				<div class="yh-widget">
@@ -56,11 +60,10 @@
 				</div>
 			</div>
 		</div>
-
-		<!-- 3. LOGIN / MY ACCOUNT (desktop + mobile) -->
 		<div class="yh-box yh-box-user">
 			{$welcomeblock}
 		</div>
+	</if>
 	</div>
 
 	<div id="header" style="display:none"></div>

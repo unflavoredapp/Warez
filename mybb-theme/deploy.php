@@ -43,6 +43,9 @@ if (is_file($src . '/plugin/bits.php')) {
 if (is_file($src . '/plugin/changelogbot.php')) {
 	copy($src . '/plugin/changelogbot.php', MYBB_ROOT . 'inc/plugins/changelogbot.php');
 }
+if (is_file($src . '/plugin/template_conditionals.php')) {
+	copy($src . '/plugin/template_conditionals.php', MYBB_ROOT . 'inc/plugins/template_conditionals.php');
+}
 if (is_file($src . '/admin/modules/tools/changelogbot.php')) {
 	copy($src . '/admin/modules/tools/changelogbot.php', MYBB_ROOT . 'admin/modules/tools/changelogbot.php');
 }
@@ -88,8 +91,12 @@ if (!changelogbot_is_installed()) {
 $active['active']['changelogbot'] = 'changelogbot';
 $active['installed']['changelogbot'] = 'changelogbot';
 
+// Template Conditionals (must be active for <if> in templates)
+$active['active']['template_conditionals'] = 'template_conditionals';
+$active['installed']['template_conditionals'] = 'template_conditionals';
+
 $cache->update('plugins', $active);
-echo "Plugins enabled (warezskin + bits + changelogbot)\n";
+echo "Plugins enabled (warezskin + bits + changelogbot + template_conditionals)\n";
 
 // 3) Template set
 $query = $db->simple_select('templatesets', 'sid', "title='warez.skin'");
