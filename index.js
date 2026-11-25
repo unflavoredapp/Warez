@@ -168,7 +168,10 @@ app.get("/app/:repoId/:appId", (req, res) => {
   return res.type("html").send(renderAppDetails(found));
 });
 
-function shellTop(title) {
+function shellTop(title, { sourceName = "", sourceURL = "" } = {}) {
+  const source = sourceName
+    ? `<a class="topbar-source" href="${esc(sourceURL || "#")}" target="_blank" rel="noopener noreferrer" title="${esc(sourceURL || sourceName)}">${esc(sourceName)}</a>`
+    : "";
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -180,11 +183,12 @@ function shellTop(title) {
 </head>
 <body>
   <div class="shell">
-    <header class="topbar">
+    <header class="topbar${source ? " topbar-with-source" : ""}">
       <a class="logo" href="/">
         <span class="logo-mark" aria-hidden="true"></span>
         <span class="logo-text">warez.skin</span>
       </a>
+      ${source}
       <nav class="nav" aria-label="Primary">
         <a href="/#discover">Discover</a>
         <a href="/#repos">Repos</a>
@@ -255,7 +259,10 @@ function renderAppDetails(app) {
   const tint = tintRgb(app.tintColor) || "rgb(124,92,255)";
   const heroStyle = `--app-tint:${tint};`;
 
-  return `${shellTop(`${app.name} · warez.skin`)}
+  return `${shellTop(`${app.name} · warez.skin`, {
+    sourceName: app.repoName || "",
+    sourceURL: app.sourceURL || "",
+  })}
     <div class="detail-page" style="${heroStyle}">
       <a class="back-link" href="/#discover">← Back to discovery</a>
 

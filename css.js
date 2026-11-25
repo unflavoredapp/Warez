@@ -42,6 +42,29 @@ body { padding: 28px 20px 60px; }
   flex-wrap: wrap;
 }
 
+.topbar-source {
+  display: none;
+  margin-left: auto;
+  max-width: 55%;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,0.04);
+  color: var(--ink);
+  text-decoration: none;
+  font-family: Syne, sans-serif;
+  font-weight: 700;
+  font-size: 0.78rem;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.topbar-source:hover {
+  border-color: rgba(124, 92, 255, 0.45);
+  color: var(--accent-2);
+}
+
 .logo {
   display: flex;
   align-items: baseline;
@@ -587,6 +610,13 @@ a.mini-app.app-link:hover {
 }
 
 @media (max-width: 800px) {
+  .topbar-with-source {
+    flex-wrap: nowrap;
+    gap: 10px;
+  }
+  .topbar-with-source .nav { display: none; }
+  .topbar-with-source .topbar-source { display: inline-flex; align-items: center; }
+
   .detail-stats-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .detail-grid { grid-template-columns: 1fr; }
   .detail-icon { width: 78px; height: 78px; border-radius: 18px; }
