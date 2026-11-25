@@ -35,13 +35,24 @@ $db->update_query('themestylesheets', array(
 
 // 2) Plugins
 @mkdir(MYBB_ROOT . 'inc/plugins', 0755, true);
+@mkdir(MYBB_ROOT . 'admin/modules/tools', 0755, true);
 copy($src . '/plugin/warezskin.php', MYBB_ROOT . 'inc/plugins/warezskin.php');
 if (is_file($src . '/plugin/bits.php')) {
 	copy($src . '/plugin/bits.php', MYBB_ROOT . 'inc/plugins/bits.php');
 }
+if (is_file($src . '/plugin/changelogbot.php')) {
+	copy($src . '/plugin/changelogbot.php', MYBB_ROOT . 'inc/plugins/changelogbot.php');
+}
+if (is_file($src . '/admin/modules/tools/changelogbot.php')) {
+	copy($src . '/admin/modules/tools/changelogbot.php', MYBB_ROOT . 'admin/modules/tools/changelogbot.php');
+}
 if (is_file($src . '/bits-page.php')) {
 	copy($src . '/bits-page.php', MYBB_ROOT . 'bits.php');
 	@chmod(MYBB_ROOT . 'bits.php', 0644);
+}
+if (is_file($src . '/post-changelog.php')) {
+	copy($src . '/post-changelog.php', '/opt/warez-theme/post-changelog.php');
+	@chmod('/opt/warez-theme/post-changelog.php', 0755);
 }
 
 $active = $cache->read('plugins');
@@ -64,8 +75,21 @@ bits_activate();
 $active['active']['bits'] = 'bits';
 $active['installed']['bits'] = 'bits';
 
+// Install + activate Changelog Bot
+require_once MYBB_ROOT . 'inc/plugins/changelogbot.php';
+if (!changelogbot_is_installed()) {
+	changelogbot_install();
+	echo "Changelog Bot installed\n";
+} else {
+	changelogbot_insert_settings();
+	changelogbot_activate();
+	echo "Changelog Bot already installed (settings refreshed)\n";
+}
+$active['active']['changelogbot'] = 'changelogbot';
+$active['installed']['changelogbot'] = 'changelogbot';
+
 $cache->update('plugins', $active);
-echo "Plugins enabled (warezskin + bits)\n";
+echo "Plugins enabled (warezskin + bits + changelogbot)\n";
 
 // 3) Template set
 $query = $db->simple_select('templatesets', 'sid', "title='warez.skin'");
