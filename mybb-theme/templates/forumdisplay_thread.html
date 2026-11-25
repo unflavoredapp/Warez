@@ -1,0 +1,20 @@
+<tr class="inline_row">
+	<td class="{$bgcolor}{$thread_type_class}">
+		{$icon}
+	</td>
+	<td class="{$bgcolor}{$thread_type_class} wz-thread-main" colspan="4">
+		<div class="wz-thread-title">
+			{$prefix}{$gotounread}{$thread['threadprefix']}<span class="{$inline_edit_class} {$new_class}" id="tid_{$inline_edit_tid}"><a href="{$thread['threadlink']}">{$thread['subject']}</a></span>{$thread['multipage']}
+		</div>
+		<div class="wz-thread-meta">
+			{$thread['profilelink']} · {$thread['start_datetime']}
+		</div>
+	</td>
+	<td class="{$bgcolor}{$thread_type_class}">
+		<div class="wz-thread-stats">
+			<span title="Replies">💬 {$thread['replies']}</span>
+			<span title="Views">👁 {$thread['views']}</span>
+		</div>
+	</td>
+{$modbit}
+</tr>
