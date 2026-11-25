@@ -1,7 +1,10 @@
-<div class="yh-guest-actions">
-	<div class="yh-userbox-name">Guest</div>
-	<a href="{$mybb->settings['bburl']}/member.php?action=login" onclick="$('#quick_login').modal({ fadeDuration: 250, keepelement: true, zIndex: (typeof modal_zindex !== 'undefined' ? modal_zindex : 9999) }); return false;" class="button">Log in</a>
-	<a href="{$mybb->settings['bburl']}/member.php?action=register" class="button">Register</a>
+<div class="yh-userpanel yh-userpanel-guest">
+	<div class="yh-userpanel-avatar yh-avatar-guest" aria-hidden="true"></div>
+	<ul class="yh-userpanel-links">
+		<li class="yh-userpanel-name"><span class="yh-ico yh-ico-user"></span>Guest</li>
+		<li><span class="yh-ico yh-ico-login"></span><a href="{$mybb->settings['bburl']}/member.php?action=login" onclick="$('#quick_login').modal({ fadeDuration: 250, keepelement: true, zIndex: (typeof modal_zindex !== 'undefined' ? modal_zindex : 9999) }); return false;">Log in</a></li>
+		<li><span class="yh-ico yh-ico-register"></span><a href="{$mybb->settings['bburl']}/member.php?action=register">Register</a></li>
+	</ul>
 </div>
 <div class="modal" id="quick_login" style="display: none;">
 	<form method="post" action="{$mybb->settings['bburl']}/member.php">

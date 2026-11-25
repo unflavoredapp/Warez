@@ -18,9 +18,23 @@ function warezskin_info()
 function warezskin_activate() {}
 function warezskin_deactivate() {}
 
+$plugins->add_hook('global_intermediate', 'warezskin_header_avatar');
 $plugins->add_hook('portal_end', 'warezskin_portal_blocks');
 $plugins->add_hook('postbit', 'warezskin_postbit');
 $plugins->add_hook('index_end', 'warezskin_index_stats');
+
+function warezskin_header_avatar()
+{
+	global $mybb, $yh_avatar;
+
+	$yh_avatar = $mybb->settings['bburl'] . '/images/default_avatar.png';
+	if (!empty($mybb->user['uid'])) {
+		$avatar = format_avatar($mybb->user['avatar'], $mybb->user['avatardimensions'], '64x64');
+		if (!empty($avatar['image'])) {
+			$yh_avatar = $avatar['image'];
+		}
+	}
+}
 
 function warezskin_portal_blocks()
 {

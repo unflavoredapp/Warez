@@ -27,29 +27,36 @@
 	</div>
 
 	<div class="yh-header">
-		<a class="yh-logo" href="{$mybb->settings['bburl']}/portal.php">
-			<span class="yh-logo-title">warez.skin</span>
-			<span class="yh-logo-tag">unique gaming portal</span>
-		</a>
-		<div class="yh-widgets">
+		<!-- 1. LOGO -->
+		<div class="yh-box yh-box-logo">
+			<a class="yh-logo" href="{$mybb->settings['bburl']}/portal.php">
+				<span class="yh-logo-title">warez.skin</span>
+				<span class="yh-logo-tag">unique gaming portal</span>
+			</a>
+		</div>
+
+		<!-- 2. SERVERS -->
+		<div class="yh-box yh-box-servers">
 			<div class="yh-widget">
-				<div class="yh-widget-thumb">BF</div>
+				<div class="yh-widget-thumb yh-thumb-bf" aria-hidden="true"></div>
 				<div class="yh-widget-body">
-					<div class="yh-widget-title">Battlefield Node</div>
-					<div class="yh-widget-ip">play.warez.skin</div>
-					<div class="yh-widget-meta">Players: — &nbsp; Map: Lobby</div>
+					<div class="yh-widget-title">Battlefield 4 Server</div>
+					<div class="yh-widget-ip">play.warez.skin:25200</div>
+					<div class="yh-widget-meta">Players: 0/64 &nbsp; Rank: — &nbsp; Map: Lobby</div>
 				</div>
 			</div>
 			<div class="yh-widget">
-				<div class="yh-widget-thumb">RS</div>
+				<div class="yh-widget-thumb yh-thumb-rs" aria-hidden="true"></div>
 				<div class="yh-widget-body">
-					<div class="yh-widget-title">Rust Node</div>
-					<div class="yh-widget-ip">rust.warez.skin</div>
-					<div class="yh-widget-meta">Players: — &nbsp; Rank: —</div>
+					<div class="yh-widget-title">Rust Server</div>
+					<div class="yh-widget-ip">rust.warez.skin:28015</div>
+					<div class="yh-widget-meta">Players: 0/50 &nbsp; Rank: — &nbsp; Map: Procedural</div>
 				</div>
 			</div>
 		</div>
-		<div class="yh-userbox">
+
+		<!-- 3. LOGIN / MY ACCOUNT -->
+		<div class="yh-box yh-box-user">
 			{$welcomeblock}
 		</div>
 	</div>
