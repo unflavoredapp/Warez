@@ -340,13 +340,30 @@ function renderAppDetails(app) {
 
       ${
         app.downloadURL
-          ? `<div class="mobile-cta" role="region" aria-label="Download">
-              <div class="mobile-cta-meta">
-                <strong>${esc(app.name)}</strong>
-                <span>${esc(app.version ? `v${app.version}` : "")}${app.size ? ` · ${esc(formatBytes(app.size))}` : ""}</span>
+          ? `<div class="float-cta" id="float-cta" role="region" aria-label="Download">
+              <div class="float-cta-inner">
+                <div class="float-cta-meta">
+                  <strong>${esc(app.name)}</strong>
+                  <span>${esc(app.version ? `v${app.version}` : "")}${app.size ? ` · ${esc(formatBytes(app.size))}` : ""}</span>
+                </div>
+                <a class="btn btn-primary float-cta-btn" href="${esc(app.downloadURL)}" target="_blank" rel="noopener noreferrer">Open IPA URL</a>
               </div>
-              <a class="btn btn-primary mobile-cta-btn" href="${esc(app.downloadURL)}" target="_blank" rel="noopener noreferrer">Open IPA URL</a>
-            </div>`
+            </div>
+            <script>
+              (function () {
+                var el = document.getElementById("float-cta");
+                if (!el || !window.visualViewport) return;
+                function pin() {
+                  var vv = window.visualViewport;
+                  var offset = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
+                  el.style.transform = "translate3d(0, " + (-offset) + "px, 0)";
+                }
+                pin();
+                window.visualViewport.addEventListener("resize", pin);
+                window.visualViewport.addEventListener("scroll", pin);
+                window.addEventListener("scroll", pin, { passive: true });
+              })();
+            </script>`
           : ""
       }
     </div>

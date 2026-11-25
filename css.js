@@ -382,6 +382,7 @@ a.mini-app.app-link:hover {
 
 .detail-page {
   --app-tint: rgb(124, 92, 255);
+  padding-bottom: 0;
 }
 
 .detail-hero {
@@ -576,7 +577,7 @@ a.mini-app.app-link:hover {
   object-fit: cover;
 }
 
-.mobile-cta {
+.float-cta {
   display: none;
 }
 
@@ -627,25 +628,45 @@ a.mini-app.app-link:hover {
     text-overflow: ellipsis;
   }
 
-  .mobile-cta {
+  .detail-page {
+    padding-bottom: 96px;
+  }
+
+  .float-cta {
+    display: block;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 50;
+    padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px));
+    background: linear-gradient(to top, rgba(11,13,18,0.98) 35%, rgba(11,13,18,0.88));
+    border-top: 1px solid var(--line);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
+  }
+  .float-cta-inner {
+    max-width: 1100px;
+    margin: 0 auto;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    margin-top: 14px;
-    padding: 12px 14px;
+    padding: 10px 12px;
     border-radius: 16px;
     border: 1px solid var(--line);
     background: var(--card);
     box-shadow: var(--shadow);
   }
-  .mobile-cta-meta {
+  .float-cta-meta {
     min-width: 0;
     flex: 1 1 auto;
     display: grid;
     gap: 2px;
   }
-  .mobile-cta-meta strong {
+  .float-cta-meta strong {
     font-family: Syne, sans-serif;
     font-size: 0.95rem;
     letter-spacing: -0.02em;
@@ -653,11 +674,11 @@ a.mini-app.app-link:hover {
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  .mobile-cta-meta span {
+  .float-cta-meta span {
     color: var(--muted);
     font-size: 0.7rem;
   }
-  .mobile-cta-btn {
+  .float-cta-btn {
     flex: 0 0 auto;
     white-space: nowrap;
   }
