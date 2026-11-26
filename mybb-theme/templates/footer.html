@@ -1,14 +1,37 @@
 	</div>
 </div>
 <footer id="footer" class="sm-footer">
-	<div class="sm-footer-links">
-		{$showteamlink}
-		{$contact_us}
-		<a href="{$mybb->settings['bburl']}/misc.php?action=help">Help &amp; Documentation</a>
-		<a href="{$mybb->settings['bburl']}/misc.php?action=help">Site Rules</a>
-		<a href="{$mybb->settings['bburl']}/stats.php">Statistics</a>
-		<a href="{$mybb->settings['bburl']}/misc.php?action=syndication">{$lang->bottomlinks_syndication}</a>
-		<a href="#top">{$lang->bottomlinks_returntop}</a>
+	<div class="sm-footer-grid">
+		<div class="sm-footer-col">
+			<div class="sm-footer-h">Help &amp; Documentation</div>
+			<a href="{$mybb->settings['bburl']}/misc.php?action=help">Help Documents</a>
+			<a href="{$mybb->settings['bburl']}/misc.php?action=help&amp;hid=3">Site Rules</a>
+			{$showteamlink}
+			<a href="{$mybb->settings['bburl']}/stats.php">Statistics</a>
+			{$contact_us}
+		</div>
+		<div class="sm-footer-col">
+			<div class="sm-footer-h">User Features</div>
+			<a href="{$mybb->settings['bburl']}/memberlist.php">Member List</a>
+			<a href="{$mybb->settings['bburl']}/bits.php">Bits</a>
+			<a href="{$mybb->settings['bburl']}/search.php">Search</a>
+			<a href="{$mybb->settings['bburl']}/misc.php?action=syndication">{$lang->bottomlinks_syndication}</a>
+			<a href="{$mybb->settings['bburl']}/misc.php?action=markread{$post_code_string}">{$lang->bottomlinks_markread}</a>
+		</div>
+		<div class="sm-footer-col">
+			<div class="sm-footer-h">Popular</div>
+			<a href="{$mybb->settings['bburl']}/index.php">Forum Home</a>
+			<a href="{$mybb->settings['bburl']}/portal.php">Repository</a>
+			<a href="{$mybb->settings['bburl']}/forumdisplay.php?fid=7">General Chat</a>
+			<a href="{$mybb->settings['bburl']}/forumdisplay.php?fid=17">Marketplace</a>
+			<a href="{$mybb->settings['bburl']}/forumdisplay.php?fid=8">Releases</a>
+		</div>
+		<div class="sm-footer-col">
+			<div class="sm-footer-h">Staff Online</div>
+			<p class="sm-footer-note">Check the Who's Online list for staff currently browsing.</p>
+			<a href="{$mybb->settings['bburl']}/online.php">Complete List</a>
+			<a href="#top">{$lang->bottomlinks_returntop}</a>
+		</div>
 	</div>
 	<div class="sm-footer-meta">
 		<span id="copyright">{$lang->powered_by} <a href="https://mybb.com" target="_blank" rel="noopener">MyBB{$mybbversion}</a></span>

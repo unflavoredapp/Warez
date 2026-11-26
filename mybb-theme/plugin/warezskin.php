@@ -21,13 +21,14 @@ function warezskin_deactivate() {}
 $plugins->add_hook('global_intermediate', 'warezskin_header_avatar');
 $plugins->add_hook('portal_end', 'warezskin_portal_blocks');
 $plugins->add_hook('postbit', 'warezskin_postbit');
-$plugins->add_hook('index_end', 'warezskin_index_stats');
+$plugins->add_hook('index_start', 'warezskin_index_stats');
 $plugins->add_hook('member_profile_end', 'warezskin_profile');
 
 function warezskin_header_avatar()
 {
 	global $mybb, $yh_avatar, $yh_panelbg_style, $yh_panelbg_class;
 	global $yh_panelchat_feed, $yh_panelchat_js;
+	global $sm_recent_activity, $sm_mostonline, $sm_postgoal_today, $sm_postgoal_target, $sm_postgoal_pct, $sm_postgoal_status;
 
 	$yh_avatar = $mybb->settings['bburl'] . '/images/default_avatar.png';
 	if (!isset($yh_panelbg_style)) {
@@ -41,6 +42,24 @@ function warezskin_header_avatar()
 	}
 	if (!isset($yh_panelchat_js)) {
 		$yh_panelchat_js = '';
+	}
+	if (!isset($sm_recent_activity)) {
+		$sm_recent_activity = '';
+	}
+	if (!isset($sm_mostonline)) {
+		$sm_mostonline = '0';
+	}
+	if (!isset($sm_postgoal_today)) {
+		$sm_postgoal_today = '0';
+	}
+	if (!isset($sm_postgoal_target)) {
+		$sm_postgoal_target = '250';
+	}
+	if (!isset($sm_postgoal_pct)) {
+		$sm_postgoal_pct = '0';
+	}
+	if (!isset($sm_postgoal_status)) {
+		$sm_postgoal_status = '';
 	}
 
 	if (!empty($mybb->user['uid'])) {
@@ -316,6 +335,65 @@ function warezskin_postbit(&$post)
 
 function warezskin_index_stats()
 {
-	// Intentionally empty: board stats come from theme templates
-	// (index_boardstats / index_whosonline / index_stats), not a hardcoded override.
+	global $db, $mybb, $cache, $sm_recent_activity, $sm_mostonline;
+	global $sm_postgoal_today, $sm_postgoal_target, $sm_postgoal_pct, $sm_postgoal_status;
+
+	$most = $cache->read('mostonline');
+	$sm_mostonline = my_number_format(is_array($most) && isset($most['numusers']) ? (int)$most['numusers'] : 0);
+
+	$target = 250;
+	$today_start = TIME_NOW - (int)date('G') * 3600 - (int)date('i') * 60 - (int)date('s');
+	$query = $db->simple_select('posts', 'COUNT(*) AS c', "visible='1' AND dateline>='".(int)$today_start."'");
+	$today = (int)$db->fetch_field($query, 'c');
+	$sm_postgoal_today = my_number_format($today);
+	$sm_postgoal_target = my_number_format($target);
+	$pct = $target > 0 ? (int)min(100, round(($today / $target) * 100)) : 0;
+	$sm_postgoal_pct = $pct;
+	$sm_postgoal_status = $today >= $target
+		? '<span class="sm-goal-ok">Reached</span>'
+		: '<span class="sm-goal-no">Not Reached</span>';
+
+	$sm_recent_activity = warezskin_build_recent_sidebar(8);
+}
+
+function warezskin_build_recent_sidebar($limit = 8)
+{
+	global $db, $mybb;
+
+	$limit = max(4, min(15, (int)$limit));
+	$unviewable = get_unviewable_forums(true);
+	$inactive = get_inactive_forums();
+	$where = "t.visible='1' AND t.closed NOT LIKE 'moved|%'";
+	if ($unviewable) {
+		$where .= " AND t.fid NOT IN ($unviewable)";
+	}
+	if ($inactive) {
+		$where .= " AND t.fid NOT IN ($inactive)";
+	}
+
+	$html = '';
+	$query = $db->query("
+		SELECT t.tid, t.subject, t.username, t.uid, t.lastpost, t.replies, t.lastposter, t.lastposteruid
+		FROM ".TABLE_PREFIX."threads t
+		WHERE {$where}
+		ORDER BY t.lastpost DESC
+		LIMIT {$limit}
+	");
+	while ($t = $db->fetch_array($query)) {
+		$subject = htmlspecialchars_uni($t['subject']);
+		$link = $mybb->settings['bburl'].'/'.get_thread_link($t['tid']);
+		$who = htmlspecialchars_uni($t['lastposter'] ?: $t['username']);
+		$when = my_date('relative', (int)$t['lastpost']);
+		$replies = my_number_format((int)$t['replies']);
+		$html .= '<a class="sm-recent-item" href="'.$link.'">'
+			.'<span class="sm-recent-dot" aria-hidden="true"></span>'
+			.'<span class="sm-recent-body"><span class="sm-recent-title">'.$subject.'</span>'
+			.'<span class="sm-recent-meta">'.$who.' · '.$when.'</span></span>'
+			.'<span class="sm-recent-count">'.$replies.'</span>'
+			.'</a>';
+	}
+	if ($html === '') {
+		$html = '<div class="sm-recent-empty">No recent threads yet.</div>';
+	}
+	return $html;
 }

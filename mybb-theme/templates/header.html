@@ -7,17 +7,26 @@
 				<a class="sm-logo" href="{$mybb->settings['bburl']}/index.php" title="warez.skin">
 					<img src="{$mybb->settings['bburl']}/images/logo-mark.svg" width="28" height="28" alt="warez.skin" />
 				</a>
-				<button type="button" class="sm-gridbtn" id="sm_grid_toggle" aria-label="Menu" aria-expanded="false" aria-controls="sm_mega">
+				<button type="button" class="sm-gridbtn sm-mobile-only" id="sm_grid_toggle" aria-label="Menu" aria-expanded="false" aria-controls="sm_mega">
 					<span></span><span></span><span></span>
 					<span></span><span></span><span></span>
 					<span></span><span></span><span></span>
 				</button>
+				<nav class="sm-desk-nav sm-desktop-only" aria-label="Primary">
+					<a href="{$mybb->settings['bburl']}/search.php"><i class="sm-ico sm-ico-search"></i>Search</a>
+					<a href="{$mybb->settings['bburl']}/memberlist.php"><i class="sm-ico sm-ico-members"></i>Members</a>
+					<a href="{$mybb->settings['bburl']}/bits.php"><i class="sm-ico sm-ico-gold"></i>Bits</a>
+					<a href="{$mybb->settings['bburl']}/misc.php?action=help"><i class="sm-ico sm-ico-help"></i>Help</a>
+					<a href="{$mybb->settings['bburl']}/member.php?action=register"><i class="sm-ico sm-ico-upgrade"></i>Upgrade</a>
+					<a href="{$mybb->settings['bburl']}/portal.php"><i class="sm-ico sm-ico-dl"></i>Repos</a>
+					<a href="{$mybb->settings['bburl']}/showteam.php"><i class="sm-ico sm-ico-shop"></i>Staff</a>
+				</nav>
 			</div>
 			<div class="sm-topbar-right">
 				{$welcomeblock}
 			</div>
 		</div>
-		<nav class="sm-mega" id="sm_mega" hidden>
+		<nav class="sm-mega sm-mobile-only" id="sm_mega" hidden>
 			<a href="{$mybb->settings['bburl']}/index.php">Forum</a>
 			<a href="{$mybb->settings['bburl']}/portal.php">Repository</a>
 			<a href="{$mybb->settings['bburl']}/search.php">Search</a>
@@ -49,4 +58,11 @@
 			{$modnotice}
 			{$pending_joinrequests}
 			{$awaitingusers}
-			<nav class="sm-crumbs"><navigation></nav>
+			<div class="sm-utilbar">
+				<nav class="sm-crumbs"><navigation></nav>
+				<div class="sm-util-actions sm-desktop-only">
+					<a class="sm-btn" href="{$mybb->settings['bburl']}/search.php?action=getnew">New Posts</a>
+					<a class="sm-btn" href="{$mybb->settings['bburl']}/search.php?action=getdaily">Today's Posts</a>
+					<a class="sm-btn" href="{$mybb->settings['bburl']}/portal.php">Repository</a>
+				</div>
+			</div>

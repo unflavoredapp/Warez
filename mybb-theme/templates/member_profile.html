@@ -4,85 +4,94 @@
 {$headerinclude}
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/report.js?ver=1820"></script>
 </head>
-<body>
+<body class="sm-page-profile">
 {$header}
 
-<div class="yh-profile">
-	<div class="yh-profile-top">
-		<span class="yh-profile-role">{$usertitle}</span>
-		<span class="yh-profile-uid">UID: {$memprofile['uid']}</span>
-		<span class="yh-profile-statuswrap">{$online_status}</span>
-		<span class="yh-profile-viewing">Viewing Profile of: {$formattedname}</span>
-	</div>
+{$awaybit}{$bannedbit}
 
-	{$awaybit}{$bannedbit}
-
-	<div class="yh-profile-grid">
-		<!-- LEFT: identity -->
-		<div class="yh-profile-col yh-profile-left">
-			<div class="yh-profile-heading">Profile of <span class="yh-profile-name">{$memprofile['username']}</span></div>
-			<div class="yh-profile-avatar-wrap">
-				<div class="yh-profile-badge">{$usertitle}</div>
-				<div class="yh-profile-avatar">{$avatar}</div>
-				<div class="yh-profile-banner">{$yh_profile_banner}</div>
-			</div>
-			<div class="yh-profile-mini">
-				<div><span class="yh-k">RD:</span> {$memregdate}</div>
-				<div><span class="yh-k">DOB:</span> {$membday} {$membdayage}</div>
-				<div><span class="yh-k">LT:</span> {$localtime}</div>
-				<div><span class="yh-k">Bits:</span> <span class="yh-bits">{$bits_display}</span></div>
-			</div>
-			<div class="yh-profile-stars">{$userstars}</div>
-			{$groupimage}
+<section class="sm-profile">
+	<header class="sm-profile-head">
+		<div class="sm-profile-avatar">{$avatar}</div>
+		<div class="sm-profile-id">
+			<h1 class="sm-profile-name">{$formattedname}</h1>
+			<div class="sm-profile-title">{$usertitle}</div>
+			<div class="sm-profile-statusline">Status: {$online_status}</div>
 		</div>
-
-		<!-- MIDDLE: forum info -->
-		<div class="yh-profile-col yh-profile-mid">
-			<div class="yh-profile-section-title">Forum Info</div>
-			<div class="yh-profile-box">
-				<div class="yh-profile-row"><span class="yh-k">Joined</span><span class="yh-v">{$memregdate}</span></div>
-				<div class="yh-profile-row"><span class="yh-k">Last Visit</span><span class="yh-v">{$memlastvisitdate}</span></div>
-				<div class="yh-profile-row"><span class="yh-k">Total Posts</span><span class="yh-v">{$memprofile['postnum']} <span class="yh-muted">({$lang->ppd_percent_total})</span> {$findposts}</span></div>
-				<div class="yh-profile-row"><span class="yh-k">Total Threads</span><span class="yh-v">{$memprofile['threadnum']} <span class="yh-muted">({$lang->tpd_percent_total})</span> {$findthreads}</span></div>
-				<div class="yh-profile-row"><span class="yh-k">Time Spent Online</span><span class="yh-v">{$timeonline}</span></div>
-				{$yh_profile_referrals}
-			</div>
-
-			<div class="yh-profile-statbars">
-				<a class="yh-statbar" href="{$mybb->settings['bburl']}/reputation.php?uid={$memprofile['uid']}">Reputation: {$memprofile['reputation']}</a>
-				<span class="yh-statbar">Warnings: {$yh_warning_count}</span>
-				<span class="yh-statbar">Warning Level: {$yh_warning_percent}%{$warn_user}</span>
-			</div>
-
-			<div class="yh-profile-section-title yh-red">Additional Groups</div>
-			<div class="yh-profile-box yh-profile-groups">
-				{$yh_additional_groups}
-			</div>
+		<div class="sm-profile-actions">
+			<a class="sm-btn" href="{$mybb->settings['bburl']}/search.php?action=finduserthreads&amp;uid={$memprofile['uid']}">Activity</a>
+			{$sendemail}
+			{$sendpm}
+			<a class="sm-btn" href="{$mybb->settings['bburl']}/member.php?action=profile&amp;uid={$memprofile['uid']}#sm_profile_stats">Referrals</a>
+			<a class="sm-btn" href="{$mybb->settings['bburl']}/reputation.php?uid={$memprofile['uid']}">Reputation</a>
 		</div>
+	</header>
 
-		<!-- RIGHT: contact + fields -->
-		<div class="yh-profile-col yh-profile-right">
-			<div class="yh-profile-section-title">Contact Information</div>
-			<div class="yh-profile-box">
-				<div class="yh-contact-actions">
-					{$sendpm}
-					{$sendemail}
-					{$website}
+	<div class="sm-profile-grid">
+		<div class="sm-profile-col">
+			<section class="sm-block">
+				<div class="sm-block-head">Activity</div>
+				<div class="sm-block-body sm-profile-rows">
+					<div class="sm-profile-row"><span>Joined</span><strong>{$memregdate}</strong></div>
+					<div class="sm-profile-row"><span>Last Visit</span><strong>{$memlastvisitdate}</strong></div>
+					<div class="sm-profile-row"><span>Bits</span><strong class="yh-bits">{$bits_display}</strong></div>
+					<div class="sm-profile-row"><span>Time Online</span><strong>{$timeonline}</strong></div>
 				</div>
-			</div>
+			</section>
+			<section class="sm-block">
+				<div class="sm-block-head">Contact</div>
+				<div class="sm-block-body sm-profile-contact">
+					{$website}
+					{$sendemail}
+					{$sendpm}
+				</div>
+			</section>
+		</div>
 
-			<div class="yh-profile-section-title">Additional Information</div>
-			<div class="yh-profile-box yh-profile-fields">
-				{$profilefields}
-			</div>
+		<div class="sm-profile-col sm-profile-col-mid">
+			<section class="sm-block">
+				<div class="sm-block-head">{$memprofile['username']}'s Signature</div>
+				<div class="sm-block-body">
+					{$signature}
+				</div>
+			</section>
+			<section class="sm-block">
+				<div class="sm-block-head">Additional Information</div>
+				<div class="sm-block-body sm-profile-fields">
+					{$profilefields}
+				</div>
+			</section>
+			<section class="sm-block">
+				<div class="sm-block-head">User Groups</div>
+				<div class="sm-block-body sm-profile-groups">
+					{$groupimage}
+					{$yh_additional_groups}
+				</div>
+			</section>
+		</div>
 
-			{$signature}
-			{$modoptions}
-			{$adminoptions}
-			<div class="yh-profile-tools">{$buddy_options}{$ignore_options}{$report_options}</div>
+		<div class="sm-profile-col" id="sm_profile_stats">
+			<section class="sm-block">
+				<div class="sm-block-head">Statistics</div>
+				<div class="sm-block-body sm-profile-rows">
+					<div class="sm-profile-row"><span>Total Posts</span><strong>{$memprofile['postnum']} {$findposts}</strong></div>
+					<div class="sm-profile-row"><span>Total Threads</span><strong>{$memprofile['threadnum']} {$findthreads}</strong></div>
+					<div class="sm-profile-row"><span>Reputation</span><strong>{$memprofile['reputation']}</strong></div>
+					{$yh_profile_referrals}
+					<div class="sm-profile-row"><span>Warnings</span><strong>{$yh_warning_count}</strong></div>
+					<div class="sm-profile-row"><span>Warning Level</span><strong>{$yh_warning_percent}%{$warn_user}</strong></div>
+				</div>
+			</section>
+			<section class="sm-block">
+				<div class="sm-block-head">Tools</div>
+				<div class="sm-block-body sm-profile-tools">
+					{$buddy_options}{$ignore_options}{$report_options}
+					{$modoptions}
+					{$adminoptions}
+				</div>
+			</section>
 		</div>
 	</div>
-</div>
+</section>
 
 {$footer}
 </body>
