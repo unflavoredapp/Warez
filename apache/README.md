@@ -4,7 +4,7 @@ Live box: `146.71.100.41` (hostname `Msign`).
 
 | Host | Front door | Path / process |
 |------|------------|----------------|
-| `warez.skin` / `www` | **MyBB 1.8** | `/var/www/warez.skin` |
+| `warez.skin` / `www` | **MyBB 1.8** (index.php home) | `/var/www/warez.skin` |
 | `sentry.mba` / `www` | Node (PM2 `warez-skin`) | `/opt/warez.skin` → `:3000` |
 
 ## Restore MyBB on warez.skin

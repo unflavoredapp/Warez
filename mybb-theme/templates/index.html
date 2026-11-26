@@ -1,0 +1,72 @@
+<html>
+<head>
+<title>{$mybb->settings['bbname']}</title>
+{$headerinclude}
+<script type="text/javascript">
+<!--
+	lang.no_new_posts = "{$lang->no_new_posts}";
+	lang.click_mark_read = "{$lang->click_mark_read}";
+// -->
+</script>
+</head>
+<body class="sm-page-index">
+{$header}
+
+<section class="sm-shoutbox" id="sm_shoutbox">
+	<div class="sm-shout-head">
+		<strong>Shoutbox</strong>
+		<span class="sm-shout-tools"><a href="{$mybb->settings['bburl']}/misc.php?action=smilies">Smilies</a> · <a href="{$mybb->settings['bburl']}/portal.php">Archive</a></span>
+	</div>
+	<ul class="sm-shout-list yh-act-feed" id="yh_panelchat_feed">
+		{$yh_panelchat_feed}
+	</ul>
+	<if $mybb->user['uid'] then>
+	<form class="sm-shout-form yh-chat-form" id="yh_panelchat_form" action="{$mybb->settings['bburl']}/panelchat.php" method="post" autocomplete="off">
+		<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
+		<input type="text" name="message" id="yh_panelchat_input" class="yh-chat-input" maxlength="200" placeholder="Say something…" />
+		<button type="submit" class="yh-chat-send" aria-label="Send">Send</button>
+	</form>
+	{$yh_panelchat_js}
+	<else>
+	<div class="sm-shout-guest">Login to shout.</div>
+	</if>
+</section>
+
+<nav class="sm-tabs" aria-label="Categories">
+	<a class="sm-tab is-active" href="#cat_1" data-tab="1">HQ</a>
+	<a class="sm-tab" href="#cat_2" data-tab="2">Market</a>
+	<a class="sm-tab" href="{$mybb->settings['bburl']}/portal.php">Repos</a>
+	<a class="sm-tab" href="{$mybb->settings['bburl']}/search.php?action=getdaily">Today</a>
+	<a class="sm-tab" href="{$mybb->settings['bburl']}/member.php?action=register">Join</a>
+</nav>
+
+<div class="sm-forums">
+{$forums}
+</div>
+
+{$boardstats}
+<br class="clear" />
+{$footer}
+<script type="text/javascript">
+(function () {
+	var tabs = document.querySelectorAll('.sm-tab[data-tab]');
+	var cats = document.querySelectorAll('.sm-cat[data-cat]');
+	function activate(id) {
+		tabs.forEach(function (t) {
+			t.classList.toggle('is-active', t.getAttribute('data-tab') === String(id));
+		});
+		cats.forEach(function (c) {
+			var show = !id || c.getAttribute('data-cat') === String(id);
+			c.style.display = show ? '' : 'none';
+		});
+	}
+	tabs.forEach(function (t) {
+		t.addEventListener('click', function (e) {
+			e.preventDefault();
+			activate(t.getAttribute('data-tab'));
+		});
+	});
+})();
+</script>
+</body>
+</html>

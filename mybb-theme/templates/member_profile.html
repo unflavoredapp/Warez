@@ -1,0 +1,89 @@
+<html>
+<head>
+<title>{$mybb->settings['bbname']} - {$lang->profile}</title>
+{$headerinclude}
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/report.js?ver=1820"></script>
+</head>
+<body>
+{$header}
+
+<div class="yh-profile">
+	<div class="yh-profile-top">
+		<span class="yh-profile-role">{$usertitle}</span>
+		<span class="yh-profile-uid">UID: {$memprofile['uid']}</span>
+		<span class="yh-profile-statuswrap">{$online_status}</span>
+		<span class="yh-profile-viewing">Viewing Profile of: {$formattedname}</span>
+	</div>
+
+	{$awaybit}{$bannedbit}
+
+	<div class="yh-profile-grid">
+		<!-- LEFT: identity -->
+		<div class="yh-profile-col yh-profile-left">
+			<div class="yh-profile-heading">Profile of <span class="yh-profile-name">{$memprofile['username']}</span></div>
+			<div class="yh-profile-avatar-wrap">
+				<div class="yh-profile-badge">{$usertitle}</div>
+				<div class="yh-profile-avatar">{$avatar}</div>
+				<div class="yh-profile-banner">{$yh_profile_banner}</div>
+			</div>
+			<div class="yh-profile-mini">
+				<div><span class="yh-k">RD:</span> {$memregdate}</div>
+				<div><span class="yh-k">DOB:</span> {$membday} {$membdayage}</div>
+				<div><span class="yh-k">LT:</span> {$localtime}</div>
+				<div><span class="yh-k">Bits:</span> <span class="yh-bits">{$bits_display}</span></div>
+			</div>
+			<div class="yh-profile-stars">{$userstars}</div>
+			{$groupimage}
+		</div>
+
+		<!-- MIDDLE: forum info -->
+		<div class="yh-profile-col yh-profile-mid">
+			<div class="yh-profile-section-title">Forum Info</div>
+			<div class="yh-profile-box">
+				<div class="yh-profile-row"><span class="yh-k">Joined</span><span class="yh-v">{$memregdate}</span></div>
+				<div class="yh-profile-row"><span class="yh-k">Last Visit</span><span class="yh-v">{$memlastvisitdate}</span></div>
+				<div class="yh-profile-row"><span class="yh-k">Total Posts</span><span class="yh-v">{$memprofile['postnum']} <span class="yh-muted">({$lang->ppd_percent_total})</span> {$findposts}</span></div>
+				<div class="yh-profile-row"><span class="yh-k">Total Threads</span><span class="yh-v">{$memprofile['threadnum']} <span class="yh-muted">({$lang->tpd_percent_total})</span> {$findthreads}</span></div>
+				<div class="yh-profile-row"><span class="yh-k">Time Spent Online</span><span class="yh-v">{$timeonline}</span></div>
+				{$yh_profile_referrals}
+			</div>
+
+			<div class="yh-profile-statbars">
+				<a class="yh-statbar" href="{$mybb->settings['bburl']}/reputation.php?uid={$memprofile['uid']}">Reputation: {$memprofile['reputation']}</a>
+				<span class="yh-statbar">Warnings: {$yh_warning_count}</span>
+				<span class="yh-statbar">Warning Level: {$yh_warning_percent}%{$warn_user}</span>
+			</div>
+
+			<div class="yh-profile-section-title yh-red">Additional Groups</div>
+			<div class="yh-profile-box yh-profile-groups">
+				{$yh_additional_groups}
+			</div>
+		</div>
+
+		<!-- RIGHT: contact + fields -->
+		<div class="yh-profile-col yh-profile-right">
+			<div class="yh-profile-section-title">Contact Information</div>
+			<div class="yh-profile-box">
+				<div class="yh-contact-actions">
+					{$sendpm}
+					{$sendemail}
+					{$website}
+				</div>
+			</div>
+
+			<div class="yh-profile-section-title">Additional Information</div>
+			<div class="yh-profile-box yh-profile-fields">
+				{$profilefields}
+			</div>
+
+			{$signature}
+			{$modoptions}
+			{$adminoptions}
+			<div class="yh-profile-tools">{$buddy_options}{$ignore_options}{$report_options}</div>
+		</div>
+	</div>
+</div>
+
+{$footer}
+</body>
+</html>

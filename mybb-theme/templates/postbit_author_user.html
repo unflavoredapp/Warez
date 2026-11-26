@@ -1,0 +1,8 @@
+Posts: {$post['postnum']}<br />
+Joined: {$post['userregdate']}<br />
+Bits: <span class="yh-bits">{$post['yh_bits']}</span><br />
+Reputation: <span class="yh-rep">{$post['yh_rep']}</span><br />
+Status: <span class="yh-online">{$post['yh_status']}</span>
+<if $post['warninglevel'] then>
+<br />{$post['warninglevel']}
+</if>

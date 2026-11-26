@@ -1,0 +1,37 @@
+	</div>
+</div>
+<footer id="footer" class="sm-footer">
+	<div class="sm-footer-links">
+		{$showteamlink}
+		{$contact_us}
+		<a href="{$mybb->settings['bburl']}/misc.php?action=help">Help &amp; Documentation</a>
+		<a href="{$mybb->settings['bburl']}/misc.php?action=help">Site Rules</a>
+		<a href="{$mybb->settings['bburl']}/stats.php">Statistics</a>
+		<a href="{$mybb->settings['bburl']}/misc.php?action=syndication">{$lang->bottomlinks_syndication}</a>
+		<a href="#top">{$lang->bottomlinks_returntop}</a>
+	</div>
+	<div class="sm-footer-meta">
+		<span id="copyright">{$lang->powered_by} <a href="https://mybb.com" target="_blank" rel="noopener">MyBB{$mybbversion}</a></span>
+		<span class="sm-footer-credit">warez.skin</span>
+	</div>
+</footer>
+{$task_image}
+{$auto_dst_detection}
+</div>
+<script type="text/javascript">
+(function () {
+	var btn = document.getElementById('sm_grid_toggle');
+	var mega = document.getElementById('sm_mega');
+	if (!btn || !mega) return;
+	btn.addEventListener('click', function () {
+		var open = mega.hasAttribute('hidden');
+		if (open) {
+			mega.removeAttribute('hidden');
+			btn.setAttribute('aria-expanded', 'true');
+		} else {
+			mega.setAttribute('hidden', '');
+			btn.setAttribute('aria-expanded', 'false');
+		}
+	});
+})();
+</script>

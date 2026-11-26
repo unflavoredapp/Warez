@@ -1,0 +1,12 @@
+<article class="sm-forum {$bgcolor}">
+	<a class="sm-forum-icon forum_status forum_{$lightbulb['folder']} ajax_mark_read" title="{$lightbulb['altonoff']}" id="mark_read_{$forum['fid']}" href="{$forum_url}" aria-label="{$forum['name']}"></a>
+	<div class="sm-forum-main">
+		<strong class="sm-forum-title"><a href="{$forum_url}">{$forum['name']}</a></strong>{$forum_viewers_text}
+		<div class="sm-forum-desc">{$forum['description']}{$modlist}{$subforums}</div>
+	</div>
+	<div class="sm-forum-meta">
+		<span class="sm-forum-stat">{$threads} threads</span>
+		<span class="sm-forum-stat">{$posts} posts</span>
+		<div class="sm-forum-last">{$lastpost}</div>
+	</div>
+</article>
