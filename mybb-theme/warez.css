@@ -42,20 +42,24 @@ img { max-width: 100%; border: 0; }
 #container {
   width: 100% !important;
   max-width: var(--yh-width) !important;
+  min-width: 0 !important; /* override stock MyBB min-width:990px */
   margin: 0 auto !important;
   padding: 0 8px 30px !important;
   background: transparent !important;
   border: 0 !important;
   box-shadow: none !important;
+  box-sizing: border-box !important;
 }
 
 #content, #content .wrapper, .wrapper {
   background: transparent !important;
   border: 0 !important;
-  width: auto !important;
-  max-width: none !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important; /* override stock MyBB min-width:970px */
   margin: 0 !important;
   padding: 0 !important;
+  box-sizing: border-box !important;
 }
 
 /* ========== TOP NAV ========== */
@@ -66,8 +70,10 @@ img { max-width: 100%; border: 0; }
   gap: 12px;
   background: #050505;
   border-bottom: 2px solid var(--yh-red);
-  padding: 8px 10px;
-  margin: 0 0 0;
+  padding: 8px 0; /* horizontal inset comes from #container only */
+  margin: 0;
+  width: 100%;
+  box-sizing: border-box;
 }
 .yh-topnav-links {
   display: flex;
@@ -163,10 +169,12 @@ img { max-width: 100%; border: 0; }
 .yh-subnav {
   background: #171717;
   border-bottom: 1px solid var(--yh-line);
-  padding: 6px 10px;
+  padding: 6px 0; /* match topnav / content width */
   display: flex;
   gap: 16px;
   font-size: 11px;
+  width: 100%;
+  box-sizing: border-box;
 }
 .yh-subnav a { color: #ddd !important; }
 .yh-subnav a:hover { color: var(--yh-red2) !important; }
@@ -375,6 +383,7 @@ input.textbox.yh-login-input {
 }
 .yh-login-input::placeholder { color: #888 !important; }
 .yh-btn-login,
+button.yh-btn-login,
 input.button.yh-btn-login {
   flex: 0 0 auto !important;
   width: auto !important;
@@ -382,16 +391,23 @@ input.button.yh-btn-login {
   height: 24px !important;
   padding: 0 10px !important;
   background: #e10600 !important;
+  background-image: none !important;
   border: 1px solid #9a0000 !important;
   border-radius: 0 !important;
   color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
   font-size: 11px !important;
   font-weight: 700 !important;
   text-transform: none !important;
+  text-indent: 0 !important;
+  text-shadow: none !important;
   box-shadow: none !important;
   cursor: pointer !important;
+  -webkit-appearance: none !important;
+  appearance: none !important;
 }
 .yh-btn-login:hover,
+button.yh-btn-login:hover,
 input.button.yh-btn-login:hover {
   background: #ff1a1a !important;
   color: #fff !important;
@@ -960,6 +976,9 @@ blockquote, .codeblock, .mycode_quote, .mycode_code {
   min-width: 70px;
 }
 .yh-statline { color: #ddd; font-size: 11px; line-height: 1.5; white-space: nowrap; }
+@media (max-width: 920px) {
+  .yh-statline { white-space: normal !important; word-wrap: break-word !important; }
+}
 .yh-stat-ico { color: var(--yh-muted); margin-right: 4px; }
 .yh-lastpost a strong { color: #fff !important; }
 .yh-lastpost a { color: var(--yh-red2) !important; }
@@ -967,12 +986,12 @@ blockquote, .codeblock, .mycode_quote, .mycode_code {
 .yh-boardnums {
   display: flex;
   flex-wrap: wrap;
-  gap: 18px;
+  gap: 10px 14px;
   padding: 4px 0 8px;
   color: #fff;
 }
 .yh-boardnums strong { color: #fff; }
-.yh-boardfoot { color: var(--yh-muted) !important; }
+.yh-boardfoot { color: var(--yh-muted) !important; word-wrap: break-word; }
 
 .yh-cat .thead { background: #000 !important; }
 
@@ -981,17 +1000,49 @@ blockquote, .codeblock, .mycode_quote, .mycode_code {
   html, body {
     overflow-x: hidden !important;
   }
+  /* One shared gutter: only #container pads. Topnav, login, forums share the same edges. */
   #container {
     padding: 0 8px 24px !important;
     width: 100% !important;
     max-width: 100% !important;
+    min-width: 0 !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
+  }
+  #content,
+  #content .wrapper,
+  .wrapper {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
+  }
+
+  .yh-topnav,
+  .yh-subnav,
+  .yh-header,
+  table.yh-cat,
+  table.tborder,
+  table.yh-statsbox,
+  #footer,
+  #footer .wrapper {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    box-sizing: border-box !important;
   }
 
   .yh-topnav {
     flex-wrap: wrap !important;
     align-items: center !important;
     gap: 8px !important;
-    padding: 8px !important;
+    padding: 8px 0 !important;
   }
   .yh-topnav-links {
     gap: 8px 12px !important;
@@ -1051,22 +1102,35 @@ blockquote, .codeblock, .mycode_quote, .mycode_code {
     padding: 0 12px !important;
   }
   .yh-btn-login,
-  input.button.yh-btn-login {
+  button.yh-btn-login,
+  input.button.yh-btn-login,
+  .yh-loginbox input[type="submit"],
+  .yh-loginbox button[type="submit"] {
     -webkit-appearance: none !important;
     appearance: none !important;
+    display: block !important;
     width: 100% !important;
     height: 42px !important;
     min-width: 0 !important;
+    margin: 0 !important;
     padding: 0 14px !important;
     font-size: 15px !important;
     font-weight: 700 !important;
+    font-family: Tahoma, Arial, sans-serif !important;
     line-height: 42px !important;
-    color: #fff !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
     text-indent: 0 !important;
+    text-align: center !important;
     text-shadow: none !important;
+    letter-spacing: normal !important;
     background: #e10600 !important;
     background-image: none !important;
+    background-position: 0 0 !important;
     border: 1px solid #9a0000 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    overflow: visible !important;
   }
   .yh-login-bottom {
     display: flex !important;
@@ -1076,15 +1140,57 @@ blockquote, .codeblock, .mycode_quote, .mycode_code {
     font-size: 13px !important;
   }
 
-  /* Content below: mobile-friendly */
-  #content,
-  #content .wrapper {
-    width: 100% !important;
-    max-width: 100% !important;
-    overflow-x: hidden !important;
-  }
   #content > .wrapper > .navigation {
     display: none !important;
+  }
+
+  /* Board stats / who's online / footer: wrap, don't clip */
+  .yh-boardnums {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px 12px !important;
+  }
+  .yh-boardnums span {
+    white-space: normal !important;
+  }
+  .yh-boardfoot,
+  .yh-statline,
+  table.yh-cat .smalltext,
+  table.tborder .smalltext,
+  #boardstats_e td,
+  #boardstats_e .smalltext {
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    overflow-wrap: anywhere !important;
+  }
+  table.yh-cat,
+  table.tborder,
+  table.yh-statsbox {
+    width: 100% !important;
+    max-width: 100% !important;
+    table-layout: fixed !important;
+  }
+  table.yh-cat td,
+  table.tborder td,
+  table.yh-statsbox td {
+    word-wrap: break-word !important;
+    overflow-wrap: anywhere !important;
+    max-width: 100% !important;
+  }
+  #footer,
+  #footer .upper,
+  #footer .lower,
+  #footer ul.menu {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    white-space: normal !important;
+  }
+  #footer ul.menu li {
+    display: inline-block !important;
+    margin: 4px 8px 4px 0 !important;
+  }
+  .trow1, .trow2, .tcat, .thead, .tfoot {
+    box-sizing: border-box !important;
   }
 
   /*
@@ -1172,96 +1278,136 @@ blockquote, .codeblock, .mycode_quote, .mycode_code {
   .yh-user-title, .yh-badge, .yh-user-foot { font-size: 9px !important; }
   .yh-user-stats { font-size: 10px !important; }
 
-  .yh-profile-grid { grid-template-columns: 1fr !important; }
 }
 
 /* ========== MEMBER PROFILE (YouHack 3-col) ========== */
-.yh-profile { margin: 8px 0 20px; }
+.yh-profile {
+  margin: 8px 0 20px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #2a2a2a;
+  background: #0a0a0a;
+  overflow: hidden;
+}
 .yh-profile-top {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  gap: 0;
   background: #0a0a0a;
-  border: 1px solid #2a2a2a;
-  padding: 6px 8px;
-  margin-bottom: 8px;
+  border: 0;
+  border-bottom: 1px solid #2a2a2a;
+  padding: 0;
+  margin: 0;
   font-size: 11px;
+  width: 100%;
   max-width: 100%;
   box-sizing: border-box;
   overflow: hidden;
 }
+.yh-profile-role,
+.yh-profile-uid,
+.yh-profile-statuswrap,
+.yh-profile-viewing {
+  display: flex;
+  align-items: center;
+  border-right: 1px solid #2a2a2a;
+  padding: 6px 10px;
+  box-sizing: border-box;
+}
 .yh-profile-role {
-  background: #1a1a1a;
-  border: 1px solid #333;
+  background: #151515;
   color: #e10600 !important;
   font-weight: 700;
-  padding: 3px 8px;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 .yh-profile-uid {
-  background: #151515;
-  border: 1px solid #333;
+  background: #0a0a0a;
   color: #fff;
-  padding: 3px 8px;
+  white-space: nowrap;
+}
+.yh-profile-statuswrap {
+  background: #0a0a0a;
+  padding: 0;
+}
+.yh-online-badge,
+.yh-offline-badge {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 28px;
+  padding: 6px 12px !important;
+  border: 0 !important;
+  font-weight: 700 !important;
+  text-transform: lowercase;
+  box-sizing: border-box;
 }
 .yh-online-badge {
-  display: inline-block;
   background: #1f8f2e !important;
   color: #fff !important;
-  font-weight: 700 !important;
-  padding: 3px 10px;
-  text-transform: lowercase;
 }
 .yh-offline-badge {
-  display: inline-block;
   background: #333 !important;
   color: #bbb !important;
-  font-weight: 700 !important;
-  padding: 3px 10px;
-  text-transform: lowercase;
 }
 .yh-profile-viewing {
   color: #ddd;
-  margin-left: 4px;
   flex: 1 1 auto;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  border-right: 0;
+  background: #0a0a0a;
 }
 .yh-profile-viewing a { color: #fff !important; }
 
 @media (max-width: 920px) {
   .yh-profile-top {
-    gap: 4px;
-    padding: 6px;
+    flex-wrap: wrap;
+  }
+  .yh-profile-role,
+  .yh-profile-uid,
+  .yh-profile-statuswrap {
+    flex: 0 0 auto;
   }
   .yh-profile-viewing {
     flex: 1 1 100%;
     white-space: normal;
-    margin-left: 0;
-    margin-top: 2px;
+    border-top: 1px solid #2a2a2a;
   }
 }
 
 .yh-profile-grid {
-  display: grid;
-  grid-template-columns: 220px 1fr 1fr;
-  gap: 8px;
-  align-items: start;
+  display: grid !important;
+  /* YouHack: narrower avatar col, wider forum info, contact on right */
+  grid-template-columns: minmax(140px, 0.85fr) minmax(0, 1.35fr) minmax(0, 1fr) !important;
+  gap: 0;
+  align-items: stretch;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  border: 0;
 }
 .yh-profile-col {
   background: #0d0d0d;
-  border: 1px solid #2a2a2a;
+  border: 0;
+  border-right: 1px solid #2a2a2a;
   padding: 10px;
   min-width: 0;
+}
+.yh-profile-col:last-child {
+  border-right: 0;
 }
 .yh-profile-heading {
   color: #fff;
   font-weight: 700;
   margin-bottom: 8px;
   font-size: 13px;
+  text-align: center;
 }
 .yh-profile-name { color: #e10600 !important; }
 .yh-profile-avatar-wrap { text-align: center; margin-bottom: 8px; }
@@ -1320,6 +1466,7 @@ blockquote, .codeblock, .mycode_quote, .mycode_code {
   font-weight: 700;
   font-size: 12px;
   margin: 0 0 6px;
+  text-align: center;
 }
 .yh-profile-section-title.yh-red { color: #e10600 !important; }
 .yh-profile-box {
@@ -1346,20 +1493,27 @@ blockquote, .codeblock, .mycode_quote, .mycode_code {
 
 .yh-profile-statbars {
   display: flex;
-  flex-direction: column;
-  gap: 5px;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 0;
   margin-bottom: 10px;
+  border: 1px solid #2a2a2a;
+  background: #141414;
 }
 .yh-statbar {
   display: block;
-  background: #141414;
-  border: 1px solid #2a2a2a;
+  flex: 1 1 0;
+  background: transparent;
+  border: 0;
+  border-right: 1px solid #2a2a2a;
   color: #e10600 !important;
   font-weight: 700;
-  font-size: 12px;
-  padding: 7px 10px;
+  font-size: 11px;
+  padding: 7px 6px;
   text-align: center;
+  min-width: 0;
 }
+.yh-statbar:last-child { border-right: 0; }
 a.yh-statbar:hover { background: #1a1a1a; color: #ff1a1a !important; }
 .yh-warn-link { color: #ffcc00 !important; margin-left: 6px; font-size: 11px; }
 
@@ -1389,13 +1543,76 @@ a.yh-statbar:hover { background: #1a1a1a; color: #ff1a1a !important; }
 .yh-profile-tools a { color: #e10600 !important; margin: 0 4px; }
 
 @media (max-width: 920px) {
+  .yh-profile {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+  /* Keep 3 columns, full width with top bar (no side gutters / gaps) */
   .yh-profile-grid {
-    grid-template-columns: 1fr !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.25fr) minmax(0, 1fr) !important;
+    gap: 0 !important;
+    width: 100% !important;
+  }
+  .yh-profile-col {
+    padding: 8px 6px !important;
+  }
+  .yh-profile-heading,
+  .yh-profile-section-title {
+    font-size: 11px !important;
+    margin-bottom: 6px !important;
+  }
+  .yh-profile-mini,
+  .yh-profile-row {
+    font-size: 10px !important;
+    line-height: 1.45 !important;
+  }
+  .yh-profile-row {
+    flex-wrap: wrap !important;
+    gap: 2px 6px !important;
+  }
+  .yh-profile-row .yh-v {
+    text-align: left !important;
+    flex: 1 1 100%;
+  }
+  .yh-profile-badge,
+  .yh-profile-banner {
+    font-size: 9px !important;
+    padding: 3px 5px !important;
+    max-width: 100% !important;
+  }
+  /* Stack rep/warn bars so text never overlaps on narrow screens */
+  .yh-profile-statbars {
+    flex-direction: column !important;
+    gap: 0 !important;
+  }
+  .yh-statbar {
+    font-size: 10px !important;
+    padding: 6px 4px !important;
+    border-right: 0 !important;
+    border-bottom: 1px solid #2a2a2a !important;
+    white-space: normal !important;
+  }
+  .yh-statbar:last-child { border-bottom: 0 !important; }
+  .yh-contact-btn {
+    min-width: 0 !important;
+    padding: 5px 8px !important;
+    font-size: 10px !important;
   }
   .yh-profile-top { font-size: 10px; }
   .yh-profile-avatar img,
   .yh-avatar-img {
-    max-width: 120px !important;
-    max-height: 120px !important;
+    max-width: 88px !important;
+    max-height: 88px !important;
+  }
+  .yh-profile-box {
+    padding: 6px !important;
+  }
+  .yh-muted,
+  .yh-findlink {
+    display: inline !important;
+    white-space: normal !important;
   }
 }
