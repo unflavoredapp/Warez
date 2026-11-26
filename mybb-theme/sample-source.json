@@ -1,0 +1,31 @@
+{
+  "name": "warez.skin Sample Repo",
+  "identifier": "skin.warez.sample",
+  "subtitle": "Demo IPA catalog for discovery UI",
+  "apps": [
+    {
+      "name": "Sample Player",
+      "bundleIdentifier": "skin.warez.sample.player",
+      "developerName": "warez.skin",
+      "subtitle": "Demo listing",
+      "version": "1.0.0",
+      "versionDate": "2026-11-25",
+      "size": 12582912,
+      "downloadURL": "https://warez.skin/sample/player.ipa",
+      "screenshotURLs": [],
+      "localizedDescription": "Demo app listing used to exercise discovery + details."
+    },
+    {
+      "name": "Sample Notes",
+      "bundleIdentifier": "skin.warez.sample.notes",
+      "developerName": "warez.skin",
+      "subtitle": "Demo listing",
+      "version": "2.1.0",
+      "versionDate": "2026-11-20",
+      "size": 8388608,
+      "downloadURL": "https://warez.skin/sample/notes.ipa",
+      "screenshotURLs": [],
+      "localizedDescription": "Another demo listing for the details page."
+    }
+  ]
+}

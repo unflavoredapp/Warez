@@ -56,6 +56,20 @@ if (is_file($src . '/panelchat-page.php')) {
 	copy($src . '/panelchat-page.php', MYBB_ROOT . 'panelchat.php');
 	@chmod(MYBB_ROOT . 'panelchat.php', 0644);
 }
+if (is_file($src . '/plugin/apprepos.php')) {
+	copy($src . '/plugin/apprepos.php', MYBB_ROOT . 'inc/plugins/apprepos.php');
+}
+if (is_file($src . '/apprepos-api.php')) {
+	copy($src . '/apprepos-api.php', MYBB_ROOT . 'apprepos.php');
+	@chmod(MYBB_ROOT . 'apprepos.php', 0644);
+}
+if (is_file($src . '/sample-source.json')) {
+	copy($src . '/sample-source.json', MYBB_ROOT . 'sample-source.json');
+}
+@mkdir(MYBB_ROOT . 'jscripts', 0755, true);
+if (is_file($src . '/jscripts/apprepos.js')) {
+	copy($src . '/jscripts/apprepos.js', MYBB_ROOT . 'jscripts/apprepos.js');
+}
 if (is_file($src . '/admin/modules/tools/changelogbot.php')) {
 	copy($src . '/admin/modules/tools/changelogbot.php', MYBB_ROOT . 'admin/modules/tools/changelogbot.php');
 }
@@ -132,8 +146,27 @@ panelchat_activate();
 $active['active']['panelchat'] = 'panelchat';
 $active['installed']['panelchat'] = 'panelchat';
 
+// App Repos (IPA discovery on portal)
+require_once MYBB_ROOT . 'inc/plugins/apprepos.php';
+if (!apprepos_is_installed()) {
+	apprepos_install();
+	echo "App Repos plugin installed\n";
+} else {
+	apprepos_insert_settings();
+	apprepos_install(); // ensure data dir / legacy import
+	echo "App Repos plugin already installed (settings/data refreshed)\n";
+}
+apprepos_activate();
+$active['active']['apprepos'] = 'apprepos';
+$active['installed']['apprepos'] = 'apprepos';
+@mkdir(MYBB_ROOT . 'uploads/apprepos', 0755, true);
+if (!is_file(MYBB_ROOT . 'uploads/apprepos/repos.json') && is_file('/opt/warez.skin/data/repos.json')) {
+	@copy('/opt/warez.skin/data/repos.json', MYBB_ROOT . 'uploads/apprepos/repos.json');
+	echo "Imported legacy repos.json\n";
+}
+
 $cache->update('plugins', $active);
-echo "Plugins enabled (warezskin + bits + changelogbot + template_conditionals + panelbg + panelchat)\n";
+echo "Plugins enabled (warezskin + bits + changelogbot + template_conditionals + panelbg + panelchat + apprepos)\n";
 
 // 3) Template set
 $query = $db->simple_select('templatesets', 'sid', "title='warez.skin'");

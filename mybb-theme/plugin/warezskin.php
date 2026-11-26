@@ -129,6 +129,11 @@ function warezskin_portal_blocks()
 {
 	global $db, $mybb, $yh_forum_stats;
 
+	// Portal is the IPA app-repo viewer when App Repos plugin is enabled
+	if (function_exists('apprepos_enabled') && apprepos_enabled()) {
+		return;
+	}
+
 	$unviewable = get_unviewable_forums(true);
 	$inactive = get_inactive_forums();
 	$where = "t.visible='1' AND t.closed NOT LIKE 'moved|%'";
