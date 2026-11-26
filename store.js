@@ -200,7 +200,7 @@ class Store {
         redirect: "follow",
         headers: {
           Accept: "application/json, text/plain, */*",
-          "User-Agent": "warez.skin-repo-discovery/1.0",
+          "User-Agent": "sentry.mba-repo-discovery/1.0",
         },
       });
       if (!res.ok) throw new Error(`fetch failed (${res.status})`);
@@ -299,6 +299,7 @@ class Store {
           subtitle: full.subtitle,
           iconURL: full.iconURL,
           version: full.version,
+          versionDate: full.versionDate,
           size: full.size,
           featured: full.featured,
           repoId: repo.id,

@@ -1,8 +1,8 @@
 {
-  "name": "warez-skin",
-  "version": "1.0.0",
+  "name": "sentry-mba",
+  "version": "2.0.0",
   "private": true,
-  "description": "warez.skin Node site (css.js + index.js)",
+  "description": "sentry.mba — IPA app repository discovery (classic green/black terminal UI)",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",

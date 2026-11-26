@@ -1,9 +1,13 @@
 #!/usr/bin/env node
 "use strict";
 
+/**
+ * Point Apache vhosts at the Node IPA discovery app on :3000.
+ * Retires MyBB DocumentRoot for public traffic (files kept on disk).
+ */
 const fs = require("fs");
 
-const snippet = `
+const PROXY_SNIPPET = `
     ProxyPreserveHost On
     RequestHeader set X-Forwarded-Proto "https"
     ProxyPass /health http://127.0.0.1:3000/health
@@ -14,6 +18,8 @@ const snippet = `
     ProxyPassReverse /panel.css http://127.0.0.1:3000/panel.css
     ProxyPass /sample-source.json http://127.0.0.1:3000/sample-source.json
     ProxyPassReverse /sample-source.json http://127.0.0.1:3000/sample-source.json
+    ProxyPass /app/ http://127.0.0.1:3000/app/
+    ProxyPassReverse /app/ http://127.0.0.1:3000/app/
     ProxyPass / http://127.0.0.1:3000/
     ProxyPassReverse / http://127.0.0.1:3000/
     ProxyTimeout 60
@@ -22,40 +28,81 @@ const snippet = `
 const candidates = [
   "/etc/apache2/sites-available/warez.skin-le-ssl.conf",
   "/etc/apache2/sites-available/warez.skin.conf",
+  "/etc/apache2/sites-available/sentry.mba-le-ssl.conf",
+  "/etc/apache2/sites-available/sentry.mba.conf",
 ];
+
+function stripMybbDocroot(text) {
+  let out = text;
+  out = out.replace(/^\s*DocumentRoot\s+.+$/gm, "");
+  out = out.replace(/<Directory[\s\S]*?<\/Directory>\s*/g, "");
+  return out;
+}
+
+function ensureProxy(text) {
+  let out = stripMybbDocroot(text);
+  if (out.includes("ProxyPass / http://127.0.0.1:3000/")) {
+    // Refresh snippet if missing /app/ routes from older configs.
+    if (!out.includes("ProxyPass /app/ http://127.0.0.1:3000/app/")) {
+      out = out.replace(
+        /ProxyPass \/ http:\/\/127\.0\.0\.1:3000\/\s*\n\s*ProxyPassReverse \/ http:\/\/127\.0\.0\.1:3000\//,
+        `ProxyPass /app/ http://127.0.0.1:3000/app/\n    ProxyPassReverse /app/ http://127.0.0.1:3000/app/\n    ProxyPass / http://127.0.0.1:3000/\n    ProxyPassReverse / http://127.0.0.1:3000/`
+      );
+    }
+    return out;
+  }
+  if (!out.includes("</VirtualHost>")) {
+    throw new Error("No </VirtualHost> block");
+  }
+  return out.replace("</VirtualHost>", `${PROXY_SNIPPET}\n</VirtualHost>`);
+}
 
 let updated = false;
 for (const file of candidates) {
   if (!fs.existsSync(file)) continue;
-  let text = fs.readFileSync(file, "utf8");
-
-  // Drop DocumentRoot-style static hosting if present; proxy handles / instead.
-  text = text.replace(/^\s*DocumentRoot\s+.+$/gm, "");
-  text = text.replace(/<Directory[\s\S]*?<\/Directory>\s*/g, "");
-
-  if (!text.includes("ProxyPass / http://127.0.0.1:3000/")) {
-    if (!text.includes("</VirtualHost>")) {
-      console.error(`No </VirtualHost> in ${file}`);
-      continue;
-    }
-    text = text.replace("</VirtualHost>", `${snippet}\n</VirtualHost>`);
+  try {
+    const next = ensureProxy(fs.readFileSync(file, "utf8"));
+    fs.writeFileSync(file, next);
+    console.log(`Updated ${file}`);
+    updated = true;
+  } catch (err) {
+    console.error(`${file}: ${err.message}`);
   }
+}
 
-  fs.writeFileSync(file, text);
-  console.log(`Updated ${file}`);
+// Ensure HTTP vhost for warez.skin exists (Certbot / redirects).
+const warezHttp = "/etc/apache2/sites-available/warez.skin.conf";
+if (!fs.existsSync(warezHttp)) {
+  fs.writeFileSync(
+    warezHttp,
+    `<VirtualHost *:80>
+    ServerName warez.skin
+    ServerAlias www.warez.skin
+${PROXY_SNIPPET}
+</VirtualHost>
+`
+  );
+  console.log(`Wrote ${warezHttp}`);
+  updated = true;
+}
+
+// Optional sentry.mba HTTP stub — enable once DNS A points at this VPS.
+const sentryHttp = "/etc/apache2/sites-available/sentry.mba.conf";
+if (!fs.existsSync(sentryHttp)) {
+  fs.writeFileSync(
+    sentryHttp,
+    `<VirtualHost *:80>
+    ServerName sentry.mba
+    ServerAlias www.sentry.mba
+${PROXY_SNIPPET}
+</VirtualHost>
+`
+  );
+  console.log(`Wrote ${sentryHttp}`);
   updated = true;
 }
 
 if (!updated) {
-  const conf = "/etc/apache2/sites-available/warez.skin.conf";
-  fs.writeFileSync(
-    conf,
-    `<VirtualHost *:80>
-    ServerName warez.skin
-    ServerAlias www.warez.skin
-${snippet}
-</VirtualHost>
-`
-  );
-  console.log(`Wrote ${conf}`);
+  console.error("No Apache site configs updated");
+  process.exit(1);
 }

@@ -1,24 +1,16 @@
-# warez.skin → MyBB
+# MyBB (retired from public site)
 
-The site at **https://warez.skin** now runs **MyBB 1.8** (Apache + PHP + MariaDB) instead of the Node IPA discovery app.
+Public traffic for **warez.skin** now goes to the Node IPA discovery app (`/opt/warez.skin`, PM2 `:3000`) with the classic sentry.mba green/black UI.
 
-## Live stack
+MyBB 1.8 files remain at `/var/www/warez.skin` and the MariaDB database is untouched, but Apache no longer uses that DocumentRoot for the live site.
+
+## Leftover paths
 
 | Piece | Location |
 |--------|----------|
-| Document root | `/var/www/warez.skin` |
-| Apache vhosts | `warez.skin.conf` + `warez.skin-le-ssl.conf` (Let’s Encrypt kept) |
-| Database | `warez_mybb` / user `warez_mybb` |
-| Theme | MyBB theme **warez.skin** (`tid=3`) + `cache/themes/theme3/warez.css` |
-| Theme source in repo | `mybb-theme/warez.css` |
-| Old Node app | `/opt/warez.skin` (PM2 process stopped) |
+| Old MyBB docroot | `/var/www/warez.skin` |
+| Theme sources | repo `mybb-theme/` |
+| Admin password file | `/root/.warez_mybb_admin` |
+| Node app | `/opt/warez.skin` |
 
-## Admin
-
-- URL: https://warez.skin/admin/
-- Username: `admin`
-- Password: stored on the VPS at `/root/.warez_mybb_admin` (rotate after first login)
-
-## Theme notes
-
-See `mybb-theme/README.md`. The live look is a classic **YouHack-style** dark board: black panels, red accents, lime status text, magenta welcome, top colored nav, skull forum icons, and traditional table forumbit/postbit. Redeploy with `php /opt/warez-theme/deploy.php`.
+To fully remove MyBB later (optional): stop relying on the DB, then drop `warez_mybb` and delete `/var/www/warez.skin`.
