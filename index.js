@@ -94,10 +94,7 @@ function shell(title, body) {
     <nav class="topnav float-tabs" aria-label="Primary">
       <a href="/">[ home ]</a>
       <a href="/#latest">[ latest apps ]</a>
-      <a href="/#repos">[ repos ]</a>
       <a href="/#search">[ search ]</a>
-      <a href="/#add">[ add source ]</a>
-      <a class="buy-gold" href="/#gold">[ <img class="coin" src="/gold.gif" width="12" height="10" alt="" />buy gold ]</a>
       <a href="/api/status">[ api ]</a>
     </nav>
     <div class="shell">
@@ -273,7 +270,6 @@ function renderAppDetails(app) {
 
 function renderIndex() {
   const stats = store.stats();
-  const repos = store.listRepos({ withApps: true });
   const allApps = store.searchApps("", { limit: 500 });
 
   // "Most" by appearing first in catalog order / name — use size as a stand-in popularity proxy
@@ -319,29 +315,6 @@ function renderIndex() {
     return apps.map(appCard).join("");
   }
 
-  function repoRows() {
-    if (!repos.length) {
-      return `<tr><td colspan="5" class="muted">No repos yet. Add a source below.</td></tr>`;
-    }
-    return repos
-      .map((repo) => {
-        const status = repo.lastError
-          ? `<span class="bad">Error</span>`
-          : `<span class="ok"><img src="/check.png" width="10" height="10" alt="" style="vertical-align:-1px;margin-right:4px" />Verified</span>`;
-        return `<tr data-id="${esc(repo.id)}">
-          <td class="mono">${esc(ymd(repo.refreshedAt || repo.addedAt))}</td>
-          <td><strong>${esc(repo.name)}</strong><div class="muted">${esc(repo.sourceURL)}</div></td>
-          <td class="mono">${esc(repo.appCount || 0)}</td>
-          <td>${status}</td>
-          <td>
-            <button class="btn btn-ghost" data-act="refresh" type="button">Refresh</button>
-            <button class="btn btn-ghost" data-act="remove" type="button">Remove</button>
-          </td>
-        </tr>`;
-      })
-      .join("");
-  }
-
   const body = `
     <header class="hero">
       <img class="banner" src="/sentry-banner.png" alt="SENTRY.MBA" width="900" height="200" />
@@ -364,41 +337,6 @@ function renderIndex() {
 
     <div class="section-title">[ Largest Indexed Apps ]</div>
     <div class="app-grid">${appCards(most)}</div>
-
-    <div class="section-title" id="repos">[ Indexed Repos ]</div>
-    <table class="repo" id="repos-table">
-      <thead><tr>
-        <th style="width:12%">::Updated</th>
-        <th>::Source</th>
-        <th style="width:10%">::Apps</th>
-        <th style="width:12%">::Status</th>
-        <th style="width:18%">::Actions</th>
-      </tr></thead>
-      <tbody>${repoRows()}</tbody>
-    </table>
-
-    <div class="panel" id="add">
-      <h2>[ Add IPA Source ]</h2>
-      <label for="source-url">Source JSON URL</label>
-      <input class="source" id="source-url" placeholder="https://example.com/apps.json" />
-      <div class="row">
-        <button class="btn" id="add-btn" type="button">Index source</button>
-        <button class="btn btn-ghost" id="sample-btn" type="button">Load sample</button>
-      </div>
-      <div class="msg" id="add-msg"></div>
-      <p class="muted" style="margin:10px 0 0;font-size:11px">
-        Expects AltStore-compatible JSON (<code>name</code>, <code>identifier</code>, <code>apps[]</code>).
-        Private/localhost URLs are blocked.
-      </p>
-    </div>
-
-    <div class="panel" id="gold">
-      <h2>[ <img class="coin" src="/gold.gif" width="12" height="10" alt="" /> Gold ]</h2>
-      <p class="gold" style="text-align:center;margin:0 0 8px">Classic sentry.mba coin — style only.</p>
-      <p class="muted" style="margin:0;text-align:center;font-size:12px">
-        Listing &amp; search stay free. Gold here is the old template accent (no payments wired up).
-      </p>
-    </div>
 
     <div class="footer-stats">
       Total Repos: <strong id="s-repos">${stats.repos}</strong>
@@ -464,64 +402,6 @@ function renderIndex() {
       };
       document.getElementById("q").addEventListener("keydown", function(e){
         if (e.key === "Enter") searchApps().catch(console.error);
-      });
-
-      async function indexSource(sourceURL) {
-        var msg = document.getElementById("add-msg");
-        msg.className = "msg"; msg.textContent = "Fetching source…";
-        document.getElementById("add-btn").disabled = true;
-        document.getElementById("sample-btn").disabled = true;
-        try {
-          var res = await fetch("/api/repos", {
-            method: "POST",
-            headers: {"Content-Type":"application/json"},
-            body: JSON.stringify({ sourceURL: sourceURL })
-          });
-          var data = await res.json();
-          if (!res.ok || !data.ok) throw new Error(data.error || res.status);
-          msg.className = "msg ok";
-          msg.textContent = "Indexed " + (data.repo.name || "source") + " · " + (data.repo.appCount || 0) + " apps";
-          document.getElementById("source-url").value = "";
-          location.reload();
-        } catch (err) {
-          msg.className = "msg err";
-          msg.textContent = String(err.message || err);
-        } finally {
-          document.getElementById("add-btn").disabled = false;
-          document.getElementById("sample-btn").disabled = false;
-        }
-      }
-      document.getElementById("add-btn").onclick = function(){
-        indexSource(document.getElementById("source-url").value.trim()).catch(console.error);
-      };
-      document.getElementById("sample-btn").onclick = function(){
-        var u = location.origin + "/sample-source.json";
-        document.getElementById("source-url").value = u;
-        indexSource(u).catch(console.error);
-      };
-
-      document.getElementById("repos-table").addEventListener("click", async function(e){
-        var btn = e.target.closest("button[data-act]");
-        if (!btn) return;
-        var tr = btn.closest("tr[data-id]");
-        var id = tr && tr.getAttribute("data-id");
-        if (!id) return;
-        btn.disabled = true;
-        try {
-          if (btn.getAttribute("data-act") === "refresh") {
-            var res = await fetch("/api/repos/"+encodeURIComponent(id)+"/refresh", {method:"POST"});
-            var data = await res.json();
-            if (!res.ok || !data.ok) throw new Error(data.error || res.status);
-          } else {
-            var res2 = await fetch("/api/repos/"+encodeURIComponent(id), {method:"DELETE"});
-            var data2 = await res2.json();
-            if (!res2.ok || !data2.ok) throw new Error(data2.error || res2.status);
-          }
-          location.reload();
-        } catch (err) {
-          alert(String(err.message || err));
-          btn.disabled = false;
-        }
       });
     </script>
   `;
