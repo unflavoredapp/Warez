@@ -539,7 +539,8 @@ function apprepos_portal_start()
 	if (!apprepos_enabled()) {
 		return;
 	}
-	// App details via portal.php?action=app&repo=&id=
+	// App details via portal.php?action=app&repo=&app=
+	// NOTE: do not use query key "id" — MyBB coerces input[id] to int.
 	if ($mybb->get_input('action') === 'app') {
 		apprepos_render_app_page();
 	}
@@ -616,7 +617,7 @@ function apprepos_render_portal_html($stats, $bburl, $canManage, $postKey)
 		</section>
 	</div>
 </div>
-<script src="'.htmlspecialchars_uni($bburl).'/jscripts/apprepos.js?ver=1"></script>';
+<script src="'.htmlspecialchars_uni($bburl).'/jscripts/apprepos.js?ver=2"></script>';
 }
 
 function apprepos_render_app_page()
@@ -624,7 +625,11 @@ function apprepos_render_app_page()
 	global $mybb, $headerinclude, $header, $footer, $templates;
 
 	$repoId = $mybb->get_input('repo');
-	$appId = $mybb->get_input('id');
+	$appId = $mybb->get_input('app');
+	if ($appId === '' || $appId === '0') {
+		// back-compat if anything still passes appid=
+		$appId = $mybb->get_input('appid');
+	}
 	$app = apprepos_get_app($repoId, $appId);
 	if (!$app) {
 		error('That app listing is missing or the repo was removed.');

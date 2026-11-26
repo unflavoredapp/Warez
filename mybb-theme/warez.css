@@ -1904,6 +1904,9 @@ a.yh-statbar:hover { background: #1a1a1a; color: #ff1a1a !important; }
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 .yh-ar-stat {
   background: #111;
@@ -1917,6 +1920,10 @@ a.yh-statbar:hover { background: #1a1a1a; color: #ff1a1a !important; }
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   gap: 10px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  clear: both;
 }
 .yh-ar-panel {
   background: #0d0d0d;
@@ -2034,11 +2041,27 @@ a.yh-statbar:hover { background: #1a1a1a; color: #ff1a1a !important; }
 .yh-ar-shot img { height: 180px; width: auto; border: 1px solid #333; background: #111; }
 
 @media (max-width: 920px) {
-  .yh-ar-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .yh-ar-span-8, .yh-ar-span-4, .yh-ar-span-12 { grid-column: span 12; }
+  .yh-apprepos { margin-top: 6px; }
+  .yh-ar-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    display: grid !important;
+  }
+  .yh-ar-stat { min-height: 58px; }
+  .yh-ar-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+  .yh-ar-span-8, .yh-ar-span-4, .yh-ar-span-12 {
+    grid-column: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
   .yh-ar-brand { font-size: 22px; }
   .yh-ar-chips { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .yh-ar-detail-grid { grid-template-columns: 1fr; }
   .yh-ar-repo-top { flex-direction: column; }
   .yh-ar-actions { flex-direction: row; }
+  .yh-ar-searchrow { flex-wrap: wrap; }
+  .yh-ar-btn { flex: 1 1 auto; }
 }

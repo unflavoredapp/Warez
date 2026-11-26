@@ -38,7 +38,11 @@ try {
 			exit;
 		}
 		if ($action === 'app') {
-			$app = apprepos_get_app($mybb->get_input('repo'), $mybb->get_input('id'));
+			$appKey = $mybb->get_input('app');
+			if ($appKey === '' || $appKey === '0') {
+				$appKey = $mybb->get_input('appid');
+			}
+			$app = apprepos_get_app($mybb->get_input('repo'), $appKey);
 			if (!$app) {
 				http_response_code(404);
 				echo json_encode(array('ok' => false, 'error' => 'app not found'));

@@ -31,7 +31,8 @@
       .replace(/"/g, "&quot;");
   }
   function appHref(app) {
-    return "portal.php?action=app&repo=" + encodeURIComponent(app.repoId) + "&id=" + encodeURIComponent(app.id);
+    // Use "app" not "id" — MyBB casts input[id] to integer
+    return "portal.php?action=app&repo=" + encodeURIComponent(app.repoId) + "&app=" + encodeURIComponent(app.id);
   }
   function api(path, opts) {
     opts = opts || {};
@@ -111,7 +112,7 @@
         var icon = app.iconURL
           ? '<img class="yh-ar-icon yh-ar-icon-sm" src="' + esc(app.iconURL) + '" alt="" loading="lazy" referrerpolicy="no-referrer" />'
           : '<div class="yh-ar-icon yh-ar-icon-sm yh-ar-icon-empty" aria-hidden="true"></div>';
-        var href = "portal.php?action=app&repo=" + encodeURIComponent(repo.id) + "&id=" + encodeURIComponent(app.id);
+        var href = "portal.php?action=app&repo=" + encodeURIComponent(repo.id) + "&app=" + encodeURIComponent(app.id);
         return '<a class="yh-ar-mini" href="' + esc(href) + '">' + icon +
           '<div><div class="yh-ar-mini-name">' + esc(app.name) + '</div>' +
           '<div class="yh-ar-mini-sub">' + esc(app.bundleIdentifier || "") +
