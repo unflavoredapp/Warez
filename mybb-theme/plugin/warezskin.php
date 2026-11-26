@@ -316,52 +316,6 @@ function warezskin_postbit(&$post)
 
 function warezskin_index_stats()
 {
-	global $boardstats, $cache, $lang, $theme, $db, $mybb, $templates, $collapsed, $collapsedthead, $collapsedimg, $expaltext, $whosonline, $birthdays, $logoutlink, $statspage;
-
-	$stats = $cache->read('stats');
-	if (!is_array($stats)) {
-		return;
-	}
-
-	$most = $cache->read('mostonline');
-	$mostnum = is_array($most) && isset($most['numusers']) ? my_number_format((int)$most['numusers']) : '0';
-
-	$newest = '—';
-	if (!empty($stats['lastuid']) && !empty($stats['lastusername'])) {
-		$newest = build_profile_link(htmlspecialchars_uni($stats['lastusername']), (int)$stats['lastuid']);
-	}
-
-	$forumstats = '
-	<tr><td class="tcat"><span class="smalltext"><strong>Board Statistics</strong></span></td></tr>
-	<tr>
-	<td class="trow1">
-	<div class="yh-boardnums">
-		<span><strong>Posts:</strong> '.my_number_format((int)$stats['numposts']).'</span>
-		<span><strong>Threads:</strong> '.my_number_format((int)$stats['numthreads']).'</span>
-		<span><strong>Members:</strong> '.my_number_format((int)$stats['numusers']).'</span>
-		<span><strong>Most Users Online:</strong> '.$mostnum.'</span>
-	</div>
-	<div class="smalltext yh-boardfoot">Newest Member: '.$newest.'</div>
-	</td>
-	</tr>';
-
-	$boardstats = '
-	<table border="0" cellspacing="0" cellpadding="0" class="tborder yh-cat">
-	<thead>
-	<tr>
-	<td class="thead">
-	<div><strong>Board Statistics</strong></div>
-	</td>
-	</tr>
-	</thead>
-	<tbody>
-	'.$whosonline.'
-	'.$birthdays.'
-	'.$forumstats.'
-	<tr>
-		<td class="tfoot"><span class="smalltext">'.$logoutlink.' '.$statspage.'</span></td>
-	</tr>
-	</tbody>
-	</table>
-	<br />';
+	// Intentionally empty: board stats come from theme templates
+	// (index_boardstats / index_whosonline / index_stats), not a hardcoded override.
 }

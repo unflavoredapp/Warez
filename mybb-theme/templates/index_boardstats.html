@@ -1,14 +1,8 @@
 <section class="sm-stats-wrap">
-	<div class="sm-stats-head thead{$collapsedthead['boardstats']}">
-		<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['boardstats']}.png" id="boardstats_img" class="expander" alt="{$expaltext}" title="{$expaltext}" /></div>
-		<strong>Board Statistics</strong>
-	</div>
-	<div class="sm-stats-body" style="{$collapsed['boardstats_e']}" id="boardstats_e">
-		{$whosonline}
-		{$birthdays}
-		{$forumstats}
-		<div class="sm-stats-foot">
-			<span class="smalltext">{$logoutlink} {$statspage}</span>
-		</div>
+	{$whosonline}
+	{$birthdays}
+	{$forumstats}
+	<div class="sm-stats-foot">
+		<span class="smalltext">{$logoutlink} {$statspage}</span>
 	</div>
 </section>

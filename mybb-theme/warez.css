@@ -200,10 +200,11 @@ img { max-width: 100%; border: 0; }
 .sm-crumbs {
   margin: 10px 0 14px;
   font-size: 12px;
-  color: var(--sm-muted);
+  color: #b0b0b0;
 }
 .sm-crumbs a { color: var(--sm-teal2) !important; }
-.navigation, .sm-crumbs .navigation { color: var(--sm-muted) !important; }
+.navigation, .sm-crumbs .navigation { color: #b0b0b0 !important; }
+.sm-crumbs .active, .navigation .active { color: #e0e0e0 !important; }
 
 /* ========== SHOUTBOX ========== */
 .sm-shoutbox {
@@ -319,8 +320,44 @@ img { max-width: 100%; border: 0; }
 .sm-cat-head a,
 .thead a,
 .tcat a { color: #fff !important; }
-.sm-cat-head .expcolimage { float: right; }
+.sm-cat-head .expcolimage {
+  float: right;
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+}
+.sm-cat-head .expcolimage img {
+  display: none !important;
+}
+.sm-cat-head .expcolimage::after {
+  content: "";
+  display: block;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+  transform: rotate(45deg);
+  margin: 2px auto 0;
+  opacity: 0.9;
+}
 .sm-cat-body { background: #181818; }
+
+.sm-subforums {
+  margin-top: 6px;
+  color: var(--sm-muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.sm-subforums-label { color: #888; margin-right: 4px; }
+.sm-subforums a { color: var(--sm-teal2) !important; }
+.subforumicon {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: none !important;
+}
 
 .sm-forum {
   display: grid;
@@ -392,13 +429,20 @@ img { max-width: 100%; border: 0; }
 }
 
 /* ========== STATS / BLOCKS ========== */
-.sm-stats-wrap, .sm-block, .tborder {
+.sm-stats-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0 0 14px !important;
+}
+.sm-block, .tborder {
   background: var(--sm-panel) !important;
   border: 1px solid #151515 !important;
   border-radius: var(--sm-radius) !important;
   overflow: hidden;
   margin: 0 0 14px !important;
 }
+.sm-stats-wrap .sm-block { margin: 0 !important; }
 .sm-stats-head, .sm-block-title {
   background: #262626 !important;
   color: #cfcfcf !important;
@@ -413,6 +457,11 @@ img { max-width: 100%; border: 0; }
   padding: 12px 14px !important;
 }
 .sm-online-note { margin: 0 0 8px; color: var(--sm-muted); }
+.sm-online-list a,
+.sm-online-list a span {
+  color: var(--sm-teal2) !important;
+  font-style: normal !important;
+}
 .sm-stat-grid {
   display: grid;
   gap: 8px;
@@ -424,7 +473,10 @@ img { max-width: 100%; border: 0; }
   margin-right: 4px;
 }
 .sm-stat-newest a { color: var(--sm-teal2) !important; }
-.sm-stats-foot { padding: 8px 14px 12px; color: var(--sm-faint); }
+.sm-stats-foot {
+  padding: 4px 2px 0;
+  color: var(--sm-faint);
+}
 .tfoot {
   background: #151515 !important;
   border: 0 !important;
