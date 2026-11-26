@@ -255,6 +255,12 @@ app.get("/sentry-banner.png", (_req, res) => {
 app.get("/sentry-banner.jpg", (_req, res) => {
   res.redirect(301, "/sentry-banner.png");
 });
+app.get("/sentry-logo.svg", (_req, res) => {
+  res.type("image/svg+xml").sendFile(path.join(__dirname, "public", "sentry-logo.svg"));
+});
+app.get("/sentry-logo.png", (_req, res) => {
+  res.type("image/png").sendFile(path.join(__dirname, "public", "sentry-logo.png"));
+});
 app.get("/gold.gif", (_req, res) => {
   res.type("image/gif").sendFile(path.join(__dirname, "public", "gold.gif"));
 });
@@ -532,7 +538,7 @@ function renderIndex(ctx = {}) {
 
   const body = `
     <header class="hero">
-      <img class="banner" src="/sentry-banner.png" alt="SENTRY.MBA" width="900" height="200" />
+      <img class="banner" src="/sentry-logo.svg" alt="SENTRY.MBA" width="720" height="160" />
       <p class="blurb">IPA repository discovery — index AltStore-style sources, search apps, open listings.<br/>Style inspired by classic sentry.mba · content is app repos only.</p>
     </header>
 

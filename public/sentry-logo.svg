@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 180" role="img" aria-label="SENTRY.MBA">
+  <defs>
+    <linearGradient id="metal" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="40%" stop-color="#d0d0d0"/>
+      <stop offset="100%" stop-color="#8f8f8f"/>
+    </linearGradient>
+    <linearGradient id="ora" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffc14d"/>
+      <stop offset="55%" stop-color="#ff8800"/>
+      <stop offset="100%" stop-color="#e06000"/>
+    </linearGradient>
+    <filter id="g" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2.4" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <ellipse cx="360" cy="90" rx="78" ry="70" fill="#ff8800" opacity="0.10"/>
+  <g fill="none" stroke="url(#ora)" filter="url(#g)" stroke-linecap="round" stroke-linejoin="round">
+    <!-- classic double-S / section mark -->
+    <path d="M392 36c34 0 52 20 52 48s-22 42-52 42h-64c-32 0-50 16-50 38s20 34 50 34"
+          stroke-width="3.4"/>
+    <path d="M328 36c-34 0-52 20-52 48s22 42 52 42h64c32 0 50 16 50 38s-20 34-50 34"
+          stroke-width="3.4"/>
+    <path d="M380 52c22 0 34 12 34 30s-14 28-34 28h-40" stroke-width="1.7" opacity=".9"/>
+    <path d="M340 52c-22 0-34 12-34 30s14 28 34 28h40" stroke-width="1.7" opacity=".9"/>
+    <path d="M340 128c-22 0-34 10-34 24s12 22 34 22" stroke-width="1.7" opacity=".85"/>
+    <path d="M380 128c22 0 34 10 34 24s-12 22-34 22" stroke-width="1.7" opacity=".85"/>
+    <g fill="#ffb24d" stroke="none">
+      <circle cx="392" cy="36" r="2.3"/><circle cx="328" cy="36" r="2.3"/>
+      <circle cx="444" cy="84" r="2"/><circle cx="276" cy="84" r="2"/>
+      <circle cx="340" cy="110" r="1.8"/><circle cx="380" cy="110" r="1.8"/>
+      <circle cx="328" cy="174" r="2.1"/><circle cx="392" cy="174" r="2.1"/>
+    </g>
+  </g>
+  <g font-family="Arial Black, Helvetica, Arial, sans-serif" font-size="46" font-weight="800">
+    <text x="360" y="102" text-anchor="middle">
+      <tspan fill="url(#metal)">SENTRY</tspan><tspan fill="url(#ora)">.MBA</tspan>
+    </text>
+  </g>
+</svg>
