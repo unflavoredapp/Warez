@@ -83,7 +83,9 @@ a:hover { color: #fff; text-decoration: underline; }
   width: min(900px, 100%);
   height: auto;
   margin: 0 auto;
-  image-rendering: auto;
+  background: transparent;
+  /* soft lift so glow reads on the striped black page bg */
+  filter: drop-shadow(0 0 10px rgba(51, 255, 51, 0.25));
 }
 .blurb {
   color: var(--warn);

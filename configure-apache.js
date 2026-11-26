@@ -18,8 +18,8 @@ const PROXY_SNIPPET = `
     ProxyPassReverse /panel.css http://127.0.0.1:3000/panel.css
     ProxyPass /sample-source.json http://127.0.0.1:3000/sample-source.json
     ProxyPassReverse /sample-source.json http://127.0.0.1:3000/sample-source.json
-    ProxyPass /sentry-banner.jpg http://127.0.0.1:3000/sentry-banner.jpg
-    ProxyPassReverse /sentry-banner.jpg http://127.0.0.1:3000/sentry-banner.jpg
+    ProxyPass /sentry-banner.png http://127.0.0.1:3000/sentry-banner.png
+    ProxyPassReverse /sentry-banner.png http://127.0.0.1:3000/sentry-banner.png
     ProxyPass /app/ http://127.0.0.1:3000/app/
     ProxyPassReverse /app/ http://127.0.0.1:3000/app/
     ProxyPass / http://127.0.0.1:3000/
@@ -45,10 +45,10 @@ function ensureProxy(text) {
   let out = stripMybbDocroot(text);
   if (out.includes("ProxyPass / http://127.0.0.1:3000/")) {
     // Refresh snippet if missing routes from older configs.
-    if (!out.includes("ProxyPass /sentry-banner.jpg http://127.0.0.1:3000/sentry-banner.jpg")) {
+    if (!out.includes("ProxyPass /sentry-banner.png http://127.0.0.1:3000/sentry-banner.png")) {
       out = out.replace(
         /ProxyPass \/ http:\/\/127\.0\.0\.1:3000\/\s*\n\s*ProxyPassReverse \/ http:\/\/127\.0\.0\.1:3000\//,
-        `ProxyPass /sentry-banner.jpg http://127.0.0.1:3000/sentry-banner.jpg\n    ProxyPassReverse /sentry-banner.jpg http://127.0.0.1:3000/sentry-banner.jpg\n    ProxyPass / http://127.0.0.1:3000/\n    ProxyPassReverse / http://127.0.0.1:3000/`
+        `ProxyPass /sentry-banner.png http://127.0.0.1:3000/sentry-banner.png\n    ProxyPassReverse /sentry-banner.png http://127.0.0.1:3000/sentry-banner.png\n    ProxyPass / http://127.0.0.1:3000/\n    ProxyPassReverse / http://127.0.0.1:3000/`
       );
     }
     if (!out.includes("ProxyPass /app/ http://127.0.0.1:3000/app/")) {
