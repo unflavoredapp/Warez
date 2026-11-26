@@ -443,11 +443,38 @@ input.button.yh-btn-login:hover {
 }
 .yh-remember input { margin: 0 !important; }
 
-.yh-userpanel {
-  display: flex !important;
-  gap: 10px !important;
-  align-items: flex-start !important;
+.yh-loginbox-member {
+  position: relative !important;
   width: 100% !important;
+  height: 100% !important;
+  min-height: 100% !important;
+  background-color: transparent !important;
+  overflow: hidden !important;
+}
+.yh-loginbox-member.yh-has-panelbg {
+  background-image: var(--yh-panelbg) !important;
+  background-size: cover !important;
+  background-position: center center !important;
+  background-repeat: no-repeat !important;
+}
+.yh-loginbox-member.yh-has-panelbg::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  background: rgba(0, 0, 0, 0.55) !important;
+  pointer-events: none !important;
+  z-index: 0 !important;
+}
+.yh-userpanel {
+  position: relative !important;
+  z-index: 1 !important;
+  display: flex !important;
+  gap: 12px !important;
+  align-items: center !important; /* drop avatar to mid-line; kills empty gap under it */
+  width: 100% !important;
+  min-height: 100% !important;
+  padding: 4px 0 !important;
+  box-sizing: border-box !important;
 }
 .yh-userpanel-avatar {
   flex: 0 0 64px !important;
@@ -457,6 +484,8 @@ input.button.yh-btn-login:hover {
   background: #000 !important;
   display: block !important;
   overflow: hidden !important;
+  align-self: center !important;
+  margin-top: 6px !important; /* nudge slightly lower in the panel */
 }
 .yh-userpanel-avatar img {
   width: 64px !important;
@@ -464,6 +493,16 @@ input.button.yh-btn-login:hover {
   object-fit: cover !important;
   display: block !important;
   border: 0 !important;
+}
+.yh-panelbg-preview {
+  width: 100%;
+  max-width: 420px;
+  height: 120px;
+  border: 1px solid #2a2a2a;
+  background-color: #111;
+  background-size: cover;
+  background-position: center;
+  margin: 8px 0;
 }
 .yh-avatar-guest {
   background: #000 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='24' r='12' fill='%23444'/%3E%3Cpath d='M12 58c0-12 9-20 20-20s20 8 20 20' fill='%23444'/%3E%3C/svg%3E") center/70% no-repeat !important;
@@ -508,6 +547,7 @@ input.button.yh-btn-login:hover {
 .yh-ico-profile { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%23fff' d='M8 1a3 3 0 110 6 3 3 0 010-6zM2 14c0-3 2.5-5 6-5s6 2 6 5v1H2v-1z'/%3E%3C/svg%3E"); }
 .yh-ico-alert { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%23fff' d='M8 1a5 5 0 015 5v2.5l1.5 2H1.5L3 8.5V6a5 5 0 015-5zm-1 12h2a1 1 0 11-2 0z'/%3E%3C/svg%3E"); }
 .yh-ico-logout { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%23fff' d='M6 2H2v12h4v-2H4V4h2V2zm3.5 3L12 7.5H6v1h6L9.5 11l1 1L15 8l-4.5-4-1 1z'/%3E%3C/svg%3E"); }
+.yh-ico-bg { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%23ffcc00' d='M2 3h12v10H2V3zm2 2v6h8V5H4zm1 1h3v3H5V6zm5 0h2v2h-2V6z'/%3E%3C/svg%3E"); }
 .yh-ico-login { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%23fff' d='M10 2h4v12h-4v-2h2V4h-2V2zM6.5 5L4 7.5h6v1H4L6.5 11l-1 1L1 8l4.5-4 1 1z'/%3E%3C/svg%3E"); }
 .yh-ico-register { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%23fff' d='M8 1a3 3 0 110 6 3 3 0 010-6zm-1 7h2v2h2v2H9v2H7v-2H5V10h2V8z'/%3E%3C/svg%3E"); }
 
@@ -575,13 +615,21 @@ input.button.yh-btn-login:hover {
 .tcat a { color: var(--yh-muted) !important; }
 
 .trow1, .trow2 {
-  background: var(--yh-row) !important;
+  background: var(--yh-panel) !important; /* match category panel — no zebra mismatch */
   color: var(--yh-ink) !important;
   border-bottom: 1px solid #222 !important;
   padding: 8px 10px !important;
 }
-.trow2 { background: var(--yh-row2) !important; }
-.trow1:hover, .trow2:hover { background: #202020 !important; }
+.trow2 { background: var(--yh-panel) !important; }
+.trow1:hover, .trow2:hover { background: #1c1c1c !important; }
+table.yh-cat,
+table.yh-cat tbody {
+  background: var(--yh-panel) !important;
+}
+table.yh-cat td.trow1,
+table.yh-cat td.trow2 {
+  background: var(--yh-panel) !important;
+}
 
 .trow_sep {
   background: #101010 !important;
@@ -1085,8 +1133,19 @@ blockquote, .codeblock, .mycode_quote, .mycode_code {
     width: 100% !important;
     max-width: 100% !important;
     flex: none !important;
-    padding: 12px !important;
+    padding: 10px 12px !important;
     min-height: 0 !important;
+    align-items: center !important;
+  }
+  .yh-loginbox-member {
+    min-height: 0 !important;
+  }
+  .yh-userpanel {
+    align-items: center !important;
+    padding: 2px 0 !important;
+  }
+  .yh-userpanel-avatar {
+    margin-top: 8px !important;
   }
   .yh-login-form {
     gap: 10px !important;
@@ -1238,7 +1297,7 @@ blockquote, .codeblock, .mycode_quote, .mycode_code {
   table.yh-cat .yh-col-last {
     display: none !important;
   }
-  /* Each forum row: skull | title */
+  /* Each forum row: skull | title — same bg as desktop panel (no zebra striping) */
   table.yh-cat > tbody > tr {
     display: flex !important;
     flex-direction: row !important;
@@ -1248,10 +1307,14 @@ blockquote, .codeblock, .mycode_quote, .mycode_code {
     box-sizing: border-box !important;
     padding: 10px 8px !important;
     border-bottom: 1px solid #2a2a2a !important;
-    background: #141414 !important;
+    background: var(--yh-panel) !important;
   }
-  table.yh-cat > tbody > tr:nth-child(even) {
-    background: #101010 !important;
+  table.yh-cat > tbody > tr:nth-child(even),
+  table.yh-cat > tbody > tr:nth-child(odd) {
+    background: var(--yh-panel) !important;
+  }
+  table.yh-cat > tbody > tr > td {
+    background: transparent !important;
   }
   table.yh-cat .yh-col-icon {
     display: block !important;

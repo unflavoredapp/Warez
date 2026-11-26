@@ -46,6 +46,9 @@ if (is_file($src . '/plugin/changelogbot.php')) {
 if (is_file($src . '/plugin/template_conditionals.php')) {
 	copy($src . '/plugin/template_conditionals.php', MYBB_ROOT . 'inc/plugins/template_conditionals.php');
 }
+if (is_file($src . '/plugin/panelbg.php')) {
+	copy($src . '/plugin/panelbg.php', MYBB_ROOT . 'inc/plugins/panelbg.php');
+}
 if (is_file($src . '/admin/modules/tools/changelogbot.php')) {
 	copy($src . '/admin/modules/tools/changelogbot.php', MYBB_ROOT . 'admin/modules/tools/changelogbot.php');
 }
@@ -95,8 +98,22 @@ $active['installed']['changelogbot'] = 'changelogbot';
 $active['active']['template_conditionals'] = 'template_conditionals';
 $active['installed']['template_conditionals'] = 'template_conditionals';
 
+// Panel Background (GIF/image behind header account box)
+require_once MYBB_ROOT . 'inc/plugins/panelbg.php';
+if (!panelbg_is_installed()) {
+	panelbg_install();
+	echo "Panel Background plugin installed\n";
+} else {
+	panelbg_insert_settings();
+	echo "Panel Background plugin already installed (settings refreshed)\n";
+}
+panelbg_activate();
+$active['active']['panelbg'] = 'panelbg';
+$active['installed']['panelbg'] = 'panelbg';
+@mkdir(MYBB_ROOT . 'uploads/panelbg', 0755, true);
+
 $cache->update('plugins', $active);
-echo "Plugins enabled (warezskin + bits + changelogbot + template_conditionals)\n";
+echo "Plugins enabled (warezskin + bits + changelogbot + template_conditionals + panelbg)\n";
 
 // 3) Template set
 $query = $db->simple_select('templatesets', 'sid', "title='warez.skin'");

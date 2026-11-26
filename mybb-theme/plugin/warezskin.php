@@ -26,9 +26,15 @@ $plugins->add_hook('member_profile_end', 'warezskin_profile');
 
 function warezskin_header_avatar()
 {
-	global $mybb, $yh_avatar;
+	global $mybb, $yh_avatar, $yh_panelbg_style, $yh_panelbg_class;
 
 	$yh_avatar = $mybb->settings['bburl'] . '/images/default_avatar.png';
+	if (!isset($yh_panelbg_style)) {
+		$yh_panelbg_style = '';
+	}
+	if (!isset($yh_panelbg_class)) {
+		$yh_panelbg_class = '';
+	}
 	if (!empty($mybb->user['uid'])) {
 		$avatar = format_avatar($mybb->user['avatar'], $mybb->user['avatardimensions'], '64x64');
 		if (!empty($avatar['image'])) {
