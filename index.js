@@ -187,6 +187,10 @@ app.get("/panel.css", (_req, res) => {
   res.type("text/css").send(css);
 });
 
+app.get("/sentry-banner.jpg", (_req, res) => {
+  res.sendFile(path.join(__dirname, "public", "sentry-banner.jpg"));
+});
+
 app.get("/app/:repoId/:appId", (req, res) => {
   const found = store.getApp(req.params.repoId, req.params.appId);
   if (!found) {
@@ -305,8 +309,7 @@ function renderIndex() {
 
   const body = `
     <header class="hero">
-      <div class="logo-mark" aria-hidden="true"></div>
-      <div class="logo-text">SENTRY</div>
+      <img class="banner" src="/sentry-banner.jpg" alt="SENTRY.MBA" width="900" height="200" />
       <p class="blurb">IPA repository discovery — index AltStore-style sources, search apps, open listings.<br/>Style inspired by classic sentry.mba · content is app repos only.</p>
     </header>
 

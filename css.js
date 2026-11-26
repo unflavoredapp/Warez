@@ -76,22 +76,14 @@ a:hover { color: #fff; text-decoration: underline; }
 
 .hero {
   text-align: center;
-  padding: 18px 0 10px;
+  padding: 10px 0 10px;
 }
-.logo-mark {
-  width: 120px;
-  height: 90px;
-  margin: 0 auto 6px;
-  background:
-    radial-gradient(circle at 50% 80%, rgba(51,255,51,0.35), transparent 55%),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 90'%3E%3Cg fill='none' stroke='%2333ff33' stroke-width='1'%3E%3Cpath d='M60 8 L100 78 L20 78 Z'/%3E%3Cpath d='M60 22 L88 72 L32 72 Z' opacity='.7'/%3E%3Cpath d='M60 36 L76 66 L44 66 Z' opacity='.5'/%3E%3C/g%3E%3Cg fill='%2333ff33'%3E%3Ccircle cx='60' cy='8' r='1.5'/%3E%3Ccircle cx='40' cy='40' r='1'/%3E%3Ccircle cx='80' cy='40' r='1'/%3E%3Ccircle cx='30' cy='60' r='1'/%3E%3Ccircle cx='90' cy='60' r='1'/%3E%3Ccircle cx='60' cy='55' r='1.2'/%3E%3C/g%3E%3C/svg%3E")
-    center/contain no-repeat;
-}
-.logo-text {
-  letter-spacing: 0.35em;
-  font-size: 14px;
-  color: var(--ink);
-  font-weight: 700;
+.hero .banner {
+  display: block;
+  width: min(900px, 100%);
+  height: auto;
+  margin: 0 auto;
+  image-rendering: auto;
 }
 .blurb {
   color: var(--warn);
