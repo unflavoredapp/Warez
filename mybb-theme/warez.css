@@ -82,8 +82,8 @@ img { max-width: 100%; border: 0; }
   position: sticky;
   top: 0;
   z-index: 50;
-  background: var(--sm-head);
-  border-bottom: 1px solid var(--sm-line);
+  background: var(--sm-panel); /* same dark gray as panels (#1a1a1a), not light #262626 */
+  border-bottom: 1px solid #222;
 }
 .sm-topbar-inner {
   max-width: var(--sm-width);
