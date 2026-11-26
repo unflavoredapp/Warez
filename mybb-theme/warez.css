@@ -566,7 +566,7 @@ img { max-width: 100%; border: 0; }
 .sm-forum-last { width: 100%; color: var(--sm-muted); line-height: 1.35; }
 .sm-forum-last a { color: var(--sm-teal2) !important; }
 .sm-last-has { display: inline; }
-.sm-last-by, .sm-last-when { color: #888; margin-left: 4px; }
+.sm-last-by, .sm-last-when { color: #888; margin-left: 0; }
 .sm-last-never { color: #666; font-style: normal; }
 
 /* Mobile: denser rows, hide empty "Never", left-align last post */
@@ -579,21 +579,59 @@ img { max-width: 100%; border: 0; }
   .sm-forum-desc { font-size: 11px !important; }
   .sm-subforums { margin-top: 4px; font-size: 11px; }
   .sm-forum-meta { margin-top: 0; }
-  .sm-forum-last { width: auto; flex: 1 1 auto; }
+  .sm-forum-last { width: 100%; flex: 1 1 100%; min-width: 0; }
   .sm-last-never { display: none !important; }
   .sm-last-has {
     display: block;
     margin-top: 2px;
     font-size: 11px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
   }
-  .sm-last-by, .sm-last-when { display: inline; margin-left: 4px; }
+  .sm-last-by, .sm-last-when { display: inline; margin-left: 0; }
   .sm-forums { gap: 10px; }
   .sm-cat-head { padding: 9px 12px !important; }
-  .sm-tabs { gap: 6px; margin-bottom: 10px; }
+  .sm-tabs { gap: 6px; margin-bottom: 0; }
   .sm-tab { padding: 7px 12px; font-size: 12px; }
   .sm-shoutbox { margin-bottom: 10px; }
   .sm-shout-list { max-height: 200px; }
   .sm-home { gap: 10px; }
+
+  /* Tabs above Recent; collapse feed to 3 rows */
+  .sm-home-tabs { order: 0; }
+  .sm-recent { order: 1; }
+  .sm-home-main { order: 2; }
+  .sm-home-side { order: 3; }
+  .sm-recent-feed.sm-recent-collapsed .sm-act-item:nth-child(n+4) {
+    display: none;
+  }
+  .sm-recent-feed {
+    max-height: none;
+    overflow: visible;
+  }
+  .sm-act-snippet { display: none !important; }
+  .sm-act-item { padding: 10px 12px; }
+  .sm-recent-more {
+    display: block !important;
+    width: 100%;
+    background: #141414;
+    border: 0;
+    border-top: 1px solid #222;
+    color: var(--sm-orange2);
+    font: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 10px 12px;
+    cursor: pointer;
+    text-align: center;
+  }
+  .sm-recent-more:hover { background: #1a1a1a; color: #ffc078; }
+  .sm-recent-more[hidden] { display: none !important; }
+  #container {
+    padding-bottom: calc(48px + env(safe-area-inset-bottom, 0px)) !important;
+  }
   .sm-bigstats { gap: 8px; }
   .sm-bigstat { padding: 8px; }
   .sm-bigstat-num { font-size: 18px; }
@@ -998,13 +1036,20 @@ span[style*="#3DBDAD"] {
 
 /* Mobile density */
 @media (max-width: 640px) {
-  .sm-hero { min-height: 148px; }
-  .sm-hero-copy { padding: 26px 16px; }
-  .sm-hero-copy h1 { font-size: 28px; }
-  .sm-hero-copy h1::after { margin-top: 10px; }
-  .sm-hero-tag { font-size: 13px; }
+  .sm-hero { min-height: 96px; }
+  .sm-hero-copy { padding: 16px 14px; }
+  .sm-hero-copy h1 { font-size: 24px; margin-bottom: 6px; }
+  .sm-hero-copy h1::after { margin-top: 8px; width: 36px; height: 2px; }
+  .sm-hero-tag { font-size: 12px; max-width: 22em; }
   .sm-auth-bits { display: none; }
   body { font-size: 13px !important; }
+  /* Safari bottom chrome clearance */
+  #container {
+    padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+  .sm-guest-toast {
+    bottom: calc(64px + env(safe-area-inset-bottom, 0px));
+  }
 }
 
 /* ========== DESKTOP NAV / LAYOUT ========== */
@@ -1084,14 +1129,15 @@ a.sm-btn { color: var(--sm-orange2) !important; }
   flex-direction: column;
   gap: 12px;
 }
+.sm-home-tabs { margin: 0 0 0; }
 .sm-recent {
-  order: -1; /* mobile: recent on top */
   margin: 0 !important;
   background: var(--sm-panel);
   border: 1px solid #151515;
   border-radius: var(--sm-radius);
   overflow: hidden;
 }
+.sm-recent-more { display: none; }
 .sm-recent-head {
   display: flex !important;
   align-items: center;
@@ -1448,10 +1494,16 @@ a.sm-btn { color: var(--sm-orange2) !important; }
     display: grid;
     grid-template-columns: minmax(0, 1fr) 300px;
     grid-template-areas:
+      "tabs side"
       "recent side"
       "main side";
     gap: 16px;
     align-items: start;
+  }
+  .sm-home-tabs {
+    grid-area: tabs;
+    order: 0;
+    margin: 0;
   }
   .sm-recent {
     grid-area: recent;
@@ -1463,6 +1515,7 @@ a.sm-btn { color: var(--sm-orange2) !important; }
     order: 0;
   }
   .sm-recent-feed { max-height: 340px; }
+  .sm-recent-more { display: none !important; }
   .sm-tabs { gap: 6px; }
   .sm-tab { border-radius: 3px; padding: 8px 12px; }
   .sm-footer-grid { grid-template-columns: repeat(4, 1fr); }

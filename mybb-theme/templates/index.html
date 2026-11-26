@@ -13,24 +13,25 @@
 {$header}
 
 <div class="sm-home">
+	<nav class="sm-tabs sm-home-tabs" aria-label="Categories">
+		<a class="sm-tab is-active" href="#cat_1" data-tab="1">Announcements</a>
+		<a class="sm-tab" href="#cat_2" data-tab="2">iOS</a>
+		<a class="sm-tab" href="{$mybb->settings['bburl']}/search.php?action=getdaily">Today</a>
+		<a class="sm-tab" href="{$mybb->settings['bburl']}/member.php?action=register">Join</a>
+	</nav>
+
 	<section class="sm-block sm-recent" id="sm_recent">
 		<div class="sm-block-head sm-recent-head">
 			<span>Recent Activity</span>
 			<span class="sm-recent-total">{$sm_board_posts} posts</span>
 		</div>
-		<ul class="sm-block-body sm-recent-feed">
+		<ul class="sm-block-body sm-recent-feed sm-recent-collapsed" id="sm_recent_feed">
 			{$sm_recent_activity}
 		</ul>
+		<button type="button" class="sm-recent-more" id="sm_recent_more" hidden>View all</button>
 	</section>
 
 	<div class="sm-home-main">
-		<nav class="sm-tabs" aria-label="Categories">
-			<a class="sm-tab is-active" href="#cat_1" data-tab="1">Announcements</a>
-			<a class="sm-tab" href="#cat_2" data-tab="2">iOS</a>
-			<a class="sm-tab" href="{$mybb->settings['bburl']}/search.php?action=getdaily">Today</a>
-			<a class="sm-tab" href="{$mybb->settings['bburl']}/member.php?action=register">Join</a>
-		</nav>
-
 		<div class="sm-forums">
 		{$forums}
 		</div>
@@ -74,6 +75,21 @@
 			activate(t.getAttribute('data-tab'));
 		});
 	});
+
+	var feed = document.getElementById('sm_recent_feed');
+	var more = document.getElementById('sm_recent_more');
+	if (feed && more) {
+		var items = feed.querySelectorAll('.sm-act-item');
+		if (items.length > 3) {
+			more.hidden = false;
+			more.addEventListener('click', function () {
+				var open = feed.classList.toggle('sm-recent-expanded');
+				feed.classList.toggle('sm-recent-collapsed', !open);
+				more.textContent = open ? 'Show less' : 'View all';
+			});
+		}
+	}
+
 	var toast = document.getElementById('sm_guest_toast');
 	var x = document.getElementById('sm_guest_toast_x');
 	if (toast && x) {
