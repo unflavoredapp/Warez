@@ -98,9 +98,6 @@ function shell(title, body) {
       <a href="/#search">[ search ]</a>
       <a href="/#add">[ add source ]</a>
       <a href="/api/status">[ api ]</a>
-      <span class="right">
-        <a href="/#add">[ add source ]</a>
-      </span>
     </nav>
     ${body}
   </div>
