@@ -13,34 +13,12 @@
 {$header}
 
 <div class="sm-home">
-	<div class="sm-home-pair">
-		<section class="sm-shoutbox" id="sm_shoutbox">
-			<div class="sm-shout-head">
-				<strong>Shoutbox</strong>
-				<span class="sm-shout-tools"><a href="{$mybb->settings['bburl']}/misc.php?action=smilies">Smilies</a> · <a href="{$mybb->settings['bburl']}/portal.php">Archive</a></span>
-			</div>
-			<ul class="sm-shout-list yh-act-feed" id="yh_panelchat_feed">
-				{$yh_panelchat_feed}
-			</ul>
-			<if $mybb->user['uid'] then>
-			<form class="sm-shout-form yh-chat-form" id="yh_panelchat_form" action="{$mybb->settings['bburl']}/panelchat.php" method="post" autocomplete="off">
-				<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
-				<input type="text" name="message" id="yh_panelchat_input" class="yh-chat-input" maxlength="200" placeholder="Say something…" />
-				<button type="submit" class="yh-chat-send" aria-label="Send">Send</button>
-			</form>
-			{$yh_panelchat_js}
-			<else>
-			<div class="sm-shout-guest">Login to shout.</div>
-			</if>
-		</section>
-		<div class="sm-side-divider" aria-hidden="true"></div>
-		<section class="sm-block sm-recent">
-			<div class="sm-block-head">Recent Activity</div>
-			<div class="sm-block-body sm-recent-list">
-				{$sm_recent_activity}
-			</div>
-		</section>
-	</div>
+	<section class="sm-block sm-recent" id="sm_recent">
+		<div class="sm-block-head">Recent Activity</div>
+		<ul class="sm-block-body sm-recent-feed">
+			{$sm_recent_activity}
+		</ul>
+	</section>
 
 	<div class="sm-home-main">
 		<nav class="sm-tabs" aria-label="Categories">

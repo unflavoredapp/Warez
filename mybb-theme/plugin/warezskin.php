@@ -29,7 +29,7 @@ function warezskin_header_avatar()
 	global $mybb, $yh_avatar, $yh_panelbg_style, $yh_panelbg_class;
 	global $yh_panelchat_feed, $yh_panelchat_js;
 	global $sm_recent_activity, $sm_mostonline, $sm_postgoal_today, $sm_postgoal_target, $sm_postgoal_pct, $sm_postgoal_status;
-	global $sm_online_note, $sm_online_members;
+	global $sm_online_note, $sm_online_members, $sm_newest_user;
 
 	$yh_avatar = $mybb->settings['bburl'] . '/images/default_avatar.png';
 	if (!isset($yh_panelbg_style)) {
@@ -67,6 +67,9 @@ function warezskin_header_avatar()
 	}
 	if (!isset($sm_online_members)) {
 		$sm_online_members = '';
+	}
+	if (!isset($sm_newest_user)) {
+		$sm_newest_user = '';
 	}
 
 	if (!empty($mybb->user['uid'])) {
@@ -344,7 +347,7 @@ function warezskin_index_stats()
 {
 	global $db, $mybb, $cache, $sm_recent_activity, $sm_mostonline;
 	global $sm_postgoal_today, $sm_postgoal_target, $sm_postgoal_pct, $sm_postgoal_status;
-	global $sm_online_note, $sm_online_members;
+	global $sm_online_note, $sm_online_members, $sm_newest_user;
 
 	$most = $cache->read('mostonline');
 	$sm_mostonline = my_number_format(is_array($most) && isset($most['numusers']) ? (int)$most['numusers'] : 0);
@@ -361,13 +364,13 @@ function warezskin_index_stats()
 		? '<span class="sm-goal-ok">Reached</span>'
 		: '<span class="sm-goal-no">Not Reached</span>';
 
-	$sm_recent_activity = warezskin_build_recent_sidebar(8);
+	$sm_recent_activity = warezskin_build_recent_feed(10);
 	warezskin_build_fake_online();
 }
 
 function warezskin_build_fake_online()
 {
-	global $mybb, $sm_online_note, $sm_online_members, $sm_mostonline;
+	global $mybb, $cache, $lang, $sm_online_note, $sm_online_members, $sm_mostonline, $sm_newest_user;
 
 	$names = array(
 		array('nexusvoid', '#3dbdad'),
@@ -405,46 +408,123 @@ function warezskin_build_fake_online()
 	if ($most_num < $count) {
 		$sm_mostonline = my_number_format($count);
 	}
+
+	$stats = $cache->read('stats');
+	if (!empty($stats['lastusername']) && !empty($stats['lastuid'])) {
+		$newest = build_profile_link($stats['lastusername'], (int)$stats['lastuid']);
+		$sm_newest_user = 'Please welcome our newest member, '.$newest.'.';
+	} else {
+		$sm_newest_user = 'Please welcome our newest member, nobody.';
+	}
 }
 
-function warezskin_build_recent_sidebar($limit = 8)
+function warezskin_build_recent_feed($limit = 10)
 {
 	global $db, $mybb;
 
-	$limit = max(4, min(15, (int)$limit));
+	$limit = max(4, min(20, (int)$limit));
 	$unviewable = get_unviewable_forums(true);
 	$inactive = get_inactive_forums();
-	$where = "t.visible='1' AND t.closed NOT LIKE 'moved|%'";
+	$forum_where = "p.visible='1' AND t.visible='1'";
 	if ($unviewable) {
-		$where .= " AND t.fid NOT IN ($unviewable)";
+		$forum_where .= " AND t.fid NOT IN ($unviewable)";
 	}
 	if ($inactive) {
-		$where .= " AND t.fid NOT IN ($inactive)";
+		$forum_where .= " AND t.fid NOT IN ($inactive)";
 	}
 
-	$html = '';
+	$items = array();
+
 	$query = $db->query("
-		SELECT t.tid, t.subject, t.username, t.uid, t.lastpost, t.replies, t.lastposter, t.lastposteruid
-		FROM ".TABLE_PREFIX."threads t
-		WHERE {$where}
-		ORDER BY t.lastpost DESC
+		SELECT p.pid, p.tid, p.uid, p.username, p.dateline, p.replyto, p.message,
+			t.subject AS threadsubject, t.firstpost
+		FROM ".TABLE_PREFIX."posts p
+		INNER JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
+		WHERE {$forum_where}
+		ORDER BY p.dateline DESC
 		LIMIT {$limit}
 	");
-	while ($t = $db->fetch_array($query)) {
-		$subject = htmlspecialchars_uni($t['subject']);
-		$link = $mybb->settings['bburl'].'/'.get_thread_link($t['tid']);
-		$who = htmlspecialchars_uni($t['lastposter'] ?: $t['username']);
-		$when = my_date('relative', (int)$t['lastpost']);
-		$replies = my_number_format((int)$t['replies']);
-		$html .= '<a class="sm-recent-item" href="'.$link.'">'
-			.'<span class="sm-recent-dot" aria-hidden="true"></span>'
-			.'<span class="sm-recent-body"><span class="sm-recent-title">'.$subject.'</span>'
-			.'<span class="sm-recent-meta">'.$who.' · '.$when.'</span></span>'
-			.'<span class="sm-recent-count">'.$replies.'</span>'
-			.'</a>';
+	while ($row = $db->fetch_array($query)) {
+		$who = htmlspecialchars_uni($row['username']);
+		$who_link = build_profile_link($who, (int)$row['uid']);
+		$subject = htmlspecialchars_uni($row['threadsubject']);
+		$thread_url = $mybb->settings['bburl'].'/'.get_thread_link((int)$row['tid']).'#pid'.(int)$row['pid'];
+		$when = my_date('relative', (int)$row['dateline']);
+		$is_thread = ((int)$row['pid'] === (int)$row['firstpost']) || empty($row['replyto']);
+		$verb = $is_thread ? 'created' : 'replied in';
+
+		$snippet = warezskin_activity_snippet($row['message']);
+		$items[] = array(
+			'ts' => (int)$row['dateline'],
+			'html' => '<li class="sm-act-item">'
+				.'<div class="sm-act-line">'
+				.'<strong class="sm-act-who">'.$who_link.'</strong> '
+				.'<span class="sm-act-verb">'.$verb.'</span> '
+				.'<a class="sm-act-subj" href="'.$thread_url.'">'.$subject.'</a>'
+				.'<span class="sm-act-when"> · '.$when.'</span>'
+				.'</div>'
+				.($snippet !== '' ? '<div class="sm-act-snippet">'.$snippet.'</div>' : '')
+				.'</li>',
+		);
 	}
-	if ($html === '') {
-		$html = '<div class="sm-recent-empty">No recent threads yet.</div>';
+
+	$query = $db->simple_select(
+		'users',
+		'uid, username, regdate',
+		'uid>0',
+		array('order_by' => 'regdate', 'order_dir' => 'DESC', 'limit' => 3)
+	);
+	while ($row = $db->fetch_array($query)) {
+		$who = htmlspecialchars_uni($row['username']);
+		$who_link = build_profile_link($who, (int)$row['uid']);
+		$when = my_date('relative', (int)$row['regdate']);
+		$items[] = array(
+			'ts' => (int)$row['regdate'],
+			'html' => '<li class="sm-act-item sm-act-join">'
+				.'<div class="sm-act-line">'
+				.'<strong class="sm-act-who">'.$who_link.'</strong> '
+				.'<span class="sm-act-verb">joined the board</span>'
+				.'<span class="sm-act-when"> · '.$when.'</span>'
+				.'</div>'
+				.'</li>',
+		);
+	}
+
+	if (!$items) {
+		return '<li class="sm-act-empty">No recent activity yet.</li>';
+	}
+
+	usort($items, function ($a, $b) {
+		return $b['ts'] <=> $a['ts'];
+	});
+	$items = array_slice($items, 0, $limit);
+
+	$html = '';
+	foreach ($items as $item) {
+		$html .= $item['html'];
 	}
 	return $html;
+}
+
+function warezskin_activity_snippet($message)
+{
+	$message = (string)$message;
+	// Strip MyBB mycode / HTML down to plain readable text
+	$message = preg_replace('#\[quote(?:=[^\]]*)?\](.*?)\[/quote\]#is', ' ', $message);
+	$message = preg_replace('#\[code\](.*?)\[/code\]#is', ' ', $message);
+	$message = preg_replace('#\[php\](.*?)\[/php\]#is', ' ', $message);
+	$message = preg_replace('#\[img[^\]]*\](.*?)\[/img\]#is', ' ', $message);
+	$message = preg_replace('#\[url(?:=[^\]]*)?\](.*?)\[/url\]#is', '$1', $message);
+	$message = preg_replace('#\[/?[a-z0-9*=_\-]+[^\]]*\]#i', '', $message);
+	$message = strip_tags($message);
+	$message = html_entity_decode($message, ENT_QUOTES, 'UTF-8');
+	$message = str_replace(array("\\r\\n", "\\n", "\\r", "\r\n", "\n", "\r"), ' ', $message);
+	$message = preg_replace('/\s+/', ' ', trim($message));
+	if ($message === '') {
+		return '';
+	}
+	if (my_strlen($message) > 140) {
+		$message = my_substr($message, 0, 137).'…';
+	}
+	return htmlspecialchars_uni($message);
 }
