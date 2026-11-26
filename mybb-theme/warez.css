@@ -488,67 +488,110 @@ input.button.yh-btn-login:hover {
   justify-content: space-between !important;
   width: 100% !important;
   height: 100% !important;
-  min-height: 110px !important;
+  min-height: 150px !important;
   padding: 0 !important;
   box-sizing: border-box !important;
 }
 
-/* LEFT: sitewide activity feed */
-.yh-userpanel-activity {
+/* LEFT: live chat + activity */
+.yh-userpanel-chat {
   flex: 1 1 auto !important;
   min-width: 0 !important;
   display: flex !important;
   flex-direction: column !important;
-  justify-content: flex-start !important;
   align-self: stretch !important;
   padding: 8px 10px 8px 0 !important;
   box-sizing: border-box !important;
+  min-height: 0 !important;
 }
 .yh-act-title {
   color: #ffcc00 !important;
-  font-size: 10px !important;
+  font-size: 11px !important;
   font-weight: 700 !important;
   text-transform: uppercase !important;
   letter-spacing: 0.06em !important;
   margin-bottom: 4px !important;
   flex: 0 0 auto !important;
 }
-.yh-act-list {
+.yh-act-list,
+.yh-chat-feed {
   list-style: none !important;
   margin: 0 !important;
   padding: 0 !important;
-  font-size: 10px !important;
-  line-height: 1.35 !important;
+  font-size: 11px !important;
+  line-height: 1.4 !important;
 }
-.yh-act-feed {
-  overflow: hidden !important;
+.yh-chat-feed {
+  flex: 1 1 auto !important;
+  min-height: 72px !important;
+  max-height: 120px !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  margin-bottom: 6px !important;
+  scrollbar-width: thin;
+  scrollbar-color: #444 transparent;
 }
-.yh-act-feed li {
+.yh-chat-feed li {
   display: block !important;
-  margin: 0 0 3px !important;
+  margin: 0 0 4px !important;
   padding: 0 !important;
   color: #ddd !important;
   white-space: nowrap !important;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
 }
-.yh-act-feed .yh-act-who a {
-  color: #fff !important;
+.yh-chat-feed .yh-chat-msg .yh-chat-text { color: #fff !important; }
+.yh-chat-feed .yh-chat-act { opacity: 0.92; }
+.yh-chat-feed .yh-chat-sep { color: #888 !important; margin: 0 2px !important; }
+.yh-chat-feed .yh-act-who a {
+  color: #39ff14 !important;
   font-weight: 700 !important;
 }
-.yh-act-feed .yh-act-verb { color: #aaa !important; }
-.yh-act-feed .yh-act-subj {
+.yh-chat-feed .yh-act-verb { color: #aaa !important; }
+.yh-chat-feed .yh-act-subj {
   color: #ff1a1a !important;
   font-weight: 700 !important;
 }
-.yh-act-feed .yh-act-when {
+.yh-chat-feed .yh-act-when {
   color: #888 !important;
-  font-size: 9px !important;
+  font-size: 10px !important;
   margin-left: 2px !important;
 }
 .yh-act-empty { color: #888 !important; font-style: italic !important; }
 
-/* Full-height scar / divider between activity and account */
+.yh-chat-form {
+  display: flex !important;
+  gap: 4px !important;
+  flex: 0 0 auto !important;
+  width: 100% !important;
+}
+.yh-chat-input {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  height: 28px !important;
+  padding: 0 8px !important;
+  background: rgba(0,0,0,0.55) !important;
+  border: 1px solid #444 !important;
+  color: #fff !important;
+  font-size: 12px !important;
+  border-radius: 0 !important;
+}
+.yh-chat-input::placeholder { color: #888 !important; }
+.yh-chat-send {
+  flex: 0 0 32px !important;
+  width: 32px !important;
+  height: 28px !important;
+  padding: 0 !important;
+  background: #e10600 !important;
+  border: 1px solid #9a0000 !important;
+  color: #fff !important;
+  font-size: 12px !important;
+  cursor: pointer !important;
+  border-radius: 0 !important;
+}
+.yh-chat-send:hover { background: #ff1a1a !important; }
+
+/* Full-height scar */
 .yh-userpanel-scar {
   flex: 0 0 1px !important;
   width: 1px !important;
@@ -557,32 +600,36 @@ input.button.yh-btn-login:hover {
   margin: 0 !important;
 }
 
-/* RIGHT: account links + avatar (far right, bottom-aligned) */
+/* RIGHT: avatar on TOP (full width of column), links below */
 .yh-userpanel-right {
-  flex: 0 0 auto !important;
+  flex: 0 0 42% !important;
+  width: 42% !important;
+  max-width: 42% !important;
   display: flex !important;
-  flex-direction: row !important;
-  align-items: flex-end !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
   align-self: stretch !important;
   gap: 8px !important;
-  max-width: 48% !important;
   padding: 8px 0 8px 10px !important;
   box-sizing: border-box !important;
 }
 .yh-userpanel-avatar {
-  flex: 0 0 56px !important;
-  width: 56px !important;
-  height: 56px !important;
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  height: auto !important;
+  aspect-ratio: 1 / 1 !important;
+  max-height: 96px !important;
+  margin: 0 auto !important;
   border: 1px solid #666 !important;
   background: #000 !important;
-  display: block !important;
   overflow: hidden !important;
-  margin: 0 !important;
-  align-self: flex-end !important;
+  flex: 0 0 auto !important;
+  align-self: center !important;
 }
 .yh-userpanel-avatar img {
-  width: 56px !important;
-  height: 56px !important;
+  width: 100% !important;
+  height: 100% !important;
   object-fit: cover !important;
   display: block !important;
   border: 0 !important;
@@ -612,19 +659,19 @@ input.button.yh-btn-login:hover {
   list-style: none !important;
   margin: 0 !important;
   padding: 0 !important;
-  font-size: 11px !important;
-  line-height: 1.35 !important;
-  flex: 1 1 auto !important;
+  font-size: 13px !important;
+  line-height: 1.45 !important;
+  width: 100% !important;
   min-width: 0 !important;
-  text-align: right !important;
-  align-self: center !important;
+  text-align: left !important;
+  flex: 1 1 auto !important;
 }
 .yh-userpanel-links li {
-  margin: 0 !important;
+  margin: 0 0 2px !important;
   display: flex !important;
   align-items: center !important;
-  justify-content: flex-end !important;
-  gap: 6px !important;
+  justify-content: flex-start !important;
+  gap: 8px !important;
 }
 .yh-userpanel-links a { color: #ddd !important; }
 .yh-userpanel-links a:hover { color: #ff1a1a !important; }
@@ -632,16 +679,16 @@ input.button.yh-btn-login:hover {
 .yh-userpanel-name a {
   color: #fff !important;
   font-weight: 700 !important;
-  font-size: 12px !important;
-  margin-bottom: 1px !important;
+  font-size: 14px !important;
+  margin-bottom: 2px !important;
 }
 
 .yh-ico {
-  width: 12px;
-  height: 12px;
-  flex: 0 0 12px;
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
   display: inline-block;
-  opacity: 0.9;
+  opacity: 0.95;
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
@@ -1250,38 +1297,47 @@ blockquote, .codeblock, .mycode_quote, .mycode_code {
   }
   .yh-userpanel {
     align-items: stretch !important;
-    min-height: 120px !important;
+    min-height: 160px !important;
     gap: 0 !important;
     padding: 0 !important;
   }
-  .yh-userpanel-activity {
+  .yh-userpanel-chat {
     padding: 8px 8px 8px 0 !important;
   }
   .yh-userpanel-scar {
     align-self: stretch !important;
     min-height: 100% !important;
   }
-  .yh-act-title { font-size: 9px !important; }
-  .yh-act-feed { font-size: 9px !important; }
-  .yh-act-feed li { margin-bottom: 2px !important; }
+  .yh-act-title { font-size: 10px !important; }
+  .yh-chat-feed {
+    font-size: 10px !important;
+    max-height: 100px !important;
+  }
+  .yh-chat-feed li { margin-bottom: 3px !important; }
+  .yh-chat-input { height: 30px !important; font-size: 13px !important; }
+  .yh-chat-send { height: 30px !important; width: 34px !important; flex-basis: 34px !important; }
   .yh-userpanel-right {
-    max-width: 46% !important;
+    flex-basis: 40% !important;
+    width: 40% !important;
+    max-width: 40% !important;
     gap: 6px !important;
     padding: 8px 0 8px 8px !important;
-    align-items: flex-end !important;
   }
   .yh-userpanel-avatar {
-    flex-basis: 48px !important;
-    width: 48px !important;
-    height: 48px !important;
-    margin: 0 !important;
-    align-self: flex-end !important;
+    width: 100% !important;
+    max-height: 84px !important;
+    margin: 0 auto !important;
   }
-  .yh-userpanel-avatar img {
-    width: 48px !important;
-    height: 48px !important;
+  .yh-userpanel-links {
+    font-size: 13px !important;
   }
-  .yh-userpanel-links { font-size: 10px !important; }
+  .yh-userpanel-name,
+  .yh-userpanel-name a { font-size: 14px !important; }
+  .yh-ico {
+    width: 16px !important;
+    height: 16px !important;
+    flex-basis: 16px !important;
+  }
   .yh-login-form {
     gap: 10px !important;
     min-height: 0 !important;

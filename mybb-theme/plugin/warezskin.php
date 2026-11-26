@@ -26,7 +26,8 @@ $plugins->add_hook('member_profile_end', 'warezskin_profile');
 
 function warezskin_header_avatar()
 {
-	global $mybb, $db, $yh_avatar, $yh_panelbg_style, $yh_panelbg_class, $yh_activity_log;
+	global $mybb, $yh_avatar, $yh_panelbg_style, $yh_panelbg_class;
+	global $yh_panelchat_feed, $yh_panelchat_js;
 
 	$yh_avatar = $mybb->settings['bburl'] . '/images/default_avatar.png';
 	if (!isset($yh_panelbg_style)) {
@@ -35,17 +36,19 @@ function warezskin_header_avatar()
 	if (!isset($yh_panelbg_class)) {
 		$yh_panelbg_class = '';
 	}
-	$yh_activity_log = '<li class="yh-act-empty">No recent activity yet.</li>';
+	if (!isset($yh_panelchat_feed)) {
+		$yh_panelchat_feed = '<li class="yh-act-empty">Say hi — this chat is live.</li>';
+	}
+	if (!isset($yh_panelchat_js)) {
+		$yh_panelchat_js = '';
+	}
 
 	if (!empty($mybb->user['uid'])) {
-		$avatar = format_avatar($mybb->user['avatar'], $mybb->user['avatardimensions'], '64x64');
+		$avatar = format_avatar($mybb->user['avatar'], $mybb->user['avatardimensions'], '96x96');
 		if (!empty($avatar['image'])) {
 			$yh_avatar = $avatar['image'];
 		}
 	}
-
-	// Sitewide activity feed (all members + bots)
-	$yh_activity_log = warezskin_build_activity_log(8);
 }
 
 function warezskin_build_activity_log($limit = 8)

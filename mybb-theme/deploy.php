@@ -49,6 +49,13 @@ if (is_file($src . '/plugin/template_conditionals.php')) {
 if (is_file($src . '/plugin/panelbg.php')) {
 	copy($src . '/plugin/panelbg.php', MYBB_ROOT . 'inc/plugins/panelbg.php');
 }
+if (is_file($src . '/plugin/panelchat.php')) {
+	copy($src . '/plugin/panelchat.php', MYBB_ROOT . 'inc/plugins/panelchat.php');
+}
+if (is_file($src . '/panelchat-page.php')) {
+	copy($src . '/panelchat-page.php', MYBB_ROOT . 'panelchat.php');
+	@chmod(MYBB_ROOT . 'panelchat.php', 0644);
+}
 if (is_file($src . '/admin/modules/tools/changelogbot.php')) {
 	copy($src . '/admin/modules/tools/changelogbot.php', MYBB_ROOT . 'admin/modules/tools/changelogbot.php');
 }
@@ -112,8 +119,21 @@ $active['active']['panelbg'] = 'panelbg';
 $active['installed']['panelbg'] = 'panelbg';
 @mkdir(MYBB_ROOT . 'uploads/panelbg', 0755, true);
 
+// Panel Chat (live shoutbox + activity in header)
+require_once MYBB_ROOT . 'inc/plugins/panelchat.php';
+if (!panelchat_is_installed()) {
+	panelchat_install();
+	echo "Panel Chat plugin installed\n";
+} else {
+	panelchat_insert_settings();
+	echo "Panel Chat plugin already installed (settings refreshed)\n";
+}
+panelchat_activate();
+$active['active']['panelchat'] = 'panelchat';
+$active['installed']['panelchat'] = 'panelchat';
+
 $cache->update('plugins', $active);
-echo "Plugins enabled (warezskin + bits + changelogbot + template_conditionals + panelbg)\n";
+echo "Plugins enabled (warezskin + bits + changelogbot + template_conditionals + panelbg + panelchat)\n";
 
 // 3) Template set
 $query = $db->simple_select('templatesets', 'sid', "title='warez.skin'");

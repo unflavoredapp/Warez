@@ -1,14 +1,22 @@
 <div class="yh-loginbox yh-loginbox-member{$yh_panelbg_class}"{$yh_panelbg_style}>
 	<div class="yh-panel-overlay" aria-hidden="true"></div>
 	<div class="yh-userpanel">
-		<div class="yh-userpanel-activity">
-			<div class="yh-act-title">Activity Log</div>
-			<ul class="yh-act-list yh-act-feed">
-				{$yh_activity_log}
+		<div class="yh-userpanel-chat">
+			<div class="yh-act-title">Live Chat</div>
+			<ul class="yh-act-list yh-act-feed yh-chat-feed" id="yh_panelchat_feed">
+				{$yh_panelchat_feed}
 			</ul>
+			<form class="yh-chat-form" id="yh_panelchat_form" action="{$mybb->settings['bburl']}/panelchat.php" method="post" autocomplete="off">
+				<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
+				<input type="text" name="message" id="yh_panelchat_input" class="yh-chat-input" maxlength="200" placeholder="Say something…" />
+				<button type="submit" class="yh-chat-send" aria-label="Send">➤</button>
+			</form>
 		</div>
 		<div class="yh-userpanel-scar" aria-hidden="true"></div>
 		<div class="yh-userpanel-right">
+			<a class="yh-userpanel-avatar" href="{$mybb->settings['bburl']}/member.php?action=profile&amp;uid={$mybb->user['uid']}">
+				<img src="{$yh_avatar}" alt="{$mybb->user['username']}" />
+			</a>
 			<ul class="yh-userpanel-links">
 				<li class="yh-userpanel-name"><span class="yh-ico yh-ico-user"></span><a href="{$mybb->settings['bburl']}/member.php?action=profile&amp;uid={$mybb->user['uid']}">{$mybb->user['username']}</a></li>
 				<li><span class="yh-ico yh-ico-bits"></span><a href="{$mybb->settings['bburl']}/bits.php"><span class="yh-bits-inline">{$yh_bits_fmt}</span> Bits</a></li>
@@ -21,9 +29,7 @@
 				<li><span class="yh-ico yh-ico-alert"></span><a href="{$mybb->settings['bburl']}/private.php">Alerts ({$mybb->user['pms_unread']})</a></li>
 				<li><span class="yh-ico yh-ico-logout"></span><a href="{$mybb->settings['bburl']}/member.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}">Log Out</a></li>
 			</ul>
-			<a class="yh-userpanel-avatar" href="{$mybb->settings['bburl']}/member.php?action=profile&amp;uid={$mybb->user['uid']}">
-				<img src="{$yh_avatar}" alt="{$mybb->user['username']}" />
-			</a>
 		</div>
 	</div>
 </div>
+{$yh_panelchat_js}
