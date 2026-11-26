@@ -179,16 +179,18 @@ img { max-width: 100%; border: 0; }
 .yh-subnav a { color: #ddd !important; }
 .yh-subnav a:hover { color: var(--yh-red2) !important; }
 
-/* ========== HEADER: LOGO | SERVERS | LOGIN ========== */
+/* ========== HEADER: LOGO | SERVERS | LOGIN (3 columns on desktop) ========== */
 .yh-header {
   display: flex !important;
   flex-direction: row !important;
+  flex-wrap: nowrap !important;
   align-items: stretch !important;
   gap: 6px !important;
   width: 100% !important;
   margin: 8px 0 10px !important;
   padding: 0 !important;
   background: transparent !important;
+  box-sizing: border-box !important;
 }
 .yh-header .yh-box {
   background: #111 !important;
@@ -196,6 +198,17 @@ img { max-width: 100%; border: 0; }
   min-height: 88px !important;
   padding: 0 !important;
   box-sizing: border-box !important;
+}
+@media (min-width: 921px) {
+  .yh-header {
+    display: flex !important;
+    flex-direction: row !important;
+  }
+  .yh-box-logo,
+  .yh-box-servers,
+  .yh-box-user {
+    display: flex !important;
+  }
 }
 
 /* 1) Logo */
@@ -1053,7 +1066,7 @@ blockquote, .codeblock, .mycode_quote, .mycode_code {
     display: none !important;
   }
 
-  /* Mobile header: template conditionals output login box only */
+  /* Mobile header: hide logo + servers; keep account/login full width */
   .yh-header {
     display: block !important;
     width: 100% !important;
@@ -1061,6 +1074,10 @@ blockquote, .codeblock, .mycode_quote, .mycode_code {
     max-width: 100% !important;
     margin: 8px 0 !important;
     transform: none !important;
+  }
+  .yh-box-logo,
+  .yh-box-servers {
+    display: none !important;
   }
   .yh-box-user,
   .yh-box-user-mobile {
