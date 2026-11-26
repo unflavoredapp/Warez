@@ -1,17 +1,17 @@
-/** sentry.mba — terminal green / black theme (style only; IPA repo content) */
+/** sentry.mba — terminal orange / black theme (style only; IPA repo content) */
 module.exports = `
 @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
 
 :root {
   --bg: #000000;
-  --ink: #33ff33;
-  --ink-dim: #1a991a;
-  --ink-bright: #66ff66;
-  --muted: #2a6b2a;
-  --line: #00cc00;
-  --row: #001a00;
+  --ink: #ff8800;
+  --ink-dim: #cc6600;
+  --ink-bright: #ffaa33;
+  --muted: #6b3d00;
+  --line: #ff8800;
+  --row: #1a0c00;
   --row2: #000000;
-  --warn: #ff8800;
+  --warn: #ffcc00;
   --bad: #cc2222;
   --gold: #ffcc00;
   --font: "Share Tech Mono", "Courier New", Courier, monospace;
@@ -28,7 +28,7 @@ html, body {
   line-height: 1.4;
 }
 
-/* classic sentry.mba bg.gif — small green dots on black */
+/* classic dotted bg — orange dots on black */
 body {
   background: #000 url("/bg.gif") repeat;
 }
@@ -65,12 +65,12 @@ a:hover { color: #fff; text-decoration: underline; }
   background: rgba(0, 0, 0, 0.72);
   border-radius: 4px;
   text-decoration: none;
-  box-shadow: 0 0 8px rgba(0, 60, 0, 0.25);
+  box-shadow: 0 0 8px rgba(80, 40, 0, 0.3);
 }
 .topnav.float-tabs a:hover {
   color: #fff;
   border-color: var(--ink);
-  background: #001400;
+  background: #1a0c00;
   text-decoration: none;
 }
 .topnav.float-tabs a.buy-gold {
@@ -88,7 +88,7 @@ a:hover { color: #fff; text-decoration: underline; }
   padding: 12px 14px 40px;
   background: #000;
   border: 1px solid var(--line);
-  box-shadow: 0 0 24px rgba(0, 80, 0, 0.35);
+  box-shadow: 0 0 24px rgba(80, 40, 0, 0.4);
   position: relative;
   z-index: 1;
 }
@@ -116,8 +116,7 @@ img.coin, .coin {
   height: auto;
   margin: 0 auto;
   background: transparent;
-  /* soft lift so glow reads on the striped black page bg */
-  filter: drop-shadow(0 0 10px rgba(51, 255, 51, 0.25));
+  filter: drop-shadow(0 0 10px rgba(255, 136, 0, 0.35));
 }
 .blurb {
   color: var(--warn);
@@ -139,7 +138,7 @@ img.coin, .coin {
 .search-row input {
   width: min(420px, 70vw);
   height: 26px;
-  background: #001100;
+  background: #140a00;
   border: 1px solid var(--line);
   color: var(--ink);
   padding: 0 8px;
@@ -157,12 +156,12 @@ img.coin, .coin {
   font-size: 12px;
   cursor: pointer;
 }
-.search-row button:hover, .btn:hover { background: #66ff66; }
+.search-row button:hover, .btn:hover { background: #ffaa33; }
 .btn-ghost {
   background: #000;
   color: var(--ink);
 }
-.btn-ghost:hover { background: #001a00; color: #fff; }
+.btn-ghost:hover { background: #1a0c00; color: #fff; }
 .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .section-title {
@@ -186,17 +185,17 @@ a.app-card {
   align-items: flex-start;
   padding: 10px;
   min-height: 88px;
-  background: #050805;
+  background: #0a0600;
   border: 1px solid var(--line);
   border-radius: 8px;
   text-decoration: none;
   color: inherit;
-  box-shadow: 0 0 10px rgba(0, 80, 0, 0.18);
+  box-shadow: 0 0 10px rgba(80, 40, 0, 0.22);
   transition: border-color 0.12s ease, box-shadow 0.12s ease;
 }
 a.app-card:hover {
   border-color: var(--ink-bright);
-  box-shadow: 0 0 14px rgba(51, 255, 51, 0.22);
+  box-shadow: 0 0 14px rgba(255, 136, 0, 0.28);
   text-decoration: none;
   color: inherit;
 }
@@ -205,13 +204,13 @@ a.app-card:hover {
   height: 52px;
   border-radius: 12px;
   object-fit: cover;
-  background: #001000;
+  background: #140a00;
   border: 1px solid var(--muted);
   flex-shrink: 0;
 }
 .app-icon-fallback {
   background:
-    linear-gradient(145deg, #003300, #001000);
+    linear-gradient(145deg, #4a2200, #140a00);
 }
 .app-card-body {
   min-width: 0;
@@ -230,14 +229,14 @@ a.app-card:hover {
   text-overflow: ellipsis;
 }
 .app-card-sub {
-  color: #9aa09a;
+  color: #9a9080;
   font-size: 11px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 .app-card-meta {
-  color: #cfcfcf;
+  color: #cfc8bc;
   font-size: 11px;
   white-space: nowrap;
   overflow: hidden;
@@ -278,7 +277,7 @@ table.repo th {
   color: var(--ink-dim);
   font-weight: 700;
   font-size: 11px;
-  background: #001400;
+  background: #140a00;
   text-transform: uppercase;
 }
 table.repo tr:nth-child(even) td { background: var(--row); }
@@ -299,7 +298,7 @@ table.repo td a { color: var(--ink-bright); }
   border: 1px solid var(--line);
   padding: 10px;
   margin: 12px 0;
-  background: rgba(0, 20, 0, 0.35);
+  background: rgba(40, 18, 0, 0.4);
 }
 .panel h2 {
   margin: 0 0 8px;
@@ -314,7 +313,7 @@ table.repo td a { color: var(--ink-bright); }
 input.source {
   width: 100%;
   height: 28px;
-  background: #001100;
+  background: #140a00;
   border: 1px solid var(--line);
   color: var(--ink);
   padding: 0 8px;
@@ -343,7 +342,7 @@ input.source {
 .chip {
   border: 1px solid var(--muted);
   padding: 8px;
-  background: #001000;
+  background: #140a00;
 }
 .chip span { display: block; color: var(--muted); font-size: 10px; text-transform: uppercase; }
 .chip strong { color: var(--ink-bright); }
@@ -356,7 +355,7 @@ input.source {
 .shots img {
   height: 160px;
   border: 1px solid var(--muted);
-  background: #001000;
+  background: #140a00;
 }
 
 @media (max-width: 720px) {
