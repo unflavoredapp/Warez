@@ -29,6 +29,7 @@ function warezskin_header_avatar()
 	global $mybb, $yh_avatar, $yh_panelbg_style, $yh_panelbg_class;
 	global $yh_panelchat_feed, $yh_panelchat_js;
 	global $sm_recent_activity, $sm_mostonline, $sm_postgoal_today, $sm_postgoal_target, $sm_postgoal_pct, $sm_postgoal_status;
+	global $sm_online_note, $sm_online_members;
 
 	$yh_avatar = $mybb->settings['bburl'] . '/images/default_avatar.png';
 	if (!isset($yh_panelbg_style)) {
@@ -60,6 +61,12 @@ function warezskin_header_avatar()
 	}
 	if (!isset($sm_postgoal_status)) {
 		$sm_postgoal_status = '';
+	}
+	if (!isset($sm_online_note)) {
+		$sm_online_note = '';
+	}
+	if (!isset($sm_online_members)) {
+		$sm_online_members = '';
 	}
 
 	if (!empty($mybb->user['uid'])) {
@@ -337,6 +344,7 @@ function warezskin_index_stats()
 {
 	global $db, $mybb, $cache, $sm_recent_activity, $sm_mostonline;
 	global $sm_postgoal_today, $sm_postgoal_target, $sm_postgoal_pct, $sm_postgoal_status;
+	global $sm_online_note, $sm_online_members;
 
 	$most = $cache->read('mostonline');
 	$sm_mostonline = my_number_format(is_array($most) && isset($most['numusers']) ? (int)$most['numusers'] : 0);
@@ -354,6 +362,49 @@ function warezskin_index_stats()
 		: '<span class="sm-goal-no">Not Reached</span>';
 
 	$sm_recent_activity = warezskin_build_recent_sidebar(8);
+	warezskin_build_fake_online();
+}
+
+function warezskin_build_fake_online()
+{
+	global $mybb, $sm_online_note, $sm_online_members, $sm_mostonline;
+
+	$names = array(
+		array('nexusvoid', '#3dbdad'),
+		array('darkpacket', '#7ee0d4'),
+		array('skidbyte', '#e0a86e'),
+		array('rootmirror', '#c9a0ff'),
+		array('payloadfox', '#f0a0a0'),
+		array('nullsector', '#8ec8ff'),
+		array('warezwolf', '#3dbdad'),
+		array('bitrunner', '#ffcc66'),
+		array('ghostlease', '#a8d8a8'),
+		array('cryptokitten', '#f5a3c7'),
+		array('zerodayzen', '#7ee0d4'),
+		array('mirrorfish', '#e0a86e'),
+		array('softshell', '#8ec8ff'),
+		array('hexharbor', '#c9a0ff'),
+		array('packetpony', '#f0a0a0'),
+		array('dlvault', '#3dbdad'),
+		array('nightseed', '#ffcc66'),
+	);
+
+	$parts = array();
+	foreach ($names as $row) {
+		$name = htmlspecialchars_uni($row[0]);
+		$color = $row[1];
+		$parts[] = '<span class="sm-online-fake" style="color: '.$color.';"><strong>'.$name.'</strong></span>';
+	}
+	$sm_online_members = implode(', ', $parts);
+
+	$count = count($names);
+	$sm_online_note = $count.' users active in the past 15 minutes ('.$count.' members, 0 of whom are invisible, and 0 guests).';
+
+	// Keep "Most Online" at least as high as the fake crowd.
+	$most_num = (int)str_replace(',', '', (string)$sm_mostonline);
+	if ($most_num < $count) {
+		$sm_mostonline = my_number_format($count);
+	}
 }
 
 function warezskin_build_recent_sidebar($limit = 8)

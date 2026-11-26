@@ -13,22 +13,7 @@
 {$header}
 
 <div class="sm-home">
-	<aside class="sm-home-side">
-		<div class="sm-side-pair">
-			{$boardstats}
-			<div class="sm-side-divider" aria-hidden="true"></div>
-			<section class="sm-block sm-recent">
-				<div class="sm-block-head">Recent Activity</div>
-				<div class="sm-block-body sm-recent-list">
-					{$sm_recent_activity}
-				</div>
-			</section>
-		</div>
-		{$whosonline}
-		{$birthdays}
-	</aside>
-
-	<div class="sm-home-main">
+	<div class="sm-home-pair">
 		<section class="sm-shoutbox" id="sm_shoutbox">
 			<div class="sm-shout-head">
 				<strong>Shoutbox</strong>
@@ -48,11 +33,20 @@
 			<div class="sm-shout-guest">Login to shout.</div>
 			</if>
 		</section>
+		<div class="sm-side-divider" aria-hidden="true"></div>
+		<section class="sm-block sm-recent">
+			<div class="sm-block-head">Recent Activity</div>
+			<div class="sm-block-body sm-recent-list">
+				{$sm_recent_activity}
+			</div>
+		</section>
+	</div>
 
+	<div class="sm-home-main">
 		<nav class="sm-tabs" aria-label="Categories">
 			<a class="sm-tab is-active" href="#cat_1" data-tab="1">HQ</a>
 			<a class="sm-tab" href="#cat_2" data-tab="2">Market</a>
-			<a class="sm-tab" href="{$mybb->settings['bburl']}/portal.php">Repos</a>
+			<a class="sm-tab" href="{$mybb->settings['bburl']}/portal.php">Updates</a>
 			<a class="sm-tab" href="{$mybb->settings['bburl']}/search.php?action=getdaily">Today</a>
 			<a class="sm-tab" href="{$mybb->settings['bburl']}/member.php?action=register">Join</a>
 		</nav>
@@ -61,6 +55,12 @@
 		{$forums}
 		</div>
 	</div>
+
+	<aside class="sm-home-side">
+		{$boardstats}
+		{$whosonline}
+		{$birthdays}
+	</aside>
 </div>
 
 <br class="clear" />
