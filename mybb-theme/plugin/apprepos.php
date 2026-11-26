@@ -580,11 +580,11 @@ function apprepos_render_portal_html($stats, $bburl, $canManage, $postKey)
 	<div class="yh-ar-hero">
 		<h1 class="yh-ar-brand">IPA repo<span class="yh-ar-dot">.</span>discovery</h1>
 		<p class="yh-ar-tag">Index AltStore-style IPA sources, search apps across repos, and open each listing. '.$manageNote.'</p>
-		<div class="yh-ar-stats">
-			<div class="yh-ar-stat"><strong id="yh_ar_repos">'.$sRepos.'</strong><span>repos</span></div>
-			<div class="yh-ar-stat"><strong id="yh_ar_apps">'.$sApps.'</strong><span>apps</span></div>
-			<div class="yh-ar-stat"><strong id="yh_ar_hits">—</strong><span>hits</span></div>
-			<div class="yh-ar-stat"><strong id="yh_ar_errors">'.$sErr.'</strong><span>errors</span></div>
+		<div class="yh-ar-stats" role="group" aria-label="Repository stats">
+			<div class="yh-ar-stat"><strong id="yh_ar_stat_repos">'.$sRepos.'</strong><span>'.($sRepos === 1 ? 'repo' : 'repos').'</span></div>
+			<div class="yh-ar-stat"><strong id="yh_ar_stat_apps">'.$sApps.'</strong><span>'.($sApps === 1 ? 'app' : 'apps').'</span></div>
+			<div class="yh-ar-stat"><strong id="yh_ar_stat_hits">—</strong><span>hits</span></div>
+			<div class="yh-ar-stat"><strong id="yh_ar_stat_errors">'.$sErr.'</strong><span>'.($sErr === 1 ? 'error' : 'errors').'</span></div>
 		</div>
 	</div>
 
@@ -596,7 +596,7 @@ function apprepos_render_portal_html($stats, $bburl, $canManage, $postKey)
 				<button type="button" class="yh-ar-btn yh-ar-btn-primary" id="yh_ar_search">Search</button>
 				<button type="button" class="yh-ar-btn" id="yh_ar_clear">Clear</button>
 			</div>
-			<div id="yh_ar_apps" class="yh-ar-apps"></div>
+			<div id="yh_ar_apps_list" class="yh-ar-apps"></div>
 		</section>
 
 		<section class="yh-ar-panel yh-ar-span-8" id="repos">
@@ -617,7 +617,7 @@ function apprepos_render_portal_html($stats, $bburl, $canManage, $postKey)
 		</section>
 	</div>
 </div>
-<script src="'.htmlspecialchars_uni($bburl).'/jscripts/apprepos.js?ver=2"></script>';
+<script src="'.htmlspecialchars_uni($bburl).'/jscripts/apprepos.js?ver=4"></script>';
 }
 
 function apprepos_render_app_page()
