@@ -27,6 +27,7 @@ $plugins->add_hook('member_profile_end', 'warezskin_profile');
 function warezskin_header_avatar()
 {
 	global $mybb, $yh_avatar, $yh_panelbg_style, $yh_panelbg_class;
+	global $yh_act_posts, $yh_act_threads, $yh_act_rep, $yh_act_warnings, $yh_act_joined, $yh_act_lastactive, $yh_act_timeonline, $yh_act_reffered;
 
 	$yh_avatar = $mybb->settings['bburl'] . '/images/default_avatar.png';
 	if (!isset($yh_panelbg_style)) {
@@ -35,10 +36,35 @@ function warezskin_header_avatar()
 	if (!isset($yh_panelbg_class)) {
 		$yh_panelbg_class = '';
 	}
+
+	$yh_act_posts = '0';
+	$yh_act_threads = '0';
+	$yh_act_rep = '0';
+	$yh_act_warnings = '0';
+	$yh_act_joined = '—';
+	$yh_act_lastactive = '—';
+	$yh_act_timeonline = '—';
+	$yh_act_reffered = '0';
+
 	if (!empty($mybb->user['uid'])) {
 		$avatar = format_avatar($mybb->user['avatar'], $mybb->user['avatardimensions'], '64x64');
 		if (!empty($avatar['image'])) {
 			$yh_avatar = $avatar['image'];
+		}
+
+		$yh_act_posts = my_number_format((int)$mybb->user['postnum']);
+		$yh_act_threads = my_number_format((int)$mybb->user['threadnum']);
+		$yh_act_rep = my_number_format((int)$mybb->user['reputation']);
+		$yh_act_warnings = my_number_format((int)$mybb->user['warningpoints']);
+		$yh_act_reffered = my_number_format((int)$mybb->user['referrals']);
+		if (!empty($mybb->user['regdate'])) {
+			$yh_act_joined = my_date('relative', (int)$mybb->user['regdate']);
+		}
+		if (!empty($mybb->user['lastactive'])) {
+			$yh_act_lastactive = my_date('relative', (int)$mybb->user['lastactive']);
+		}
+		if (!empty($mybb->user['timeonline'])) {
+			$yh_act_timeonline = nice_time((int)$mybb->user['timeonline']);
 		}
 	}
 }

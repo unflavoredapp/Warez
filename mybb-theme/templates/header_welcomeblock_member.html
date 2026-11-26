@@ -1,19 +1,34 @@
 <div class="yh-loginbox yh-loginbox-member{$yh_panelbg_class}"{$yh_panelbg_style}>
 	<div class="yh-userpanel">
-		<a class="yh-userpanel-avatar" href="{$mybb->settings['bburl']}/member.php?action=profile&amp;uid={$mybb->user['uid']}">
-			<img src="{$yh_avatar}" alt="{$mybb->user['username']}" />
-		</a>
-		<ul class="yh-userpanel-links">
-			<li class="yh-userpanel-name"><span class="yh-ico yh-ico-user"></span><a href="{$mybb->settings['bburl']}/member.php?action=profile&amp;uid={$mybb->user['uid']}">{$mybb->user['username']}</a></li>
-			<li><span class="yh-ico yh-ico-bits"></span><a href="{$mybb->settings['bburl']}/bits.php"><span class="yh-bits-inline">{$yh_bits_fmt}</span> Bits</a></li>
-			<if $mybb->user['bits'] >= 100 then>
-			<li class="yh-bits-badge">◈ High Roller</li>
-			</if>
-			<li><span class="yh-ico yh-ico-cp"></span><a href="{$mybb->settings['bburl']}/usercp.php">UserCP</a></li>
-			<li><span class="yh-ico yh-ico-bg"></span><a href="{$mybb->settings['bburl']}/usercp.php?action=panelbg">Panel BG</a></li>
-			<li><span class="yh-ico yh-ico-profile"></span><a href="{$mybb->settings['bburl']}/member.php?action=profile&amp;uid={$mybb->user['uid']}">My Profile</a></li>
-			<li><span class="yh-ico yh-ico-alert"></span><a href="{$mybb->settings['bburl']}/private.php">Alerts ({$mybb->user['pms_unread']})</a></li>
-			<li><span class="yh-ico yh-ico-logout"></span><a href="{$mybb->settings['bburl']}/member.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}">Log Out</a></li>
-		</ul>
+		<div class="yh-userpanel-activity">
+			<div class="yh-act-title">Your Activity</div>
+			<ul class="yh-act-list">
+				<li><span class="yh-k">Posts</span><span class="yh-v">{$yh_act_posts}</span></li>
+				<li><span class="yh-k">Threads</span><span class="yh-v">{$yh_act_threads}</span></li>
+				<li><span class="yh-k">Reputation</span><span class="yh-v">{$yh_act_rep}</span></li>
+				<li><span class="yh-k">Warnings</span><span class="yh-v">{$yh_act_warnings}</span></li>
+				<li><span class="yh-k">Referrals</span><span class="yh-v">{$yh_act_reffered}</span></li>
+				<li><span class="yh-k">Joined</span><span class="yh-v">{$yh_act_joined}</span></li>
+				<li><span class="yh-k">Last Active</span><span class="yh-v">{$yh_act_lastactive}</span></li>
+				<li><span class="yh-k">Time Online</span><span class="yh-v">{$yh_act_timeonline}</span></li>
+			</ul>
+		</div>
+		<div class="yh-userpanel-right">
+			<a class="yh-userpanel-avatar" href="{$mybb->settings['bburl']}/member.php?action=profile&amp;uid={$mybb->user['uid']}">
+				<img src="{$yh_avatar}" alt="{$mybb->user['username']}" />
+			</a>
+			<ul class="yh-userpanel-links">
+				<li class="yh-userpanel-name"><span class="yh-ico yh-ico-user"></span><a href="{$mybb->settings['bburl']}/member.php?action=profile&amp;uid={$mybb->user['uid']}">{$mybb->user['username']}</a></li>
+				<li><span class="yh-ico yh-ico-bits"></span><a href="{$mybb->settings['bburl']}/bits.php"><span class="yh-bits-inline">{$yh_bits_fmt}</span> Bits</a></li>
+				<if $mybb->user['bits'] >= 100 then>
+				<li class="yh-bits-badge">◈ High Roller</li>
+				</if>
+				<li><span class="yh-ico yh-ico-cp"></span><a href="{$mybb->settings['bburl']}/usercp.php">UserCP</a></li>
+				<li><span class="yh-ico yh-ico-bg"></span><a href="{$mybb->settings['bburl']}/usercp.php?action=panelbg">Panel BG</a></li>
+				<li><span class="yh-ico yh-ico-profile"></span><a href="{$mybb->settings['bburl']}/member.php?action=profile&amp;uid={$mybb->user['uid']}">My Profile</a></li>
+				<li><span class="yh-ico yh-ico-alert"></span><a href="{$mybb->settings['bburl']}/private.php">Alerts ({$mybb->user['pms_unread']})</a></li>
+				<li><span class="yh-ico yh-ico-logout"></span><a href="{$mybb->settings['bburl']}/member.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}">Log Out</a></li>
+			</ul>
+		</div>
 	</div>
 </div>

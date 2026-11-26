@@ -320,11 +320,11 @@ img { max-width: 100%; border: 0; }
 
 /* 3) User / login */
 .yh-box-user {
-  flex: 0 0 32% !important;
-  max-width: 32% !important;
+  flex: 0 0 36% !important;
+  max-width: 36% !important;
   padding: 8px 10px !important;
   display: flex !important;
-  align-items: center !important;
+  align-items: stretch !important;
 }
 
 /* YouHack-style guest login card */
@@ -469,27 +469,84 @@ input.button.yh-btn-login:hover {
   position: relative !important;
   z-index: 1 !important;
   display: flex !important;
-  gap: 12px !important;
-  align-items: center !important; /* drop avatar to mid-line; kills empty gap under it */
+  flex-direction: row !important;
+  gap: 10px !important;
+  align-items: stretch !important;
+  justify-content: space-between !important;
   width: 100% !important;
   min-height: 100% !important;
-  padding: 4px 0 !important;
+  padding: 2px 0 !important;
   box-sizing: border-box !important;
 }
+
+/* LEFT: activity stats */
+.yh-userpanel-activity {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  border-right: 1px solid rgba(255,255,255,0.08) !important;
+  padding-right: 8px !important;
+}
+.yh-act-title {
+  color: #ffcc00 !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.06em !important;
+  margin-bottom: 4px !important;
+}
+.yh-act-list {
+  list-style: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  font-size: 10px !important;
+  line-height: 1.35 !important;
+}
+.yh-act-list li {
+  display: flex !important;
+  justify-content: space-between !important;
+  gap: 8px !important;
+  margin: 0 !important;
+  padding: 1px 0 !important;
+}
+.yh-act-list .yh-k {
+  color: #aaa !important;
+  font-weight: 700 !important;
+  white-space: nowrap !important;
+}
+.yh-act-list .yh-v {
+  color: #fff !important;
+  text-align: right !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+/* RIGHT: avatar + account links */
+.yh-userpanel-right {
+  flex: 0 0 auto !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 8px !important;
+  max-width: 58% !important;
+}
 .yh-userpanel-avatar {
-  flex: 0 0 64px !important;
-  width: 64px !important;
-  height: 64px !important;
+  flex: 0 0 56px !important;
+  width: 56px !important;
+  height: 56px !important;
   border: 1px solid #444 !important;
   background: #000 !important;
   display: block !important;
   overflow: hidden !important;
-  align-self: center !important;
-  margin-top: 6px !important; /* nudge slightly lower in the panel */
+  order: 2 !important; /* avatar on the far right of the right cluster */
 }
 .yh-userpanel-avatar img {
-  width: 64px !important;
-  height: 64px !important;
+  width: 56px !important;
+  height: 56px !important;
   object-fit: cover !important;
   display: block !important;
   border: 0 !important;
@@ -512,14 +569,17 @@ input.button.yh-btn-login:hover {
   margin: 0 !important;
   padding: 0 !important;
   font-size: 11px !important;
-  line-height: 1.45 !important;
-  flex: 1 !important;
+  line-height: 1.4 !important;
+  flex: 1 1 auto !important;
   min-width: 0 !important;
+  order: 1 !important;
+  text-align: right !important;
 }
 .yh-userpanel-links li {
   margin: 0 !important;
   display: flex !important;
   align-items: center !important;
+  justify-content: flex-end !important;
   gap: 6px !important;
 }
 .yh-userpanel-links a { color: #ddd !important; }
@@ -1141,12 +1201,30 @@ blockquote, .codeblock, .mycode_quote, .mycode_code {
     min-height: 0 !important;
   }
   .yh-userpanel {
-    align-items: center !important;
+    align-items: stretch !important;
+    gap: 8px !important;
     padding: 2px 0 !important;
   }
-  .yh-userpanel-avatar {
-    margin-top: 8px !important;
+  .yh-userpanel-activity {
+    padding-right: 6px !important;
   }
+  .yh-act-title { font-size: 9px !important; }
+  .yh-act-list { font-size: 9px !important; }
+  .yh-userpanel-right {
+    max-width: 52% !important;
+    gap: 6px !important;
+  }
+  .yh-userpanel-avatar {
+    flex-basis: 48px !important;
+    width: 48px !important;
+    height: 48px !important;
+    margin-top: 0 !important;
+  }
+  .yh-userpanel-avatar img {
+    width: 48px !important;
+    height: 48px !important;
+  }
+  .yh-userpanel-links { font-size: 10px !important; }
   .yh-login-form {
     gap: 10px !important;
     min-height: 0 !important;
