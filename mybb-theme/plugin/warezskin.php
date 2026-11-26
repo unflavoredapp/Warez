@@ -26,8 +26,7 @@ $plugins->add_hook('member_profile_end', 'warezskin_profile');
 
 function warezskin_header_avatar()
 {
-	global $mybb, $yh_avatar, $yh_panelbg_style, $yh_panelbg_class;
-	global $yh_act_posts, $yh_act_threads, $yh_act_rep, $yh_act_warnings, $yh_act_joined, $yh_act_lastactive, $yh_act_timeonline, $yh_act_reffered;
+	global $mybb, $db, $yh_avatar, $yh_panelbg_style, $yh_panelbg_class, $yh_activity_log;
 
 	$yh_avatar = $mybb->settings['bburl'] . '/images/default_avatar.png';
 	if (!isset($yh_panelbg_style)) {
@@ -36,37 +35,91 @@ function warezskin_header_avatar()
 	if (!isset($yh_panelbg_class)) {
 		$yh_panelbg_class = '';
 	}
-
-	$yh_act_posts = '0';
-	$yh_act_threads = '0';
-	$yh_act_rep = '0';
-	$yh_act_warnings = '0';
-	$yh_act_joined = '—';
-	$yh_act_lastactive = '—';
-	$yh_act_timeonline = '—';
-	$yh_act_reffered = '0';
+	$yh_activity_log = '<li class="yh-act-empty">No recent activity yet.</li>';
 
 	if (!empty($mybb->user['uid'])) {
 		$avatar = format_avatar($mybb->user['avatar'], $mybb->user['avatardimensions'], '64x64');
 		if (!empty($avatar['image'])) {
 			$yh_avatar = $avatar['image'];
 		}
-
-		$yh_act_posts = my_number_format((int)$mybb->user['postnum']);
-		$yh_act_threads = my_number_format((int)$mybb->user['threadnum']);
-		$yh_act_rep = my_number_format((int)$mybb->user['reputation']);
-		$yh_act_warnings = my_number_format((int)$mybb->user['warningpoints']);
-		$yh_act_reffered = my_number_format((int)$mybb->user['referrals']);
-		if (!empty($mybb->user['regdate'])) {
-			$yh_act_joined = my_date('relative', (int)$mybb->user['regdate']);
-		}
-		if (!empty($mybb->user['lastactive'])) {
-			$yh_act_lastactive = my_date('relative', (int)$mybb->user['lastactive']);
-		}
-		if (!empty($mybb->user['timeonline'])) {
-			$yh_act_timeonline = nice_time((int)$mybb->user['timeonline']);
-		}
 	}
+
+	// Sitewide activity feed (all members + bots)
+	$yh_activity_log = warezskin_build_activity_log(8);
+}
+
+function warezskin_build_activity_log($limit = 8)
+{
+	global $db, $mybb;
+
+	$limit = max(3, min(20, (int)$limit));
+	$items = array();
+
+	$unviewable = get_unviewable_forums(true);
+	$inactive = get_inactive_forums();
+	$forum_where = "p.visible='1' AND t.visible='1'";
+	if ($unviewable) {
+		$forum_where .= " AND t.fid NOT IN ($unviewable)";
+	}
+	if ($inactive) {
+		$forum_where .= " AND t.fid NOT IN ($inactive)";
+	}
+
+	// Recent posts (includes first posts / new threads and bot posts)
+	$query = $db->query("
+		SELECT p.pid, p.tid, p.uid, p.username, p.dateline, p.replyto,
+			t.subject AS threadsubject, t.firstpost
+		FROM ".TABLE_PREFIX."posts p
+		INNER JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
+		WHERE {$forum_where}
+		ORDER BY p.dateline DESC
+		LIMIT {$limit}
+	");
+	while ($row = $db->fetch_array($query)) {
+		$who = htmlspecialchars_uni($row['username']);
+		$who_link = build_profile_link($who, (int)$row['uid']);
+		$subject = htmlspecialchars_uni($row['threadsubject']);
+		$thread_url = $mybb->settings['bburl'].'/'.get_thread_link((int)$row['tid']).'#pid'.(int)$row['pid'];
+		$when = my_date('relative', (int)$row['dateline']);
+		$is_thread = ((int)$row['pid'] === (int)$row['firstpost']) || empty($row['replyto']);
+		$verb = $is_thread ? 'created' : 'replied in';
+		$items[] = array(
+			'ts' => (int)$row['dateline'],
+			'html' => '<li><span class="yh-act-who">'.$who_link.'</span> <span class="yh-act-verb">'.$verb.'</span> <a class="yh-act-subj" href="'.$thread_url.'">'.$subject.'</a> <span class="yh-act-when">'.$when.'</span></li>',
+		);
+	}
+
+	// Recent registrations (bots + humans)
+	$query = $db->simple_select(
+		'users',
+		'uid, username, regdate',
+		'uid>0',
+		array('order_by' => 'regdate', 'order_dir' => 'DESC', 'limit' => 4)
+	);
+	while ($row = $db->fetch_array($query)) {
+		$who = htmlspecialchars_uni($row['username']);
+		$who_link = build_profile_link($who, (int)$row['uid']);
+		$when = my_date('relative', (int)$row['regdate']);
+		$items[] = array(
+			'ts' => (int)$row['regdate'],
+			'html' => '<li><span class="yh-act-who">'.$who_link.'</span> <span class="yh-act-verb">joined</span> <span class="yh-act-when">'.$when.'</span></li>',
+		);
+	}
+
+	if (!$items) {
+		return '<li class="yh-act-empty">No recent activity yet.</li>';
+	}
+
+	usort($items, function ($a, $b) {
+		return $b['ts'] <=> $a['ts'];
+	});
+	$items = array_slice($items, 0, $limit);
+
+	$html = '';
+	foreach ($items as $item) {
+		$html .= $item['html'];
+	}
+	return $html;
 }
 
 function warezskin_portal_blocks()

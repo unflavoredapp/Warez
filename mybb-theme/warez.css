@@ -443,51 +443,66 @@ input.button.yh-btn-login:hover {
 }
 .yh-remember input { margin: 0 !important; }
 
+.yh-box-user:has(.yh-has-panelbg) {
+  background: transparent !important;
+  overflow: hidden !important;
+}
 .yh-loginbox-member {
   position: relative !important;
   width: 100% !important;
   height: 100% !important;
   min-height: 100% !important;
-  background-color: transparent !important;
+  background-color: #0a0a0a !important;
   overflow: hidden !important;
 }
 .yh-loginbox-member.yh-has-panelbg {
+  background-color: #000 !important;
   background-image: var(--yh-panelbg) !important;
   background-size: cover !important;
   background-position: center center !important;
   background-repeat: no-repeat !important;
 }
+/* Explicit overlay div + ::before fallback — transparent black over GIF */
+.yh-loginbox-member .yh-panel-overlay,
 .yh-loginbox-member.yh-has-panelbg::before {
   content: "" !important;
   position: absolute !important;
   inset: 0 !important;
-  background: rgba(0, 0, 0, 0.55) !important;
+  background: rgba(0, 0, 0, 0.72) !important;
   pointer-events: none !important;
   z-index: 0 !important;
+}
+.yh-loginbox-member .yh-panel-overlay {
+  display: block !important;
+}
+.yh-loginbox-member:not(.yh-has-panelbg) .yh-panel-overlay {
+  display: none !important;
 }
 .yh-userpanel {
   position: relative !important;
   z-index: 1 !important;
   display: flex !important;
   flex-direction: row !important;
-  gap: 10px !important;
+  gap: 0 !important;
   align-items: stretch !important;
   justify-content: space-between !important;
   width: 100% !important;
-  min-height: 100% !important;
-  padding: 2px 0 !important;
+  height: 100% !important;
+  min-height: 110px !important;
+  padding: 0 !important;
   box-sizing: border-box !important;
 }
 
-/* LEFT: activity stats */
+/* LEFT: sitewide activity feed */
 .yh-userpanel-activity {
   flex: 1 1 auto !important;
   min-width: 0 !important;
   display: flex !important;
   flex-direction: column !important;
-  justify-content: center !important;
-  border-right: 1px solid rgba(255,255,255,0.08) !important;
-  padding-right: 8px !important;
+  justify-content: flex-start !important;
+  align-self: stretch !important;
+  padding: 8px 10px 8px 0 !important;
+  box-sizing: border-box !important;
 }
 .yh-act-title {
   color: #ffcc00 !important;
@@ -496,6 +511,7 @@ input.button.yh-btn-login:hover {
   text-transform: uppercase !important;
   letter-spacing: 0.06em !important;
   margin-bottom: 4px !important;
+  flex: 0 0 auto !important;
 }
 .yh-act-list {
   list-style: none !important;
@@ -504,45 +520,65 @@ input.button.yh-btn-login:hover {
   font-size: 10px !important;
   line-height: 1.35 !important;
 }
-.yh-act-list li {
-  display: flex !important;
-  justify-content: space-between !important;
-  gap: 8px !important;
-  margin: 0 !important;
-  padding: 1px 0 !important;
+.yh-act-feed {
+  overflow: hidden !important;
 }
-.yh-act-list .yh-k {
-  color: #aaa !important;
-  font-weight: 700 !important;
+.yh-act-feed li {
+  display: block !important;
+  margin: 0 0 3px !important;
+  padding: 0 !important;
+  color: #ddd !important;
   white-space: nowrap !important;
-}
-.yh-act-list .yh-v {
-  color: #fff !important;
-  text-align: right !important;
-  min-width: 0 !important;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
-  white-space: nowrap !important;
+}
+.yh-act-feed .yh-act-who a {
+  color: #fff !important;
+  font-weight: 700 !important;
+}
+.yh-act-feed .yh-act-verb { color: #aaa !important; }
+.yh-act-feed .yh-act-subj {
+  color: #ff1a1a !important;
+  font-weight: 700 !important;
+}
+.yh-act-feed .yh-act-when {
+  color: #888 !important;
+  font-size: 9px !important;
+  margin-left: 2px !important;
+}
+.yh-act-empty { color: #888 !important; font-style: italic !important; }
+
+/* Full-height scar / divider between activity and account */
+.yh-userpanel-scar {
+  flex: 0 0 1px !important;
+  width: 1px !important;
+  align-self: stretch !important;
+  background: rgba(255, 255, 255, 0.18) !important;
+  margin: 0 !important;
 }
 
-/* RIGHT: avatar + account links */
+/* RIGHT: account links + avatar (far right, bottom-aligned) */
 .yh-userpanel-right {
   flex: 0 0 auto !important;
   display: flex !important;
   flex-direction: row !important;
-  align-items: center !important;
+  align-items: flex-end !important;
+  align-self: stretch !important;
   gap: 8px !important;
-  max-width: 58% !important;
+  max-width: 48% !important;
+  padding: 8px 0 8px 10px !important;
+  box-sizing: border-box !important;
 }
 .yh-userpanel-avatar {
   flex: 0 0 56px !important;
   width: 56px !important;
   height: 56px !important;
-  border: 1px solid #444 !important;
+  border: 1px solid #666 !important;
   background: #000 !important;
   display: block !important;
   overflow: hidden !important;
-  order: 2 !important; /* avatar on the far right of the right cluster */
+  margin: 0 !important;
+  align-self: flex-end !important;
 }
 .yh-userpanel-avatar img {
   width: 56px !important;
@@ -560,6 +596,14 @@ input.button.yh-btn-login:hover {
   background-size: cover;
   background-position: center;
   margin: 8px 0;
+  position: relative;
+}
+.yh-panelbg-preview::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.72);
+  pointer-events: none;
 }
 .yh-avatar-guest {
   background: #000 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='24' r='12' fill='%23444'/%3E%3Cpath d='M12 58c0-12 9-20 20-20s20 8 20 20' fill='%23444'/%3E%3C/svg%3E") center/70% no-repeat !important;
@@ -569,11 +613,11 @@ input.button.yh-btn-login:hover {
   margin: 0 !important;
   padding: 0 !important;
   font-size: 11px !important;
-  line-height: 1.4 !important;
+  line-height: 1.35 !important;
   flex: 1 1 auto !important;
   min-width: 0 !important;
-  order: 1 !important;
   text-align: right !important;
+  align-self: center !important;
 }
 .yh-userpanel-links li {
   margin: 0 !important;
@@ -1200,25 +1244,38 @@ blockquote, .codeblock, .mycode_quote, .mycode_code {
   .yh-loginbox-member {
     min-height: 0 !important;
   }
+  .yh-loginbox-member .yh-panel-overlay,
+  .yh-loginbox-member.yh-has-panelbg::before {
+    background: rgba(0, 0, 0, 0.78) !important;
+  }
   .yh-userpanel {
     align-items: stretch !important;
-    gap: 8px !important;
-    padding: 2px 0 !important;
+    min-height: 120px !important;
+    gap: 0 !important;
+    padding: 0 !important;
   }
   .yh-userpanel-activity {
-    padding-right: 6px !important;
+    padding: 8px 8px 8px 0 !important;
+  }
+  .yh-userpanel-scar {
+    align-self: stretch !important;
+    min-height: 100% !important;
   }
   .yh-act-title { font-size: 9px !important; }
-  .yh-act-list { font-size: 9px !important; }
+  .yh-act-feed { font-size: 9px !important; }
+  .yh-act-feed li { margin-bottom: 2px !important; }
   .yh-userpanel-right {
-    max-width: 52% !important;
+    max-width: 46% !important;
     gap: 6px !important;
+    padding: 8px 0 8px 8px !important;
+    align-items: flex-end !important;
   }
   .yh-userpanel-avatar {
     flex-basis: 48px !important;
     width: 48px !important;
     height: 48px !important;
-    margin-top: 0 !important;
+    margin: 0 !important;
+    align-self: flex-end !important;
   }
   .yh-userpanel-avatar img {
     width: 48px !important;
