@@ -579,7 +579,7 @@ function renderIndex(ctx = {}) {
 
   const body = `
     <header class="hero">
-      <img class="banner" src="/sentry-logo.svg" alt="SENTRY.MBA" width="720" height="160" />
+      <img class="banner" src="/sentry-logo.png" alt="SENTRY.MBA" width="854" height="300" />
     </header>
 
     <div class="discover-bar" id="search">

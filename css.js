@@ -112,11 +112,11 @@ img.coin, .coin {
 }
 .hero .banner {
   display: block;
-  width: min(640px, 92%);
+  width: min(720px, 96%);
   height: auto;
   margin: 0 auto;
   background: transparent;
-  filter: drop-shadow(0 0 12px rgba(255, 136, 0, 0.28));
+  filter: drop-shadow(0 0 14px rgba(255, 136, 0, 0.35));
 }
 .blurb {
   color: var(--warn);
