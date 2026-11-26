@@ -1,6 +1,23 @@
-<div class="sm-auth sm-auth-member">
-	<a class="sm-auth-user" href="{$mybb->settings['bburl']}/member.php?action=profile&amp;uid={$mybb->user['uid']}">{$mybb->user['username']}</a>
-	<a class="sm-auth-bits" href="{$mybb->settings['bburl']}/bits.php"><span class="yh-bits-inline">{$yh_bits_fmt}</span> Bits</a>
-	<a class="sm-auth-login" href="{$mybb->settings['bburl']}/usercp.php">UserCP</a>
-	<a class="sm-auth-register" href="{$mybb->settings['bburl']}/member.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}">Logout</a>
+<div class="sm-user-menu" id="sm_user_menu">
+	<button type="button" class="sm-user-toggle" id="sm_user_toggle" aria-expanded="false" aria-controls="sm_user_drop">
+		<span class="sm-user-toggle-name">{$mybb->user['username']}</span>
+		<span class="sm-user-chevron" aria-hidden="true"></span>
+	</button>
+	<div class="sm-user-drop" id="sm_user_drop" hidden>
+		<div class="sm-user-drop-head">
+			<img class="sm-user-drop-avatar" src="{$yh_avatar}" alt="" width="48" height="48" />
+			<div class="sm-user-drop-meta">
+				<strong class="sm-user-drop-name">{$mybb->user['username']}</strong>
+				<span class="sm-user-drop-bits"><span class="yh-bits-inline">{$yh_bits_fmt}</span> Bits</span>
+			</div>
+		</div>
+		<nav class="sm-user-drop-links" aria-label="Account">
+			<a href="{$mybb->settings['bburl']}/usercp.php">UserCP</a>
+			<a href="{$mybb->settings['bburl']}/member.php?action=profile&amp;uid={$mybb->user['uid']}">Profile</a>
+			<a href="{$mybb->settings['bburl']}/bits.php">Bits</a>
+			<a href="{$mybb->settings['bburl']}/private.php">Messages <span class="sm-user-drop-count">{$mybb->user['pms_unread']}</span></a>
+			<a href="{$mybb->settings['bburl']}/usercp.php?action=profile">Edit Profile</a>
+			<a class="sm-user-drop-logout" href="{$mybb->settings['bburl']}/member.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}">Logout</a>
+		</nav>
+	</div>
 </div>
