@@ -13,6 +13,21 @@
 {$header}
 
 <div class="sm-home">
+	<aside class="sm-home-side">
+		<div class="sm-side-pair">
+			{$boardstats}
+			<div class="sm-side-divider" aria-hidden="true"></div>
+			<section class="sm-block sm-recent">
+				<div class="sm-block-head">Recent Activity</div>
+				<div class="sm-block-body sm-recent-list">
+					{$sm_recent_activity}
+				</div>
+			</section>
+		</div>
+		{$whosonline}
+		{$birthdays}
+	</aside>
+
 	<div class="sm-home-main">
 		<section class="sm-shoutbox" id="sm_shoutbox">
 			<div class="sm-shout-head">
@@ -46,16 +61,6 @@
 		{$forums}
 		</div>
 	</div>
-
-	<aside class="sm-home-side">
-		{$boardstats}
-		<section class="sm-block sm-recent">
-			<div class="sm-block-head">Recent Activity</div>
-			<div class="sm-block-body sm-recent-list">
-				{$sm_recent_activity}
-			</div>
-		</section>
-	</aside>
 </div>
 
 <br class="clear" />
