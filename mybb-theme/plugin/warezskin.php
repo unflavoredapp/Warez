@@ -518,7 +518,8 @@ function warezskin_activity_snippet($message)
 	$message = preg_replace('#\[/?[a-z0-9*=_\-]+[^\]]*\]#i', '', $message);
 	$message = strip_tags($message);
 	$message = html_entity_decode($message, ENT_QUOTES, 'UTF-8');
-	$message = str_replace(array("\\r\\n", "\\n", "\\r", "\r\n", "\n", "\r"), ' ', $message);
+	$message = str_replace(array("\r\n", "\n", "\r"), ' ', $message);
+	$message = str_replace(array('\\r\\n', '\\n', '\\r'), ' ', $message);
 	$message = preg_replace('/\s+/', ' ', trim($message));
 	if ($message === '') {
 		return '';
