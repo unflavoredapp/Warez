@@ -5,13 +5,13 @@
 	</button>
 	<div class="sm-user-drop" id="sm_user_drop" hidden>
 		<div class="sm-user-drop-head">
-			<img class="sm-user-drop-avatar" src="{$yh_avatar}" alt="" width="48" height="48" />
+			<img class="sm-user-drop-avatar" src="{$yh_avatar}" alt="" width="40" height="40" />
 			<div class="sm-user-drop-meta">
 				<strong class="sm-user-drop-name">{$mybb->user['username']}</strong>
 				<span class="sm-user-drop-bits"><span class="yh-bits-inline">{$yh_bits_fmt}</span> Bits</span>
 			</div>
 		</div>
-		<nav class="sm-user-drop-links" aria-label="Account">
+		<nav class="sm-user-drop-grid" aria-label="Account">
 			<a href="{$mybb->settings['bburl']}/usercp.php">UserCP</a>
 			<a href="{$mybb->settings['bburl']}/member.php?action=profile&amp;uid={$mybb->user['uid']}">Profile</a>
 			<a href="{$mybb->settings['bburl']}/bits.php">Bits</a>
