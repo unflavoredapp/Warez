@@ -232,7 +232,7 @@ function renderAppDetails(app) {
     .join("");
 
   const icon = app.iconURL
-    ? `<img src="${esc(app.iconURL)}" alt="" width="72" height="72" style="border:1px solid #2a6b2a;background:#001000" referrerpolicy="no-referrer" />`
+    ? `<img src="${esc(app.iconURL)}" alt="" width="72" height="72" style="border:1px solid #6b3d00;background:#140a00" referrerpolicy="no-referrer" />`
     : "";
 
   return shell(
