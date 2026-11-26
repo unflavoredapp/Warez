@@ -22,32 +22,28 @@ module.exports = `
 html, body {
   margin: 0;
   min-height: 100%;
-  background: #000;
   color: var(--ink);
   font-family: var(--font);
   font-size: 13px;
   line-height: 1.4;
 }
 
+/* classic sentry.mba bg.gif — small green dots on black */
 body {
-  background:
-    repeating-linear-gradient(
-      90deg,
-      transparent,
-      transparent 2px,
-      rgba(0, 40, 0, 0.18) 2px,
-      rgba(0, 40, 0, 0.18) 3px
-    ),
-    #000;
+  background: #000 url("/bg.gif") repeat;
 }
 
 a { color: var(--ink-bright); text-decoration: none; }
 a:hover { color: #fff; text-decoration: underline; }
 
+/* black floating container over the dotted page bg */
 .shell {
   max-width: 980px;
-  margin: 0 auto;
+  margin: 18px auto;
   padding: 12px 14px 40px;
+  background: #000;
+  border: 1px solid var(--line);
+  box-shadow: 0 0 24px rgba(0, 80, 0, 0.35);
 }
 
 /* top nav — [ bracket ] style */
@@ -78,31 +74,17 @@ a:hover { color: #fff; text-decoration: underline; }
 }
 .topnav .right a { color: var(--bad); font-size: 11px; }
 
-/* classic sentry.mba gold coin */
-.coin {
+/* ripped sentry.mba style/img/gold.gif — black/transparent for black container */
+img.coin, .coin {
   display: inline-block;
   width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background:
-    radial-gradient(circle at 32% 28%, #fff6a8 0%, #ffcc00 42%, #d4a017 72%, #8a6a00 100%);
-  border: 1px solid #c9a000;
-  box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 200, 0.35),
-    0 0 4px rgba(255, 204, 0, 0.35);
-  vertical-align: -2px;
+  height: 10px;
+  vertical-align: -1px;
   margin-right: 4px;
+  image-rendering: pixelated;
+  background: #000;
+  border: 0;
   flex-shrink: 0;
-}
-.coin::after {
-  content: "G";
-  display: block;
-  font-size: 7px;
-  line-height: 10px;
-  text-align: center;
-  color: #6b5200;
-  font-weight: 700;
-  font-family: var(--font);
 }
 
 .hero {

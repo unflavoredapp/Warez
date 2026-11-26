@@ -97,7 +97,7 @@ function shell(title, body) {
       <a href="/#repos">[ repos ]</a>
       <a href="/#search">[ search ]</a>
       <a href="/#add">[ add source ]</a>
-      <a class="buy-gold" href="/#gold">[ <span class="coin" aria-hidden="true"></span>buy gold ]</a>
+      <a class="buy-gold" href="/#gold">[ <img class="coin" src="/gold.gif" width="12" height="10" alt="" />buy gold ]</a>
       <a href="/api/status">[ api ]</a>
     </nav>
     ${body}
@@ -194,6 +194,18 @@ app.get("/sentry-banner.png", (_req, res) => {
 app.get("/sentry-banner.jpg", (_req, res) => {
   res.redirect(301, "/sentry-banner.png");
 });
+app.get("/gold.gif", (_req, res) => {
+  res.type("image/gif").sendFile(path.join(__dirname, "public", "gold.gif"));
+});
+app.get("/gold-coin.png", (_req, res) => {
+  res.type("image/png").sendFile(path.join(__dirname, "public", "gold-coin.png"));
+});
+app.get("/bg.gif", (_req, res) => {
+  res.type("image/gif").sendFile(path.join(__dirname, "public", "bg.gif"));
+});
+app.get("/check.png", (_req, res) => {
+  res.type("image/png").sendFile(path.join(__dirname, "public", "check.png"));
+});
 
 app.get("/app/:repoId/:appId", (req, res) => {
   const found = store.getApp(req.params.repoId, req.params.appId);
@@ -271,7 +283,7 @@ function renderIndex() {
     .slice(0, 15);
 
   function freeCost() {
-    return `<span class="cost"><span class="coin" aria-hidden="true"></span>Free</span>`;
+    return `<span class="cost"><img class="coin" src="/gold.gif" width="12" height="10" alt="" />Free</span>`;
   }
 
   function appRows(apps) {
@@ -301,7 +313,7 @@ function renderIndex() {
       .map((repo) => {
         const status = repo.lastError
           ? `<span class="bad">Error</span>`
-          : `<span class="ok">✓ Verified</span>`;
+          : `<span class="ok"><img src="/check.png" width="10" height="10" alt="" style="vertical-align:-1px;margin-right:4px" />Verified</span>`;
         return `<tr data-id="${esc(repo.id)}">
           <td class="mono">${esc(ymd(repo.refreshedAt || repo.addedAt))}</td>
           <td><strong>${esc(repo.name)}</strong><div class="muted">${esc(repo.sourceURL)}</div></td>
@@ -397,7 +409,7 @@ function renderIndex() {
     </div>
 
     <div class="panel" id="gold">
-      <h2>[ <span class="coin" aria-hidden="true"></span> Gold ]</h2>
+      <h2>[ <img class="coin" src="/gold.gif" width="12" height="10" alt="" /> Gold ]</h2>
       <p class="gold" style="text-align:center;margin:0 0 8px">Classic sentry.mba coin — style only.</p>
       <p class="muted" style="margin:0;text-align:center;font-size:12px">
         Listing &amp; search stay free. Gold here is the old template accent (no payments wired up).
@@ -408,7 +420,7 @@ function renderIndex() {
       Total Repos: <strong id="s-repos">${stats.repos}</strong>
       &nbsp;|&nbsp; Total Apps: <strong id="s-apps">${stats.apps}</strong>
       &nbsp;|&nbsp; Source Errors: <strong id="s-errors">${stats.errors}</strong>
-      &nbsp;|&nbsp; <span class="coin" aria-hidden="true"></span>${esc(SITE_NAME)}
+      &nbsp;|&nbsp; <img class="coin" src="/gold.gif" width="12" height="10" alt="" />${esc(SITE_NAME)}
     </div>
 
     <script>
@@ -433,7 +445,7 @@ function renderIndex() {
           "<td>"+esc(app.developerName||app.repoName||"—")+"</td>"+
           "<td class='mono'>"+esc(app.version?("v"+app.version):"—")+"</td>"+
           "<td class='mono'>"+esc(app.size?bytes(app.size):"—")+"</td>"+
-          "<td><span class='cost'><span class='coin' aria-hidden='true'></span>Free</span></td></tr>";
+          "<td><span class='cost'><img class='coin' src='/gold.gif' width='12' height='10' alt='' />Free</span></td></tr>";
       }
       async function searchApps() {
         var q = document.getElementById("q").value.trim();
