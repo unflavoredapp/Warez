@@ -370,7 +370,7 @@ function warezskin_index_stats()
 		? '<span class="sm-goal-ok">Reached</span>'
 		: '<span class="sm-goal-no">Not Reached</span>';
 
-	warezskin_build_recent_feed(24);
+	warezskin_build_recent_feed(20);
 	warezskin_build_fake_online();
 }
 
@@ -509,19 +509,13 @@ function warezskin_build_recent_feed($limit = 24)
 	});
 	$items = array_slice($items, 0, $limit);
 
-	$left = '';
-	$right = '';
-	foreach ($items as $i => $item) {
-		if ($i % 2 === 0) {
-			$left .= $item['html'];
-		} else {
-			$right .= $item['html'];
-		}
+	$html = '';
+	foreach ($items as $item) {
+		$html .= $item['html'];
 	}
-
-	$sm_recent_left = $left;
-	$sm_recent_right = $right !== '' ? $right : '<li class="sm-act-empty"> </li>';
-	$sm_recent_activity = $left.$right;
+	$sm_recent_activity = $html;
+	$sm_recent_left = $html;
+	$sm_recent_right = '';
 }
 
 function warezskin_activity_snippet($message)

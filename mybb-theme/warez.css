@@ -866,38 +866,19 @@ a.sm-btn { color: #fff !important; }
   border-radius: var(--sm-radius);
   overflow: hidden;
 }
-.sm-recent-cols {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0;
-  background: #171717;
-  border-top: 0;
-  align-items: stretch;
-  min-height: 0;
-}
-.sm-recent-col {
-  list-style: none;
-  margin: 0;
-  padding: 0 !important;
-  max-height: 260px;
-  overflow-x: hidden;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior: contain;
-  background: #171717;
-  min-width: 0;
-}
-.sm-recent-col + .sm-recent-col {
-  border-left: 1px solid #2a2a2a;
-}
 .sm-recent-feed {
   list-style: none;
   margin: 0;
   padding: 0 !important;
   background: #171717;
+  max-height: 260px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
 }
 .sm-act-item {
-  padding: 10px 12px;
+  padding: 10px 14px;
   border-bottom: 1px solid #222;
 }
 .sm-act-item:last-child { border-bottom: 0; }
@@ -1196,8 +1177,7 @@ a.sm-btn { color: #fff !important; }
     grid-area: side;
     order: 0;
   }
-  .sm-recent-col { max-height: 340px; }
-  .sm-act-item { padding: 10px 14px; }
+  .sm-recent-feed { max-height: 340px; }
   .sm-tabs { gap: 6px; }
   .sm-tab { border-radius: 3px; padding: 8px 12px; }
   .sm-footer-grid { grid-template-columns: repeat(4, 1fr); }
