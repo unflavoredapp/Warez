@@ -1167,6 +1167,12 @@ a.sm-btn { color: var(--sm-orange2) !important; }
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
 }
+@media (max-width: 899px) {
+  .sm-recent-feed {
+    max-height: none !important;
+    overflow: visible !important;
+  }
+}
 .sm-act-item {
   padding: 12px 14px;
   border-bottom: 1px solid #222;
