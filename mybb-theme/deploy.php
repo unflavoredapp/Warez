@@ -299,31 +299,19 @@ function wz_forum($db, $name, $desc, $type, $pid, $order, $extra = array())
 	return (int)$db->insert_id();
 }
 
-$general = wz_forum($db, 'General', 'Main community boards', 'c', 0, 1);
-$market = wz_forum($db, 'Market', 'Buys, sells, and requests', 'c', 0, 2);
+// Slim board: Announcements + iOS (apps) only
+$annCat = wz_forum($db, 'Announcements', 'News, rules, and official updates', 'c', 0, 1);
+$iosCat = wz_forum($db, 'iOS', 'Apps, IPAs, and iOS releases', 'c', 0, 2);
 
-$ann = wz_forum($db, 'Announcements', 'News, rules, and official updates', 'f', $general, 1);
-wz_forum($db, 'Changelog', '', 'f', $ann, 1);
-wz_forum($db, 'Support', '', 'f', $ann, 2);
-wz_forum($db, 'Suggestions', '', 'f', $ann, 3);
+$annForum = wz_forum($db, 'News', 'Site news, rules, and official updates', 'f', $annCat, 1);
+$iosApps = wz_forum($db, 'Apps', 'Post and share iOS apps — we are just getting started', 'f', $iosCat, 1);
 
-wz_forum($db, 'General Chat', 'Hang out and talk about anything', 'f', $general, 2);
-$money = wz_forum($db, 'Releases', 'Share and discuss releases', 'f', $general, 3);
-wz_forum($db, 'iOS', '', 'f', $money, 1);
-wz_forum($db, 'Android', '', 'f', $money, 2);
-wz_forum($db, 'Tools', '', 'f', $money, 3);
-
-wz_forum($db, 'Introductions', 'New here? Say hi', 'f', $general, 4);
-$free = wz_forum($db, 'Freebies', 'Giveaways and free drops', 'f', $general, 5);
-wz_forum($db, 'Giveaways', '', 'f', $free, 1);
-wz_forum($db, 'Requests', '', 'f', $free, 2);
-wz_forum($db, 'Off-topic', 'Memes, chaos, and nonsense', 'f', $general, 6);
-
-$mp = wz_forum($db, 'Marketplace', 'Trades and listings', 'f', $market, 1);
-wz_forum($db, 'Selling', '', 'f', $mp, 1);
-wz_forum($db, 'Buying', '', 'f', $mp, 2);
-wz_forum($db, 'Price Checks', '', 'f', $mp, 3);
-wz_forum($db, 'Wants', 'Looking for something specific', 'f', $market, 2);
+// Keep existing seed threads under News when rebuilding
+if ($db->table_exists('threads')) {
+	$db->update_query('threads', array('fid' => $annForum), 'tid IN (1,2,3)');
+	$db->update_query('posts', array('fid' => $annForum), 'tid IN (1,2,3)');
+	echo "Moved seed threads into News (fid {$annForum})\n";
+}
 
 // Fix parentlist for all forums
 $query = $db->simple_select('forums', 'fid,pid', '', array('order_by' => 'fid', 'order_dir' => 'ASC'));
