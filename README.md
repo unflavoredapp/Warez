@@ -33,6 +33,22 @@ MyBB under `/var/www/warez.skin` is no longer the public front door; files/DB ar
 | DELETE | `/api/repos/:id` | Remove source |
 | GET | `/api/apps?q=` | Search apps |
 
+## Accounts + admin plugins
+
+Node stack (`index.js` + `css.js`). First visit after deploy:
+
+1. Open **`/setup`** (also linked as `[ setup accounts ]` when no users exist)
+2. Create the admin account
+3. Admin **Settings** (`/admin/settings`) lists plugins — including **Template Conditionals** (`plugins/template-conditionals.js`)
+
+Template helper syntax:
+
+```
+{{#if loggedIn}}…{{else}}…{{/if}}
+{{#unless needsSetup}}…{{/unless}}
+{{username}}
+```
+
 ## Local
 
 ```bash

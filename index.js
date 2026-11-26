@@ -4,9 +4,13 @@
 require("dotenv").config();
 
 const path = require("path");
+const crypto = require("crypto");
+const fs = require("fs");
 const express = require("express");
 const css = require("./css");
 const { Store } = require("./store");
+const { Accounts, parseCookies, sessionCookie } = require("./lib/accounts");
+const plugins = require("./plugins");
 
 const PORT = Number(process.env.PORT || 3000);
 const HOST = process.env.HOST || "127.0.0.1";
@@ -14,10 +18,31 @@ const DATA_DIR = process.env.WAREZ_DATA || path.join(__dirname, "data");
 const SITE_NAME = process.env.SITE_NAME || "sentry.mba";
 const STARTED_AT = Date.now();
 
+fs.mkdirSync(DATA_DIR, { recursive: true });
+const secretFile = path.join(DATA_DIR, ".session_secret");
+let SESSION_SECRET = process.env.SESSION_SECRET || "";
+if (!SESSION_SECRET) {
+  if (fs.existsSync(secretFile)) {
+    SESSION_SECRET = fs.readFileSync(secretFile, "utf8").trim();
+  } else {
+    SESSION_SECRET = crypto.randomBytes(32).toString("hex");
+    fs.writeFileSync(secretFile, SESSION_SECRET, { mode: 0o600 });
+  }
+}
+
 const store = new Store(DATA_DIR);
+const accounts = new Accounts(DATA_DIR, SESSION_SECRET);
 const app = express();
 app.disable("x-powered-by");
 app.use(express.json({ limit: "256kb" }));
+app.use(express.urlencoded({ extended: false, limit: "64kb" }));
+
+app.use((req, _res, next) => {
+  const cookies = parseCookies(req);
+  req.user = accounts.readSession(cookies.sentry_session) || null;
+  req.needsSetup = accounts.needsSetup();
+  next();
+});
 
 const SAMPLE_SOURCE = {
   name: `${SITE_NAME} Sample Repo`,
@@ -79,7 +104,29 @@ function ymd(tsOrStr) {
   return s.length >= 10 ? s.slice(0, 10) : s;
 }
 
-function shell(title, body) {
+function shell(title, body, ctx = {}) {
+  const user = ctx.user || null;
+  const needsSetup = Boolean(ctx.needsSetup);
+  // Flattened conditionals (helper supports nesting lightly; keep nav simple)
+  const navTpl = `
+    <nav class="topnav float-tabs" aria-label="Primary">
+      <a href="/">[ home ]</a>
+      <a href="/#latest">[ latest apps ]</a>
+      <a href="/#search">[ search ]</a>
+      <a class="buy-gold" href="/">[ <img class="coin" src="/gold.gif" width="12" height="10" alt="" />buy gold ]</a>
+      <a href="/api/status">[ api ]</a>
+      {{#if needsSetup}}<a class="nav-setup" href="/setup">[ setup accounts ]</a>{{/if}}
+      {{#if isAdmin}}<a href="/admin/settings">[ settings ]</a>{{/if}}
+      {{#if loggedIn}}<a href="/logout">[ logout ]</a>{{else}}{{#unless needsSetup}}<a href="/login">[ login ]</a>{{/unless}}{{/if}}
+    </nav>`;
+
+  const nav = plugins.render(navTpl, {
+    needsSetup,
+    loggedIn: Boolean(user),
+    isAdmin: user?.role === "admin",
+    username: user?.username || "",
+  }, accounts);
+
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -91,19 +138,25 @@ function shell(title, body) {
 </head>
 <body>
   <div class="page">
-    <nav class="topnav float-tabs" aria-label="Primary">
-      <a href="/">[ home ]</a>
-      <a href="/#latest">[ latest apps ]</a>
-      <a href="/#search">[ search ]</a>
-      <a class="buy-gold" href="/">[ <img class="coin" src="/gold.gif" width="12" height="10" alt="" />buy gold ]</a>
-      <a href="/api/status">[ api ]</a>
-    </nav>
+    ${nav}
     <div class="shell">
       ${body}
     </div>
   </div>
 </body>
 </html>`;
+}
+
+function requireAdmin(req, res) {
+  if (accounts.needsSetup()) {
+    res.redirect("/setup");
+    return false;
+  }
+  if (!req.user || req.user.role !== "admin") {
+    res.redirect("/login?next=/admin/settings");
+    return false;
+  }
+  return true;
 }
 
 app.get("/sample-source.json", (_req, res) => {
@@ -119,7 +172,7 @@ app.get("/health", (_req, res) => {
   });
 });
 
-app.get("/api/status", (_req, res) => {
+app.get("/api/status", (req, res) => {
   res.json({
     ok: true,
     service: SITE_NAME,
@@ -127,6 +180,14 @@ app.get("/api/status", (_req, res) => {
     focus: "ipa-app-repo-discovery",
     uptimeSec: Math.floor((Date.now() - STARTED_AT) / 1000),
     node: process.version,
+    needsSetup: accounts.needsSetup(),
+    user: req.user ? { username: req.user.username, role: req.user.role } : null,
+    plugins: plugins.listPlugins(accounts).map(({ id, name, version, enabled }) => ({
+      id,
+      name,
+      version,
+      enabled,
+    })),
     ...store.stats(),
   });
 });
@@ -207,7 +268,158 @@ app.get("/check.png", (_req, res) => {
   res.type("image/png").sendFile(path.join(__dirname, "public", "check.png"));
 });
 
+/* ---- accounts: setup / login / admin settings ---- */
+
+app.get("/setup", (req, res) => {
+  if (!accounts.needsSetup()) return res.redirect("/login");
+  const err = String(req.query.error || "");
+  const body = `
+    <div class="section-title">[ Setup Accounts ]</div>
+    <div class="panel admin-panel">
+      <p class="muted" style="text-align:center">Create the first <strong>admin</strong> account. After this, Template Conditionals and other plugins show under Settings.</p>
+      ${err ? `<div class="msg err" style="text-align:center">${esc(err)}</div>` : ""}
+      <form method="post" action="/setup" class="admin-form">
+        <label>Username</label>
+        <input class="source" name="username" autocomplete="username" required minlength="3" />
+        <label>Password</label>
+        <input class="source" name="password" type="password" autocomplete="new-password" required minlength="8" />
+        <label>Confirm password</label>
+        <input class="source" name="password2" type="password" autocomplete="new-password" required minlength="8" />
+        <div class="row" style="justify-content:center;margin-top:12px">
+          <button class="btn" type="submit">Create admin</button>
+        </div>
+      </form>
+    </div>`;
+  return res.type("html").send(shell(`Setup · ${SITE_NAME}`, body, { user: null, needsSetup: true }));
+});
+
+app.post("/setup", (req, res) => {
+  if (!accounts.needsSetup()) return res.redirect("/login");
+  try {
+    const username = String(req.body?.username || "").trim();
+    const password = String(req.body?.password || "");
+    const password2 = String(req.body?.password2 || "");
+    if (password !== password2) throw new Error("passwords do not match");
+    const user = accounts.createAdmin({ username, password });
+    // enable template-conditionals by default on first setup
+    accounts.setPluginEnabled("template-conditionals", true);
+    const token = accounts.issueSession(user);
+    res.setHeader("Set-Cookie", sessionCookie(token));
+    return res.redirect("/admin/settings");
+  } catch (err) {
+    return res.redirect(`/setup?error=${encodeURIComponent(String(err.message || err))}`);
+  }
+});
+
+app.get("/login", (req, res) => {
+  if (accounts.needsSetup()) return res.redirect("/setup");
+  if (req.user) return res.redirect(req.user.role === "admin" ? "/admin/settings" : "/");
+  const err = String(req.query.error || "");
+  const next = String(req.query.next || "/admin/settings");
+  const body = `
+    <div class="section-title">[ Login ]</div>
+    <div class="panel admin-panel">
+      ${err ? `<div class="msg err" style="text-align:center">${esc(err)}</div>` : ""}
+      <form method="post" action="/login" class="admin-form">
+        <input type="hidden" name="next" value="${esc(next)}" />
+        <label>Username</label>
+        <input class="source" name="username" autocomplete="username" required />
+        <label>Password</label>
+        <input class="source" name="password" type="password" autocomplete="current-password" required />
+        <div class="row" style="justify-content:center;margin-top:12px">
+          <button class="btn" type="submit">Login</button>
+        </div>
+      </form>
+    </div>`;
+  return res.type("html").send(shell(`Login · ${SITE_NAME}`, body, { user: null, needsSetup: false }));
+});
+
+app.post("/login", (req, res) => {
+  if (accounts.needsSetup()) return res.redirect("/setup");
+  const username = String(req.body?.username || "");
+  const password = String(req.body?.password || "");
+  const next = String(req.body?.next || "/admin/settings");
+  const user = accounts.verify(username, password);
+  if (!user) return res.redirect("/login?error=" + encodeURIComponent("invalid username or password"));
+  res.setHeader("Set-Cookie", sessionCookie(accounts.issueSession(user)));
+  const dest = next.startsWith("/") ? next : "/";
+  return res.redirect(dest);
+});
+
+app.get("/logout", (_req, res) => {
+  res.setHeader("Set-Cookie", sessionCookie("", { clear: true }));
+  return res.redirect("/");
+});
+
+app.get("/admin/settings", (req, res) => {
+  if (!requireAdmin(req, res)) return;
+  const list = plugins.listPlugins(accounts);
+  const flash = String(req.query.saved || "") === "1"
+    ? `<div class="msg ok" style="text-align:center">Settings saved.</div>`
+    : "";
+  const rows = list
+    .map((p) => {
+      const checked = p.enabled ? "checked" : "";
+      return `<tr>
+        <td><strong>${esc(p.name)}</strong><div class="muted">${esc(p.id)} · v${esc(p.version)}</div></td>
+        <td>${esc(p.description)}</td>
+        <td class="mono">${esc(p.module)}</td>
+        <td style="text-align:center">
+          <label class="plugin-toggle">
+            <input type="checkbox" name="plugin:${esc(p.id)}" value="1" ${checked} />
+            <span>${p.enabled ? "On" : "Off"}</span>
+          </label>
+        </td>
+      </tr>`;
+    })
+    .join("");
+
+  const body = `
+    <div class="section-title">[ Admin Settings ]</div>
+    <div class="panel admin-panel">
+      <p style="text-align:center;margin-top:0">Signed in as <span class="gold">${esc(req.user.username)}</span> (admin)</p>
+      ${flash}
+      <div class="section-title" style="margin-top:8px">[ Plugins ]</div>
+      <p class="muted" style="text-align:center">Custom helper modules for this Node site (index.js + css.js). Template Conditionals is our tiny replacement for the old MyBB plugin.</p>
+      <form method="post" action="/admin/settings">
+        <table class="repo">
+          <thead><tr>
+            <th style="width:22%">::Plugin</th>
+            <th>::Description</th>
+            <th style="width:22%">::Module</th>
+            <th style="width:12%">::Enabled</th>
+          </tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+        <div class="row" style="justify-content:center;margin-top:12px">
+          <button class="btn" type="submit">Save settings</button>
+          <a class="btn btn-ghost" href="/">Back to site</a>
+        </div>
+      </form>
+      <div class="panel" style="margin-top:16px">
+        <div class="section-title" style="margin-top:0">[ Template Conditionals usage ]</div>
+        <pre class="code-sample">{{#if loggedIn}}Hello {{username}}{{else}}Login{{/if}}
+{{#unless needsSetup}}…{{/unless}}</pre>
+      </div>
+    </div>`;
+  return res
+    .type("html")
+    .send(shell(`Settings · ${SITE_NAME}`, body, { user: req.user, needsSetup: false }));
+});
+
+app.post("/admin/settings", (req, res) => {
+  if (!requireAdmin(req, res)) return;
+  const list = plugins.listPlugins(accounts);
+  for (const p of list) {
+    const key = `plugin:${p.id}`;
+    const on = req.body?.[key] === "1" || req.body?.[key] === "on";
+    accounts.setPluginEnabled(p.id, on);
+  }
+  return res.redirect("/admin/settings?saved=1");
+});
+
 app.get("/app/:repoId/:appId", (req, res) => {
+  const ctx = { user: req.user, needsSetup: req.needsSetup };
   const found = store.getApp(req.params.repoId, req.params.appId);
   if (!found) {
     return res
@@ -216,14 +428,15 @@ app.get("/app/:repoId/:appId", (req, res) => {
       .send(
         shell(
           `Not found · ${SITE_NAME}`,
-          `<p class="blurb">App not found.</p><p><a href="/">[ back to home ]</a></p>`
+          `<p class="blurb">App not found.</p><p><a href="/">[ back to home ]</a></p>`,
+          ctx
         )
       );
   }
-  return res.type("html").send(renderAppDetails(found));
+  return res.type("html").send(renderAppDetails(found, ctx));
 });
 
-function renderAppDetails(app) {
+function renderAppDetails(app, ctx = {}) {
   const shots = (app.screenshotURLs || [])
     .map(
       (u) =>
@@ -265,11 +478,12 @@ function renderAppDetails(app) {
       <div class="section-title" style="margin-top:0">[ About ]</div>
       <p>${esc(app.localizedDescription || "No description.").replace(/\n/g, "<br/>")}</p>
       <p class="muted">Source: <a href="${esc(app.sourceURL || "#")}" target="_blank" rel="noopener noreferrer">${esc(app.repoName || app.sourceURL || "")}</a></p>
-    </div>`
+    </div>`,
+    ctx
   );
 }
 
-function renderIndex() {
+function renderIndex(ctx = {}) {
   const stats = store.stats();
   const allApps = store.searchApps("", { limit: 500 });
 
@@ -407,11 +621,11 @@ function renderIndex() {
     </script>
   `;
 
-  return shell(`${SITE_NAME} · IPA repo discovery`, body);
+  return shell(`${SITE_NAME} · IPA repo discovery`, body, ctx);
 }
 
-app.get("/", (_req, res) => {
-  res.type("html").send(renderIndex());
+app.get("/", (req, res) => {
+  res.type("html").send(renderIndex({ user: req.user, needsSetup: req.needsSetup }));
 });
 
 app.use((err, _req, res, _next) => {

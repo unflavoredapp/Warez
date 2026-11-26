@@ -375,4 +375,36 @@ input.source {
 @media (max-width: 420px) {
   .app-grid { grid-template-columns: 1fr; }
 }
+
+/* admin / setup */
+.admin-panel { max-width: 860px; margin-left: auto; margin-right: auto; }
+.admin-form label {
+  display: block;
+  margin: 10px 0 4px;
+  color: var(--ink-dim);
+  font-size: 11px;
+  text-transform: uppercase;
+}
+.topnav.float-tabs a.nav-setup {
+  color: var(--warn);
+  border-color: #8a6a00;
+}
+.plugin-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ink);
+  cursor: pointer;
+}
+.plugin-toggle input { accent-color: var(--ink); }
+pre.code-sample {
+  margin: 0;
+  padding: 10px;
+  background: #140a00;
+  border: 1px solid var(--muted);
+  color: var(--ink-bright);
+  font-size: 12px;
+  overflow-x: auto;
+  white-space: pre-wrap;
+}
 `;
