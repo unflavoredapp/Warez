@@ -29,12 +29,35 @@ try {
 		}
 		if ($action === 'apps') {
 			$q = $mybb->get_input('q');
+			$cat = $mybb->get_input('cat');
 			$limit = (int)$mybb->get_input('limit');
 			if ($limit <= 0) {
 				$limit = 200;
 			}
-			$apps = apprepos_search_apps($q, $limit);
-			echo json_encode(array('ok' => true, 'q' => $q, 'count' => count($apps), 'apps' => $apps));
+			$apps = apprepos_search_apps($q, $limit, $cat);
+			echo json_encode(array(
+				'ok' => true,
+				'q' => $q,
+				'cat' => $cat !== '' ? $cat : 'all',
+				'count' => count($apps),
+				'apps' => $apps,
+			));
+			exit;
+		}
+		if ($action === 'news') {
+			$limit = (int)$mybb->get_input('limit');
+			if ($limit <= 0) {
+				$limit = 24;
+			}
+			echo json_encode(array('ok' => true, 'news' => apprepos_list_news($limit)));
+			exit;
+		}
+		if ($action === 'categories') {
+			echo json_encode(array(
+				'ok' => true,
+				'categories' => apprepos_category_defs(),
+				'counts' => apprepos_category_counts(),
+			));
 			exit;
 		}
 		if ($action === 'app') {

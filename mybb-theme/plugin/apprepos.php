@@ -190,14 +190,18 @@ function apprepos_normalize_app($app)
 		}
 	}
 	$id = !empty($app['id']) ? (string)$app['id'] : apprepos_id_from($bundle.'|'.$version.'|'.$downloadURL);
-
-	return array(
+	$desc = substr((string)($app['localizedDescription'] ?? $app['versionDescription'] ?? $app['description'] ?? ''), 0, 8000);
+	$name = (string)($app['name'] ?? ($bundle !== '' ? $bundle : 'Untitled'));
+	$subtitle = (string)($app['subtitle'] ?? '');
+	$developer = (string)($app['developerName'] ?? $app['developer'] ?? '');
+	$versionCount = count($versions) > 0 ? count($versions) : ($version !== '' ? 1 : 0);
+	$out = array(
 		'id' => $id,
-		'name' => (string)($app['name'] ?? ($bundle !== '' ? $bundle : 'Untitled')),
+		'name' => $name,
 		'bundleIdentifier' => $bundle,
-		'developerName' => (string)($app['developerName'] ?? $app['developer'] ?? ''),
-		'subtitle' => (string)($app['subtitle'] ?? ''),
-		'localizedDescription' => substr((string)($app['localizedDescription'] ?? $app['versionDescription'] ?? $app['description'] ?? ''), 0, 8000),
+		'developerName' => $developer,
+		'subtitle' => $subtitle,
+		'localizedDescription' => $desc,
 		'versionDescription' => substr((string)($app['versionDescription'] ?? ''), 0, 4000),
 		'iconURL' => (string)($app['iconURL'] ?? ''),
 		'version' => $version,
@@ -207,6 +211,80 @@ function apprepos_normalize_app($app)
 		'featured' => !empty($app['featured']),
 		'screenshotURLs' => $shots,
 		'tintColor' => (string)($app['tintColor'] ?? ''),
+		'versionCount' => $versionCount,
+	);
+	$out['category'] = apprepos_guess_category($out);
+	return $out;
+}
+
+function apprepos_guess_category($app)
+{
+	$hay = strtolower(implode(' ', array(
+		$app['name'] ?? '',
+		$app['bundleIdentifier'] ?? '',
+		$app['subtitle'] ?? '',
+		$app['developerName'] ?? '',
+		substr((string)($app['localizedDescription'] ?? ''), 0, 400),
+	)));
+	if (preg_match('/jailbreak|dopamine|trollstore|sileo|zebra|bootstrap|unc0ver|checkra1n|palera1n|rootless|ellekit/', $hay)) {
+		return 'jailbreak';
+	}
+	if (preg_match('/\b(emu|emulator|retroarch|delta emulator|provenance|ppsspp|dolphin|ryujinx|yuzu)\b/', $hay)) {
+		return 'emu';
+	}
+	if (preg_match('/\b(carplay|automotive|\bcar\b|vehicle)\b/', $hay)) {
+		return 'car';
+	}
+	if (preg_match('/social|discord|telegram|whatsapp|instagram|twitter|tiktok|snapchat|facebook|messenger|reddit/', $hay)) {
+		return 'social';
+	}
+	if (preg_match('/music|video|stream|youtube|netflix|spotify|photo|camera|\btv\b|player|audiomack|podcast|iptv/', $hay)) {
+		return 'media';
+	}
+	if (preg_match('/tool|tweak|util|signer|install|file manager|terminal|ssh|repo|injector|cracker/', $hay)) {
+		return 'tools';
+	}
+	if (!empty($app['featured']) || preg_match('/premium|unlock|\+|paid|\bpro\b/', $hay)) {
+		return 'paid';
+	}
+	return 'other';
+}
+
+function apprepos_category_defs()
+{
+	// Icons are CSS-drawn via .yh-ar-cat-ico[data-ico]
+	return array(
+		'all' => array('label' => 'ALL', 'icon' => 'all'),
+		'tools' => array('label' => 'TOOLS', 'icon' => 'tools'),
+		'paid' => array('label' => 'PAID', 'icon' => 'paid'),
+		'jailbreak' => array('label' => 'JAILBREAK', 'icon' => 'jailbreak'),
+		'media' => array('label' => 'MEDIA', 'icon' => 'media'),
+		'social' => array('label' => 'SOCIAL', 'icon' => 'social'),
+		'car' => array('label' => 'CAR', 'icon' => 'car'),
+		'emu' => array('label' => 'EMU', 'icon' => 'emu'),
+	);
+}
+
+function apprepos_normalize_news_item($item, $repo)
+{
+	if (!is_array($item)) {
+		return null;
+	}
+	$title = trim((string)($item['title'] ?? ''));
+	if ($title === '') {
+		return null;
+	}
+	return array(
+		'title' => $title,
+		'identifier' => (string)($item['identifier'] ?? ''),
+		'caption' => substr((string)($item['caption'] ?? $item['text'] ?? ''), 0, 600),
+		'imageURL' => (string)($item['imageURL'] ?? $item['image'] ?? ''),
+		'url' => (string)($item['url'] ?? ''),
+		'appID' => (string)($item['appID'] ?? ''),
+		'date' => (string)($item['date'] ?? ''),
+		'tintColor' => (string)($item['tintColor'] ?? ''),
+		'repoId' => $repo['id'] ?? '',
+		'repoName' => $repo['name'] ?? '',
 	);
 }
 
@@ -218,6 +296,15 @@ function apprepos_normalize_source($json, $sourceUrl)
 		$apps[] = apprepos_normalize_app($app);
 	}
 	$meta = isset($json['META']) && is_array($json['META']) ? $json['META'] : array();
+	$news = array();
+	if (!empty($json['news']) && is_array($json['news'])) {
+		foreach (array_slice($json['news'], 0, 40) as $item) {
+			$n = apprepos_normalize_news_item($item, array('id' => '', 'name' => (string)($json['name'] ?? '')));
+			if ($n) {
+				$news[] = $n;
+			}
+		}
+	}
 	return array(
 		'name' => (string)($json['name'] ?? $meta['repoName'] ?? 'Untitled source'),
 		'identifier' => (string)($json['identifier'] ?? apprepos_id_from($sourceUrl)),
@@ -228,6 +315,7 @@ function apprepos_normalize_source($json, $sourceUrl)
 		'iconURL' => (string)($json['iconURL'] ?? $json['sourceicon'] ?? $meta['repoIcon'] ?? ''),
 		'appCount' => count($apps),
 		'apps' => $apps,
+		'news' => $news,
 	);
 }
 
@@ -357,6 +445,7 @@ function apprepos_public_repo($repo, $withApps = false)
 		'addedAt' => $repo['addedAt'] ?? null,
 		'refreshedAt' => $repo['refreshedAt'] ?? null,
 		'lastError' => $repo['lastError'] ?? null,
+		'newsCount' => count($repo['news'] ?? array()),
 	);
 	if ($withApps) {
 		$out['apps'] = array();
@@ -365,6 +454,51 @@ function apprepos_public_repo($repo, $withApps = false)
 		}
 	}
 	return $out;
+}
+
+function apprepos_list_news($limit = 24)
+{
+	$limit = max(1, min(60, (int)$limit));
+	$out = array();
+	foreach (apprepos_read()['repos'] as $repo) {
+		foreach ($repo['news'] ?? array() as $item) {
+			$n = apprepos_normalize_news_item($item, $repo);
+			if (!$n) {
+				continue;
+			}
+			$n['repoId'] = $repo['id'] ?? '';
+			$n['repoName'] = $repo['name'] ?? '';
+			$out[] = $n;
+			if (count($out) >= $limit) {
+				return $out;
+			}
+		}
+	}
+	return $out;
+}
+
+function apprepos_category_counts()
+{
+	$defs = apprepos_category_defs();
+	$counts = array();
+	foreach ($defs as $key => $_def) {
+		$counts[$key] = 0;
+	}
+	$total = 0;
+	foreach (apprepos_read()['repos'] as $repo) {
+		foreach ($repo['apps'] ?? array() as $app) {
+			$full = apprepos_normalize_app($app);
+			$total++;
+			$cat = $full['category'] ?? 'other';
+			if (isset($counts[$cat])) {
+				$counts[$cat]++;
+			} elseif (isset($counts['other'])) {
+				$counts['other']++;
+			}
+		}
+	}
+	$counts['all'] = $total;
+	return $counts;
 }
 
 function apprepos_list_repos($withApps = false)
@@ -470,9 +604,13 @@ function apprepos_remove_repo($id)
 	return count($data['repos']) !== $before;
 }
 
-function apprepos_search_apps($query = '', $limit = 200)
+function apprepos_search_apps($query = '', $limit = 200, $category = 'all')
 {
 	$q = strtolower(trim((string)$query));
+	$category = strtolower(trim((string)$category));
+	if ($category === '') {
+		$category = 'all';
+	}
 	$limit = max(1, min(500, (int)$limit));
 	$hits = array();
 	foreach (apprepos_read()['repos'] as $repo) {
@@ -484,32 +622,73 @@ function apprepos_search_apps($query = '', $limit = 200)
 			if ($q !== '' && strpos($hay, $q) === false) {
 				continue;
 			}
+			$cat = $full['category'] ?? 'other';
+			if ($category !== 'all' && $cat !== $category) {
+				continue;
+			}
+			$blurb = trim((string)($full['subtitle'] !== '' ? $full['subtitle'] : $full['localizedDescription']));
+			if (function_exists('mb_substr')) {
+				$blurb = mb_substr($blurb, 0, 140);
+			} else {
+				$blurb = substr($blurb, 0, 140);
+			}
 			$hits[] = array(
 				'id' => $full['id'],
 				'name' => $full['name'],
 				'bundleIdentifier' => $full['bundleIdentifier'],
 				'developerName' => $full['developerName'],
 				'subtitle' => $full['subtitle'],
+				'blurb' => $blurb,
 				'iconURL' => $full['iconURL'],
 				'version' => $full['version'],
+				'versionCount' => $full['versionCount'],
 				'size' => $full['size'],
+				'downloadURL' => $full['downloadURL'],
 				'featured' => $full['featured'],
+				'category' => $cat,
+				'screenshotURLs' => array_slice($full['screenshotURLs'] ?? array(), 0, 4),
 				'repoId' => $repo['id'],
 				'repoName' => $repo['name'],
 				'sourceURL' => $repo['sourceURL'],
 			);
-			if (count($hits) >= $limit) {
-				usort($hits, function ($a, $b) {
-					return strcasecmp($a['name'], $b['name']);
-				});
-				return $hits;
-			}
 		}
 	}
 	usort($hits, function ($a, $b) {
+		$fa = !empty($a['featured']) ? 0 : 1;
+		$fb = !empty($b['featured']) ? 0 : 1;
+		if ($fa !== $fb) {
+			return $fa - $fb;
+		}
+		$sa = !empty($a['screenshotURLs']) ? 0 : 1;
+		$sb = !empty($b['screenshotURLs']) ? 0 : 1;
+		if ($sa !== $sb) {
+			return $sa - $sb;
+		}
+		$va = (string)($a['version'] ?? '');
+		$vb = (string)($b['version'] ?? '');
+		if ($va !== $vb) {
+			return version_compare($vb, $va); // newer first
+		}
 		return strcasecmp($a['name'], $b['name']);
 	});
-	return $hits;
+	// One row per bundle (keep first after sort = featured / shots / newest)
+	$seen = array();
+	$unique = array();
+	foreach ($hits as $hit) {
+		$key = strtolower((string)($hit['bundleIdentifier'] ?? ''));
+		if ($key === '') {
+			$key = 'id:'.($hit['id'] ?? uniqid('', true));
+		}
+		if (isset($seen[$key])) {
+			continue;
+		}
+		$seen[$key] = true;
+		$unique[] = $hit;
+		if (count($unique) >= $limit) {
+			break;
+		}
+	}
+	return $unique;
 }
 
 function apprepos_stats()
@@ -575,11 +754,21 @@ function apprepos_render_portal_html($stats, $bburl, $canManage, $postKey)
 		? 'Logged-in members can index / refresh / remove sources.'
 		: 'Browse & search are open. Log in to index new sources.';
 
+	$catBtns = '';
+	foreach (apprepos_category_defs() as $key => $def) {
+		$active = $key === 'all' ? ' is-active' : '';
+		$catBtns .= '<button type="button" class="yh-ar-cat'.$active.'" data-cat="'.htmlspecialchars_uni($key).'">'.
+			'<span class="yh-ar-cat-ico" data-ico="'.htmlspecialchars_uni($def['icon']).'" aria-hidden="true"></span>'.
+			'<span class="yh-ar-cat-label">'.htmlspecialchars_uni($def['label']).'</span>'.
+			'<span class="yh-ar-cat-count" data-cat-count="'.htmlspecialchars_uni($key).'">—</span>'.
+		'</button>';
+	}
+
 	return '
 <div class="yh-apprepos" id="yh-apprepos" data-api="'.$api.'" data-can-manage="'.$canManage.'" data-key="'.htmlspecialchars_uni($postKey).'" data-sample="'.$sample.'">
 	<div class="yh-ar-hero">
 		<h1 class="yh-ar-brand">IPA repo<span class="yh-ar-dot">.</span>discovery</h1>
-		<p class="yh-ar-tag">Index AltStore-style IPA sources, search apps across repos, and open each listing. '.$manageNote.'</p>
+		<p class="yh-ar-tag">'.$manageNote.'</p>
 		<div class="yh-ar-stats" role="group" aria-label="Repository stats">
 			<div class="yh-ar-stat"><strong id="yh_ar_stat_repos">'.$sRepos.'</strong><span>'.($sRepos === 1 ? 'repo' : 'repos').'</span></div>
 			<div class="yh-ar-stat"><strong id="yh_ar_stat_apps">'.$sApps.'</strong><span>'.($sApps === 1 ? 'app' : 'apps').'</span></div>
@@ -588,14 +777,21 @@ function apprepos_render_portal_html($stats, $bburl, $canManage, $postKey)
 		</div>
 	</div>
 
+	<section class="yh-ar-news" id="yh_ar_news_wrap" hidden>
+		<div class="yh-ar-news-label">NEWS</div>
+		<div class="yh-ar-news-track" id="yh_ar_news"></div>
+	</section>
+
+	<nav class="yh-ar-cats" id="yh_ar_cats" aria-label="App categories">'.$catBtns.'</nav>
+
 	<div class="yh-ar-grid">
-		<section class="yh-ar-panel yh-ar-span-12" id="discover">
-			<div class="yh-ar-head"><h2>Discover apps</h2><span class="yh-ar-meta" id="yh_ar_search_meta">tap an app for details</span></div>
+		<section class="yh-ar-panel yh-ar-span-12 yh-ar-feed" id="discover">
 			<div class="yh-ar-searchrow">
 				<input type="search" id="yh_ar_q" class="yh-ar-input" placeholder="Search name, bundle ID, developer, or repo" autocomplete="off" />
 				<button type="button" class="yh-ar-btn yh-ar-btn-primary" id="yh_ar_search">Search</button>
 				<button type="button" class="yh-ar-btn" id="yh_ar_clear">Clear</button>
 			</div>
+			<div class="yh-ar-feed-meta" id="yh_ar_search_meta">tap an app for details</div>
 			<div id="yh_ar_apps_list" class="yh-ar-apps"></div>
 		</section>
 
@@ -617,7 +813,7 @@ function apprepos_render_portal_html($stats, $bburl, $canManage, $postKey)
 		</section>
 	</div>
 </div>
-<script src="'.htmlspecialchars_uni($bburl).'/jscripts/apprepos.js?ver=4"></script>';
+<script src="'.htmlspecialchars_uni($bburl).'/jscripts/apprepos.js?ver=5"></script>';
 }
 
 function apprepos_render_app_page()
