@@ -97,6 +97,7 @@ function shell(title, body) {
       <a href="/#repos">[ repos ]</a>
       <a href="/#search">[ search ]</a>
       <a href="/#add">[ add source ]</a>
+      <a class="buy-gold" href="/#gold">[ <span class="coin" aria-hidden="true"></span>buy gold ]</a>
       <a href="/api/status">[ api ]</a>
     </nav>
     ${body}
@@ -269,9 +270,13 @@ function renderIndex() {
     .sort((a, b) => String(b.versionDate || "").localeCompare(String(a.versionDate || "")))
     .slice(0, 15);
 
+  function freeCost() {
+    return `<span class="cost"><span class="coin" aria-hidden="true"></span>Free</span>`;
+  }
+
   function appRows(apps) {
     if (!apps.length) {
-      return `<tr><td colspan="5" class="muted">No apps indexed yet.</td></tr>`;
+      return `<tr><td colspan="6" class="muted">No apps indexed yet.</td></tr>`;
     }
     return apps
       .map((app) => {
@@ -282,6 +287,7 @@ function renderIndex() {
           <td>${esc(app.developerName || app.repoName || "—")}</td>
           <td class="mono">${esc(app.version ? `v${app.version}` : "—")}</td>
           <td class="mono">${esc(app.size ? formatBytes(app.size) : "—")}</td>
+          <td>${freeCost()}</td>
         </tr>`;
       })
       .join("");
@@ -326,11 +332,12 @@ function renderIndex() {
       <div class="section-title" style="margin-top:0">[ Search Results ]</div>
       <table class="repo" id="search-table">
         <thead><tr>
-          <th style="width:12%">::Released</th>
+          <th style="width:11%">::Released</th>
           <th>::App</th>
-          <th style="width:18%">::Author</th>
-          <th style="width:10%">::Version</th>
-          <th style="width:10%">::Size</th>
+          <th style="width:16%">::Author</th>
+          <th style="width:9%">::Version</th>
+          <th style="width:9%">::Size</th>
+          <th style="width:10%">::Cost</th>
         </tr></thead>
         <tbody></tbody>
       </table>
@@ -339,11 +346,12 @@ function renderIndex() {
     <div class="section-title" id="latest">[ Latest Apps ]</div>
     <table class="repo">
       <thead><tr>
-        <th style="width:12%">::Released</th>
+        <th style="width:11%">::Released</th>
         <th>::Description</th>
-        <th style="width:18%">::Author</th>
-        <th style="width:10%">::Version</th>
-        <th style="width:10%">::Size</th>
+        <th style="width:16%">::Author</th>
+        <th style="width:9%">::Version</th>
+        <th style="width:9%">::Size</th>
+        <th style="width:10%">::Cost</th>
       </tr></thead>
       <tbody>${appRows(latest)}</tbody>
     </table>
@@ -351,11 +359,12 @@ function renderIndex() {
     <div class="section-title">[ Largest Indexed Apps ]</div>
     <table class="repo">
       <thead><tr>
-        <th style="width:12%">::Released</th>
+        <th style="width:11%">::Released</th>
         <th>::Description</th>
-        <th style="width:18%">::Author</th>
-        <th style="width:10%">::Version</th>
-        <th style="width:10%">::Size</th>
+        <th style="width:16%">::Author</th>
+        <th style="width:9%">::Version</th>
+        <th style="width:9%">::Size</th>
+        <th style="width:10%">::Cost</th>
       </tr></thead>
       <tbody>${appRows(most)}</tbody>
     </table>
@@ -387,11 +396,19 @@ function renderIndex() {
       </p>
     </div>
 
+    <div class="panel" id="gold">
+      <h2>[ <span class="coin" aria-hidden="true"></span> Gold ]</h2>
+      <p class="gold" style="text-align:center;margin:0 0 8px">Classic sentry.mba coin — style only.</p>
+      <p class="muted" style="margin:0;text-align:center;font-size:12px">
+        Listing &amp; search stay free. Gold here is the old template accent (no payments wired up).
+      </p>
+    </div>
+
     <div class="footer-stats">
       Total Repos: <strong id="s-repos">${stats.repos}</strong>
       &nbsp;|&nbsp; Total Apps: <strong id="s-apps">${stats.apps}</strong>
       &nbsp;|&nbsp; Source Errors: <strong id="s-errors">${stats.errors}</strong>
-      &nbsp;|&nbsp; ${esc(SITE_NAME)}
+      &nbsp;|&nbsp; <span class="coin" aria-hidden="true"></span>${esc(SITE_NAME)}
     </div>
 
     <script>
@@ -415,7 +432,8 @@ function renderIndex() {
           "<td><a href='"+esc(href)+"'>"+esc(app.name)+"</a><div class='muted hide-sm'>"+esc(app.bundleIdentifier||"")+"</div></td>"+
           "<td>"+esc(app.developerName||app.repoName||"—")+"</td>"+
           "<td class='mono'>"+esc(app.version?("v"+app.version):"—")+"</td>"+
-          "<td class='mono'>"+esc(app.size?bytes(app.size):"—")+"</td></tr>";
+          "<td class='mono'>"+esc(app.size?bytes(app.size):"—")+"</td>"+
+          "<td><span class='cost'><span class='coin' aria-hidden='true'></span>Free</span></td></tr>";
       }
       async function searchApps() {
         var q = document.getElementById("q").value.trim();
@@ -423,11 +441,11 @@ function renderIndex() {
         var tb = document.querySelector("#search-table tbody");
         if (!q) { box.style.display = "none"; return; }
         box.style.display = "block";
-        tb.innerHTML = "<tr><td colspan='5' class='muted'>Searching…</td></tr>";
+        tb.innerHTML = "<tr><td colspan='6' class='muted'>Searching…</td></tr>";
         var res = await fetch("/api/apps?q="+encodeURIComponent(q)+"&limit=100", {cache:"no-store"});
         var data = await res.json();
         var apps = data.apps || [];
-        tb.innerHTML = apps.length ? apps.map(rowHtml).join("") : "<tr><td colspan='5' class='muted'>No apps matched.</td></tr>";
+        tb.innerHTML = apps.length ? apps.map(rowHtml).join("") : "<tr><td colspan='6' class='muted'>No apps matched.</td></tr>";
       }
       document.getElementById("search-btn").onclick = function(){ searchApps().catch(console.error); };
       document.getElementById("clear-btn").onclick = function(){

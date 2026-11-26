@@ -67,12 +67,43 @@ a:hover { color: #fff; text-decoration: underline; }
   white-space: nowrap;
 }
 .topnav a:hover { color: #fff; }
+.topnav a.buy-gold {
+  color: var(--gold);
+}
+.topnav a.buy-gold:hover { color: #ffe566; }
 .topnav .right {
   margin-left: auto;
   display: flex;
   gap: 8px;
 }
 .topnav .right a { color: var(--bad); font-size: 11px; }
+
+/* classic sentry.mba gold coin */
+.coin {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 32% 28%, #fff6a8 0%, #ffcc00 42%, #d4a017 72%, #8a6a00 100%);
+  border: 1px solid #c9a000;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 200, 0.35),
+    0 0 4px rgba(255, 204, 0, 0.35);
+  vertical-align: -2px;
+  margin-right: 4px;
+  flex-shrink: 0;
+}
+.coin::after {
+  content: "G";
+  display: block;
+  font-size: 7px;
+  line-height: 10px;
+  text-align: center;
+  color: #6b5200;
+  font-weight: 700;
+  font-family: var(--font);
+}
 
 .hero {
   text-align: center;
@@ -168,6 +199,11 @@ table.repo td a { color: var(--ink-bright); }
 .ok { color: var(--ink); }
 .bad { color: var(--bad); }
 .gold { color: var(--gold); }
+.cost {
+  color: var(--gold);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
 .muted { color: var(--muted); }
 .mono { font-variant-numeric: tabular-nums; }
 
@@ -205,7 +241,7 @@ input.source {
   color: var(--bad);
   font-size: 12px;
 }
-.footer-stats strong { color: var(--ink); }
+.footer-stats strong { color: var(--gold); }
 
 .detail-back { display: inline-block; margin: 8px 0 12px; }
 .detail-title { font-size: 22px; margin: 0 0 4px; color: #fff; }
