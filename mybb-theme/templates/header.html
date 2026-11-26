@@ -40,6 +40,7 @@
 
 	<section class="sm-hero" style="background-image:url('{$mybb->settings['bburl']}/images/hero-athens.jpg')">
 		<div class="sm-hero-shade"></div>
+		<nav class="sm-crumbs sm-hero-crumbs" aria-label="Breadcrumb"><navigation></nav>
 		<div class="sm-hero-copy">
 			<h1>warez.skin</h1>
 			<p class="sm-hero-tag">Releases, marketplace &amp; IPA discovery — built for the board.</p>
@@ -58,8 +59,7 @@
 			{$modnotice}
 			{$pending_joinrequests}
 			{$awaitingusers}
-			<div class="sm-utilbar">
-				<nav class="sm-crumbs"><navigation></nav>
+			<div class="sm-utilbar sm-utilbar-actions-only">
 				<div class="sm-util-actions sm-desktop-only">
 					<a class="sm-btn" href="{$mybb->settings['bburl']}/search.php?action=getnew">New Posts</a>
 					<a class="sm-btn" href="{$mybb->settings['bburl']}/search.php?action=getdaily">Today's Posts</a>
