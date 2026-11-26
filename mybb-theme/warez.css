@@ -365,9 +365,9 @@ img { max-width: 100%; border: 0; }
 
 .sm-forum {
   display: grid;
-  grid-template-columns: 48px 1fr;
-  gap: 12px;
-  padding: 14px;
+  grid-template-columns: 40px 1fr;
+  gap: 10px 12px;
+  padding: 12px;
   border-top: 1px solid #222;
   align-items: start;
   background: #1a1a1a;
@@ -375,8 +375,8 @@ img { max-width: 100%; border: 0; }
 .sm-forum:nth-child(even) { background: #1c1c1c; }
 .sm-forum-icon,
 .forum_status {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   border-radius: 8px;
   background: #122826 !important;
   border: 1px solid #1f4f48 !important;
@@ -388,8 +388,8 @@ img { max-width: 100%; border: 0; }
 }
 .forum_status::before {
   content: "";
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   background: var(--sm-teal);
   mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='black' d='M12 3c-2.2 3.2-6 5.2-6 9a6 6 0 0012 0c0-3.8-3.8-5.8-6-9zm0 11.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z'/></svg>") center / contain no-repeat;
   -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='black' d='M12 3c-2.2 3.2-6 5.2-6 9a6 6 0 0012 0c0-3.8-3.8-5.8-6-9zm0 11.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z'/></svg>") center / contain no-repeat;
@@ -410,26 +410,86 @@ img { max-width: 100%; border: 0; }
   grid-column: 2;
   display: flex;
   flex-wrap: wrap;
-  gap: 8px 14px;
-  margin-top: 2px;
+  align-items: baseline;
+  gap: 4px 10px;
+  margin-top: -2px;
   color: var(--sm-faint);
   font-size: 12px;
 }
-.sm-forum-last { width: 100%; color: var(--sm-muted); }
+.sm-forum-stats { color: #8a8a8a; }
+.sm-forum-last { width: 100%; color: var(--sm-muted); line-height: 1.35; }
 .sm-forum-last a { color: var(--sm-teal2) !important; }
+.sm-last-has { display: inline; }
+.sm-last-by, .sm-last-when { color: #888; margin-left: 4px; }
+.sm-last-never { color: #666; font-style: normal; }
 
-@media (min-width: 820px) {
+/* Mobile: denser rows, hide empty "Never", left-align last post */
+@media (max-width: 899px) {
+  .sm-forum {
+    padding: 10px 12px;
+    gap: 8px 10px;
+  }
+  .sm-forum-title a { font-size: 14px; }
+  .sm-forum-desc { font-size: 11px !important; }
+  .sm-subforums { margin-top: 4px; font-size: 11px; }
+  .sm-forum-meta { margin-top: 0; }
+  .sm-forum-last { width: auto; flex: 1 1 auto; }
+  .sm-last-never { display: none !important; }
+  .sm-last-has {
+    display: block;
+    margin-top: 2px;
+    font-size: 11px;
+  }
+  .sm-last-by, .sm-last-when { display: inline; margin-left: 4px; }
+  .sm-forums { gap: 10px; }
+  .sm-cat-head { padding: 9px 12px !important; }
+  .sm-tabs { gap: 6px; margin-bottom: 10px; }
+  .sm-tab { padding: 7px 12px; font-size: 12px; }
+  .sm-shoutbox { margin-bottom: 10px; }
+  .sm-shout-list { max-height: 200px; }
+  .sm-home { gap: 10px; }
+  .sm-bigstats { gap: 8px; }
+  .sm-bigstat { padding: 8px; }
+  .sm-bigstat-num { font-size: 18px; }
+  .sm-footer-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 14px 16px;
+  }
+  .sm-footer-note { color: #9a9a9a !important; }
+  .sm-footer-meta { font-size: 12px; }
+  .sm-guest-toast {
+    bottom: 70px;
+    right: 10px;
+    left: 10px;
+    width: auto;
+    font-size: 12px;
+    padding: 10px 30px 10px 12px;
+  }
+  .sm-recent-item { padding: 9px 10px; gap: 8px; }
+  .sm-recent-title { font-size: 12px; }
+  .sm-profile-head { padding: 12px; gap: 10px; }
+  .sm-profile-name { font-size: 22px; }
+}
+
+@media (min-width: 900px) {
   .sm-forum {
     grid-template-columns: 48px 1fr 220px;
+    padding: 14px;
+    gap: 12px;
   }
+  .sm-forum-icon,
+  .forum_status { width: 40px; height: 40px; }
   .sm-forum-meta {
     grid-column: auto;
     flex-direction: column;
     align-items: flex-end;
     text-align: right;
     margin-top: 0;
+    gap: 6px;
   }
   .sm-forum-last { width: auto; }
+  .sm-last-has { display: block; }
+  .sm-last-by, .sm-last-when { display: block; margin-left: 0; margin-top: 2px; }
 }
 
 /* ========== STATS / BLOCKS ========== */
@@ -591,8 +651,6 @@ input.textbox, textarea, select,
 @media (max-width: 640px) {
   .sm-hero { min-height: 140px; }
   .sm-hero-copy h1 { font-size: 26px; }
-  .sm-forum-meta .sm-forum-stat:nth-child(2),
-  .sm-forum-last { display: none; }
   .sm-auth-bits { display: none; }
   body { font-size: 13px !important; }
 }
