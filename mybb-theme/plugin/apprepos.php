@@ -74,7 +74,7 @@ function apprepos_insert_settings()
 	}
 
 	$settings = array(
-		'apprepos_enabled' => array('Enable app repos portal', 'Show the IPA discovery viewer on portal.php.', 'yesno', '1', 1),
+		'apprepos_enabled' => array('Enable app repos', 'Show the IPA discovery viewer on Repository.php.', 'yesno', '1', 1),
 		'apprepos_guest_add' => array('Guests can add sources', 'Allow guests to index new source URLs.', 'yesno', '0', 2),
 	);
 
@@ -709,38 +709,26 @@ function apprepos_stats()
 	);
 }
 
-$plugins->add_hook('portal_start', 'apprepos_portal_start');
-$plugins->add_hook('portal_end', 'apprepos_portal_end', 50); // after warezskin portal_blocks
+// Legacy redirects: old portal.php?action=app links → Repository.php
+$plugins->add_hook('portal_start', 'apprepos_portal_legacy_redirect');
 
-function apprepos_portal_start()
+function apprepos_portal_legacy_redirect()
 {
 	global $mybb;
 	if (!apprepos_enabled()) {
 		return;
 	}
-	// App details via portal.php?action=app&repo=&app=
-	// NOTE: do not use query key "id" — MyBB coerces input[id] to int.
-	if ($mybb->get_input('action') === 'app') {
-		apprepos_render_app_page();
-	}
-}
-
-function apprepos_portal_end()
-{
-	global $mybb, $yh_forum_stats, $yh_apprepos;
-
-	if (!apprepos_enabled()) {
+	if ($mybb->get_input('action') !== 'app') {
 		return;
 	}
-
-	$stats = apprepos_stats();
-	$bburl = $mybb->settings['bburl'];
-	$can = apprepos_can_manage() ? '1' : '0';
-	$key = $mybb->post_code;
-
-	$yh_apprepos = apprepos_render_portal_html($stats, $bburl, $can, $key);
-	// Prefer app repo viewer over old forum-stats portal block
-	$yh_forum_stats = $yh_apprepos;
+	$repo = urlencode($mybb->get_input('repo'));
+	$app = $mybb->get_input('app');
+	if ($app === '' || $app === '0') {
+		$app = $mybb->get_input('appid');
+	}
+	$app = urlencode($app);
+	header('Location: '.$mybb->settings['bburl'].'/Repository.php?action=app&repo='.$repo.'&app='.$app, true, 301);
+	exit;
 }
 
 function apprepos_render_portal_html($stats, $bburl, $canManage, $postKey)
@@ -813,7 +801,7 @@ function apprepos_render_portal_html($stats, $bburl, $canManage, $postKey)
 		</section>
 	</div>
 </div>
-<script src="'.htmlspecialchars_uni($bburl).'/jscripts/apprepos.js?ver=5"></script>';
+<script src="'.htmlspecialchars_uni($bburl).'/jscripts/apprepos.js?ver=6"></script>';
 }
 
 function apprepos_render_app_page()
@@ -831,7 +819,7 @@ function apprepos_render_app_page()
 		error('That app listing is missing or the repo was removed.');
 	}
 
-	add_breadcrumb('Portal', 'portal.php');
+	add_breadcrumb('Repository', 'Repository.php');
 	add_breadcrumb($app['name']);
 
 	$name = htmlspecialchars_uni($app['name']);
@@ -861,7 +849,7 @@ function apprepos_render_app_page()
 
 	$content = '
 <div class="yh-apprepos yh-ar-detail">
-	<a class="yh-ar-back" href="'.$mybb->settings['bburl'].'/portal.php#discover">← Back to discovery</a>
+	<a class="yh-ar-back" href="'.$mybb->settings['bburl'].'/Repository.php#discover">← Back to discovery</a>
 	<div class="yh-ar-panel yh-ar-detail-hero">
 		<div class="yh-ar-detail-top">
 			'.$icon.'
@@ -869,7 +857,7 @@ function apprepos_render_app_page()
 				<h1>'.$name.'</h1>
 				<div class="yh-ar-meta">'.$bundle.'</div>
 				<div class="yh-ar-detail-actions">'.$dl.'
-					<a class="yh-ar-btn yh-ar-btn-lg" href="'.$mybb->settings['bburl'].'/portal.php#discover">All apps</a>
+					<a class="yh-ar-btn yh-ar-btn-lg" href="'.$mybb->settings['bburl'].'/Repository.php#discover">All apps</a>
 				</div>
 			</div>
 		</div>

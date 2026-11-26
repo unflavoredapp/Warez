@@ -75,6 +75,13 @@ if (is_file($src . '/apprepos-api.php')) {
 	copy($src . '/apprepos-api.php', MYBB_ROOT . 'apprepos.php');
 	@chmod(MYBB_ROOT . 'apprepos.php', 0644);
 }
+if (is_file($src . '/Repository.php')) {
+	copy($src . '/Repository.php', MYBB_ROOT . 'Repository.php');
+	@chmod(MYBB_ROOT . 'Repository.php', 0644);
+	// Friendly lowercase alias
+	@copy($src . '/Repository.php', MYBB_ROOT . 'repository.php');
+	@chmod(MYBB_ROOT . 'repository.php', 0644);
+}
 if (is_file($src . '/sample-source.json')) {
 	copy($src . '/sample-source.json', MYBB_ROOT . 'sample-source.json');
 }

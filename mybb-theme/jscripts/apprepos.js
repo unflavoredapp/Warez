@@ -32,7 +32,7 @@
       .replace(/"/g, "&quot;");
   }
   function appHref(app) {
-    return "portal.php?action=app&repo=" + encodeURIComponent(app.repoId) + "&app=" + encodeURIComponent(app.id);
+    return "Repository.php?action=app&repo=" + encodeURIComponent(app.repoId) + "&app=" + encodeURIComponent(app.id);
   }
   function api(path, opts) {
     opts = opts || {};
