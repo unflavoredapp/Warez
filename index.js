@@ -90,8 +90,8 @@ function shell(title, body) {
   <link rel="stylesheet" href="/panel.css" />
 </head>
 <body>
-  <div class="shell">
-    <nav class="topnav" aria-label="Primary">
+  <div class="page">
+    <nav class="topnav float-tabs" aria-label="Primary">
       <a href="/">[ home ]</a>
       <a href="/#latest">[ latest apps ]</a>
       <a href="/#repos">[ repos ]</a>
@@ -100,7 +100,9 @@ function shell(title, body) {
       <a class="buy-gold" href="/#gold">[ <img class="coin" src="/gold.gif" width="12" height="10" alt="" />buy gold ]</a>
       <a href="/api/status">[ api ]</a>
     </nav>
-    ${body}
+    <div class="shell">
+      ${body}
+    </div>
   </div>
 </body>
 </html>`;
@@ -277,32 +279,44 @@ function renderIndex() {
   // "Most" by appearing first in catalog order / name — use size as a stand-in popularity proxy
   const most = [...allApps]
     .sort((a, b) => (Number(b.size) || 0) - (Number(a.size) || 0))
-    .slice(0, 15);
+    .slice(0, 16);
   const latest = [...allApps]
     .sort((a, b) => String(b.versionDate || "").localeCompare(String(a.versionDate || "")))
-    .slice(0, 15);
+    .slice(0, 16);
 
-  function freeCost() {
-    return `<span class="cost"><img class="coin" src="/gold.gif" width="12" height="10" alt="" />Free</span>`;
+  function appCard(app) {
+    const href = `/app/${encodeURIComponent(app.repoId)}/${encodeURIComponent(app.id)}`;
+    const icon = app.iconURL
+      ? `<img class="app-icon" src="${esc(app.iconURL)}" alt="" loading="lazy" referrerpolicy="no-referrer" />`
+      : `<div class="app-icon app-icon-fallback" aria-hidden="true"></div>`;
+    const ver = app.version ? String(app.version) : "—";
+    const sub = app.bundleIdentifier || app.developerName || app.repoName || "";
+    const meta = [
+      app.developerName && app.developerName !== sub ? `• ${app.developerName}` : "",
+      app.size ? `• ${formatBytes(app.size)}` : "",
+      app.versionDate ? `• ${ymd(app.versionDate)}` : "",
+    ]
+      .filter(Boolean)
+      .join(" ");
+    return `<a class="app-card" href="${esc(href)}">
+      ${icon}
+      <div class="app-card-body">
+        <div class="app-card-title">${esc(app.name)}</div>
+        <div class="app-card-sub">${esc(sub)}</div>
+        <div class="app-card-meta">${esc(meta)}</div>
+        <div class="app-card-foot">
+          <span class="cost"><img class="coin" src="/gold.gif" width="12" height="10" alt="" />Free</span>
+          <span class="ver-tag">${esc(ver)}</span>
+        </div>
+      </div>
+    </a>`;
   }
 
-  function appRows(apps) {
+  function appCards(apps) {
     if (!apps.length) {
-      return `<tr><td colspan="6" class="muted">No apps indexed yet.</td></tr>`;
+      return `<div class="muted" style="grid-column:1/-1;padding:12px;text-align:center">No apps indexed yet.</div>`;
     }
-    return apps
-      .map((app) => {
-        const href = `/app/${encodeURIComponent(app.repoId)}/${encodeURIComponent(app.id)}`;
-        return `<tr>
-          <td class="mono">${esc(ymd(app.versionDate))}</td>
-          <td><a href="${esc(href)}">${esc(app.name)}</a><div class="muted hide-sm">${esc(app.bundleIdentifier || "")}</div></td>
-          <td>${esc(app.developerName || app.repoName || "—")}</td>
-          <td class="mono">${esc(app.version ? `v${app.version}` : "—")}</td>
-          <td class="mono">${esc(app.size ? formatBytes(app.size) : "—")}</td>
-          <td>${freeCost()}</td>
-        </tr>`;
-      })
-      .join("");
+    return apps.map(appCard).join("");
   }
 
   function repoRows() {
@@ -342,44 +356,14 @@ function renderIndex() {
     </div>
     <div id="search-results" class="panel" style="display:none">
       <div class="section-title" style="margin-top:0">[ Search Results ]</div>
-      <table class="repo" id="search-table">
-        <thead><tr>
-          <th style="width:11%">::Released</th>
-          <th>::App</th>
-          <th style="width:16%">::Author</th>
-          <th style="width:9%">::Version</th>
-          <th style="width:9%">::Size</th>
-          <th style="width:10%">::Cost</th>
-        </tr></thead>
-        <tbody></tbody>
-      </table>
+      <div class="app-grid" id="search-grid"></div>
     </div>
 
     <div class="section-title" id="latest">[ Latest Apps ]</div>
-    <table class="repo">
-      <thead><tr>
-        <th style="width:11%">::Released</th>
-        <th>::Description</th>
-        <th style="width:16%">::Author</th>
-        <th style="width:9%">::Version</th>
-        <th style="width:9%">::Size</th>
-        <th style="width:10%">::Cost</th>
-      </tr></thead>
-      <tbody>${appRows(latest)}</tbody>
-    </table>
+    <div class="app-grid">${appCards(latest)}</div>
 
     <div class="section-title">[ Largest Indexed Apps ]</div>
-    <table class="repo">
-      <thead><tr>
-        <th style="width:11%">::Released</th>
-        <th>::Description</th>
-        <th style="width:16%">::Author</th>
-        <th style="width:9%">::Version</th>
-        <th style="width:9%">::Size</th>
-        <th style="width:10%">::Cost</th>
-      </tr></thead>
-      <tbody>${appRows(most)}</tbody>
-    </table>
+    <div class="app-grid">${appCards(most)}</div>
 
     <div class="section-title" id="repos">[ Indexed Repos ]</div>
     <table class="repo" id="repos-table">
@@ -438,26 +422,40 @@ function renderIndex() {
         s = String(s);
         return s.length >= 10 ? s.slice(0,10) : s;
       }
-      function rowHtml(app) {
+      function cardHtml(app) {
         var href = "/app/" + encodeURIComponent(app.repoId) + "/" + encodeURIComponent(app.id);
-        return "<tr><td class='mono'>"+esc(ymd(app.versionDate))+"</td>"+
-          "<td><a href='"+esc(href)+"'>"+esc(app.name)+"</a><div class='muted hide-sm'>"+esc(app.bundleIdentifier||"")+"</div></td>"+
-          "<td>"+esc(app.developerName||app.repoName||"—")+"</td>"+
-          "<td class='mono'>"+esc(app.version?("v"+app.version):"—")+"</td>"+
-          "<td class='mono'>"+esc(app.size?bytes(app.size):"—")+"</td>"+
-          "<td><span class='cost'><img class='coin' src='/gold.gif' width='12' height='10' alt='' />Free</span></td></tr>";
+        var icon = app.iconURL
+          ? "<img class='app-icon' src='"+esc(app.iconURL)+"' alt='' loading='lazy' referrerpolicy='no-referrer' />"
+          : "<div class='app-icon app-icon-fallback' aria-hidden='true'></div>";
+        var ver = app.version ? String(app.version) : "—";
+        var sub = app.bundleIdentifier || app.developerName || app.repoName || "";
+        var meta = [];
+        if (app.developerName && app.developerName !== sub) meta.push("• " + app.developerName);
+        if (app.size) meta.push("• " + bytes(app.size));
+        if (app.versionDate) meta.push("• " + ymd(app.versionDate));
+        return "<a class='app-card' href='"+esc(href)+"'>"+icon+
+          "<div class='app-card-body'>"+
+          "<div class='app-card-title'>"+esc(app.name)+"</div>"+
+          "<div class='app-card-sub'>"+esc(sub)+"</div>"+
+          "<div class='app-card-meta'>"+esc(meta.join(" "))+"</div>"+
+          "<div class='app-card-foot'>"+
+          "<span class='cost'><img class='coin' src='/gold.gif' width='12' height='10' alt='' />Free</span>"+
+          "<span class='ver-tag'>"+esc(ver)+"</span>"+
+          "</div></div></a>";
       }
       async function searchApps() {
         var q = document.getElementById("q").value.trim();
         var box = document.getElementById("search-results");
-        var tb = document.querySelector("#search-table tbody");
+        var grid = document.getElementById("search-grid");
         if (!q) { box.style.display = "none"; return; }
         box.style.display = "block";
-        tb.innerHTML = "<tr><td colspan='6' class='muted'>Searching…</td></tr>";
+        grid.innerHTML = "<div class='muted' style='grid-column:1/-1;padding:12px;text-align:center'>Searching…</div>";
         var res = await fetch("/api/apps?q="+encodeURIComponent(q)+"&limit=100", {cache:"no-store"});
         var data = await res.json();
         var apps = data.apps || [];
-        tb.innerHTML = apps.length ? apps.map(rowHtml).join("") : "<tr><td colspan='6' class='muted'>No apps matched.</td></tr>";
+        grid.innerHTML = apps.length
+          ? apps.map(cardHtml).join("")
+          : "<div class='muted' style='grid-column:1/-1;padding:12px;text-align:center'>No apps matched.</div>";
       }
       document.getElementById("search-btn").onclick = function(){ searchApps().catch(console.error); };
       document.getElementById("clear-btn").onclick = function(){
