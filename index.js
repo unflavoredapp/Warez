@@ -95,7 +95,7 @@ function shell(title, body) {
       <a href="/">[ home ]</a>
       <a href="/#latest">[ latest apps ]</a>
       <a href="/#search">[ search ]</a>
-      <a class="buy-gold" href="/#latest">[ <img class="coin" src="/gold.gif" width="12" height="10" alt="" />buy gold ]</a>
+      <a class="buy-gold" href="/">[ <img class="coin" src="/gold.gif" width="12" height="10" alt="" />buy gold ]</a>
       <a href="/api/status">[ api ]</a>
     </nav>
     <div class="shell">
