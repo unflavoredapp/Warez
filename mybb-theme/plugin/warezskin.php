@@ -29,7 +29,7 @@ function warezskin_header_avatar()
 	global $mybb, $yh_avatar, $yh_panelbg_style, $yh_panelbg_class;
 	global $yh_panelchat_feed, $yh_panelchat_js;
 	global $sm_recent_activity, $sm_recent_left, $sm_recent_right, $sm_mostonline, $sm_postgoal_today, $sm_postgoal_target, $sm_postgoal_pct, $sm_postgoal_status;
-	global $sm_online_note, $sm_online_members, $sm_newest_user;
+	global $sm_online_note, $sm_online_members, $sm_newest_user, $sm_board_posts;
 
 	$yh_avatar = $mybb->settings['bburl'] . '/images/default_avatar.png';
 	if (!isset($yh_panelbg_style)) {
@@ -76,6 +76,9 @@ function warezskin_header_avatar()
 	}
 	if (!isset($sm_newest_user)) {
 		$sm_newest_user = '';
+	}
+	if (!isset($sm_board_posts)) {
+		$sm_board_posts = '0';
 	}
 
 	if (!empty($mybb->user['uid'])) {
@@ -353,10 +356,13 @@ function warezskin_index_stats()
 {
 	global $db, $mybb, $cache, $sm_recent_activity, $sm_recent_left, $sm_recent_right, $sm_mostonline;
 	global $sm_postgoal_today, $sm_postgoal_target, $sm_postgoal_pct, $sm_postgoal_status;
-	global $sm_online_note, $sm_online_members, $sm_newest_user;
+	global $sm_online_note, $sm_online_members, $sm_newest_user, $sm_board_posts;
 
 	$most = $cache->read('mostonline');
 	$sm_mostonline = my_number_format(is_array($most) && isset($most['numusers']) ? (int)$most['numusers'] : 0);
+
+	$stats = $cache->read('stats');
+	$sm_board_posts = my_number_format(is_array($stats) && isset($stats['numposts']) ? (int)$stats['numposts'] : 0);
 
 	$target = 250;
 	$today_start = TIME_NOW - (int)date('G') * 3600 - (int)date('i') * 60 - (int)date('s');
@@ -443,7 +449,7 @@ function warezskin_build_recent_feed($limit = 24)
 
 	$query = $db->query("
 		SELECT p.pid, p.tid, p.uid, p.username, p.dateline, p.replyto, p.message,
-			t.subject AS threadsubject, t.firstpost
+			t.subject AS threadsubject, t.firstpost, t.replies
 		FROM ".TABLE_PREFIX."posts p
 		INNER JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 		WHERE {$forum_where}
@@ -457,17 +463,22 @@ function warezskin_build_recent_feed($limit = 24)
 		$thread_url = $mybb->settings['bburl'].'/'.get_thread_link((int)$row['tid']).'#pid'.(int)$row['pid'];
 		$when = my_date('relative', (int)$row['dateline']);
 		$is_thread = ((int)$row['pid'] === (int)$row['firstpost']) || empty($row['replyto']);
-		$verb = $is_thread ? 'created' : 'replied in';
+		$verb = $is_thread ? 'started' : 'replied';
+		$posts = my_number_format((int)$row['replies'] + 1);
+		$post_label = ((int)$row['replies'] + 1) === 1 ? '1 post' : $posts.' posts';
 
 		$snippet = warezskin_activity_snippet($row['message']);
 		$items[] = array(
 			'ts' => (int)$row['dateline'],
 			'html' => '<li class="sm-act-item">'
-				.'<div class="sm-act-line">'
-				.'<strong class="sm-act-who">'.$who_link.'</strong> '
-				.'<span class="sm-act-verb">'.$verb.'</span> '
+				.'<div class="sm-act-top">'
 				.'<a class="sm-act-subj" href="'.$thread_url.'">'.$subject.'</a>'
-				.'<span class="sm-act-when"> · '.$when.'</span>'
+				.'<span class="sm-act-posts">'.$post_label.'</span>'
+				.'</div>'
+				.'<div class="sm-act-meta">'
+				.'<strong class="sm-act-who">'.$who_link.'</strong>'
+				.'<span class="sm-act-verb">'.$verb.'</span>'
+				.'<span class="sm-act-when">'.$when.'</span>'
 				.'</div>'
 				.($snippet !== '' ? '<div class="sm-act-snippet">'.$snippet.'</div>' : '')
 				.'</li>',
@@ -487,10 +498,10 @@ function warezskin_build_recent_feed($limit = 24)
 		$items[] = array(
 			'ts' => (int)$row['regdate'],
 			'html' => '<li class="sm-act-item sm-act-join">'
-				.'<div class="sm-act-line">'
-				.'<strong class="sm-act-who">'.$who_link.'</strong> '
+				.'<div class="sm-act-meta">'
+				.'<strong class="sm-act-who">'.$who_link.'</strong>'
 				.'<span class="sm-act-verb">joined the board</span>'
-				.'<span class="sm-act-when"> · '.$when.'</span>'
+				.'<span class="sm-act-when">'.$when.'</span>'
 				.'</div>'
 				.'</li>',
 		);
