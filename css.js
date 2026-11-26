@@ -172,9 +172,9 @@ img.coin, .coin {
   min-height: 34px;
   padding: 6px 8px;
   border-radius: 8px;
-  border: 1px solid #5a3a12;
-  background: #0c0800;
-  color: #ddd;
+  border: 1px solid var(--ink);
+  background: #000;
+  color: var(--ink-bright);
   font-family: inherit;
   font-size: 11px;
   font-weight: 700;
@@ -182,9 +182,10 @@ img.coin, .coin {
   cursor: pointer;
 }
 .cat-pill .cat-ico {
-  color: #bbb;
+  color: var(--ink);
   font-size: 12px;
   line-height: 1;
+  white-space: nowrap;
 }
 .cat-pill.active {
   color: #000;
@@ -194,8 +195,9 @@ img.coin, .coin {
 }
 .cat-pill.active .cat-ico { color: #000; }
 .cat-pill:hover:not(.active) {
-  border-color: var(--ink);
+  border-color: var(--ink-bright);
   color: #fff;
+  background: #140a00;
 }
 
 .btn {

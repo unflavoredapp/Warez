@@ -107,7 +107,7 @@ function ymd(tsOrStr) {
 const CATEGORIES = [
   { id: "all", label: "ALL", icon: "◎" },
   { id: "tools", label: "TOOLS", icon: "⚒" },
-  { id: "paid", label: "$ PAID", icon: "$" },
+  { id: "paid", label: "PAID", icon: "$$" },
   { id: "jailbreak", label: "JAILBREAK", icon: "🔒" },
   { id: "media", label: "MEDIA", icon: "▦" },
   { id: "social", label: "SOCIAL", icon: "☺" },
@@ -566,7 +566,14 @@ function renderIndex(ctx = {}) {
   // Pull a wider latest pool so category filters have enough to show.
   const latest = store
     .searchApps("", { limit: 800 })
-    .sort((a, b) => String(b.versionDate || "").localeCompare(String(a.versionDate || "")))
+    .sort((a, b) => {
+      const da = String(a.versionDate || "");
+      const db = String(b.versionDate || "");
+      if (!da && !db) return String(a.name || "").localeCompare(String(b.name || ""));
+      if (!da) return 1; // undated last
+      if (!db) return -1;
+      return db.localeCompare(da);
+    })
     .slice(0, 120)
     .map((app) => ({ ...app, categories: categorizeApp(app) }));
 
@@ -579,7 +586,7 @@ function renderIndex(ctx = {}) {
 
   const body = `
     <header class="hero">
-      <img class="banner" src="/sentry-logo.png" alt="SENTRY.MBA" width="854" height="300" />
+      <img class="banner" src="/sentry-logo.png" alt="SENTRY.MBA" width="798" height="280" />
     </header>
 
     <div class="discover-bar" id="search">
