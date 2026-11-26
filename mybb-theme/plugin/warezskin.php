@@ -28,7 +28,7 @@ function warezskin_header_avatar()
 {
 	global $mybb, $yh_avatar, $yh_panelbg_style, $yh_panelbg_class;
 	global $yh_panelchat_feed, $yh_panelchat_js;
-	global $sm_recent_activity, $sm_mostonline, $sm_postgoal_today, $sm_postgoal_target, $sm_postgoal_pct, $sm_postgoal_status;
+	global $sm_recent_activity, $sm_recent_left, $sm_recent_right, $sm_mostonline, $sm_postgoal_today, $sm_postgoal_target, $sm_postgoal_pct, $sm_postgoal_status;
 	global $sm_online_note, $sm_online_members, $sm_newest_user;
 
 	$yh_avatar = $mybb->settings['bburl'] . '/images/default_avatar.png';
@@ -46,6 +46,12 @@ function warezskin_header_avatar()
 	}
 	if (!isset($sm_recent_activity)) {
 		$sm_recent_activity = '';
+	}
+	if (!isset($sm_recent_left)) {
+		$sm_recent_left = '';
+	}
+	if (!isset($sm_recent_right)) {
+		$sm_recent_right = '';
 	}
 	if (!isset($sm_mostonline)) {
 		$sm_mostonline = '0';
@@ -345,7 +351,7 @@ function warezskin_postbit(&$post)
 
 function warezskin_index_stats()
 {
-	global $db, $mybb, $cache, $sm_recent_activity, $sm_mostonline;
+	global $db, $mybb, $cache, $sm_recent_activity, $sm_recent_left, $sm_recent_right, $sm_mostonline;
 	global $sm_postgoal_today, $sm_postgoal_target, $sm_postgoal_pct, $sm_postgoal_status;
 	global $sm_online_note, $sm_online_members, $sm_newest_user;
 
@@ -364,7 +370,7 @@ function warezskin_index_stats()
 		? '<span class="sm-goal-ok">Reached</span>'
 		: '<span class="sm-goal-no">Not Reached</span>';
 
-	$sm_recent_activity = warezskin_build_recent_feed(10);
+	warezskin_build_recent_feed(24);
 	warezskin_build_fake_online();
 }
 
@@ -418,11 +424,11 @@ function warezskin_build_fake_online()
 	}
 }
 
-function warezskin_build_recent_feed($limit = 10)
+function warezskin_build_recent_feed($limit = 24)
 {
-	global $db, $mybb;
+	global $db, $mybb, $sm_recent_activity, $sm_recent_left, $sm_recent_right;
 
-	$limit = max(4, min(20, (int)$limit));
+	$limit = max(8, min(40, (int)$limit));
 	$unviewable = get_unviewable_forums(true);
 	$inactive = get_inactive_forums();
 	$forum_where = "p.visible='1' AND t.visible='1'";
@@ -472,7 +478,7 @@ function warezskin_build_recent_feed($limit = 10)
 		'users',
 		'uid, username, regdate',
 		'uid>0',
-		array('order_by' => 'regdate', 'order_dir' => 'DESC', 'limit' => 3)
+		array('order_by' => 'regdate', 'order_dir' => 'DESC', 'limit' => 4)
 	);
 	while ($row = $db->fetch_array($query)) {
 		$who = htmlspecialchars_uni($row['username']);
@@ -491,7 +497,11 @@ function warezskin_build_recent_feed($limit = 10)
 	}
 
 	if (!$items) {
-		return '<li class="sm-act-empty">No recent activity yet.</li>';
+		$empty = '<li class="sm-act-empty">No recent activity yet.</li>';
+		$sm_recent_left = $empty;
+		$sm_recent_right = '';
+		$sm_recent_activity = $empty;
+		return;
 	}
 
 	usort($items, function ($a, $b) {
@@ -499,11 +509,19 @@ function warezskin_build_recent_feed($limit = 10)
 	});
 	$items = array_slice($items, 0, $limit);
 
-	$html = '';
-	foreach ($items as $item) {
-		$html .= $item['html'];
+	$left = '';
+	$right = '';
+	foreach ($items as $i => $item) {
+		if ($i % 2 === 0) {
+			$left .= $item['html'];
+		} else {
+			$right .= $item['html'];
+		}
 	}
-	return $html;
+
+	$sm_recent_left = $left;
+	$sm_recent_right = $right !== '' ? $right : '<li class="sm-act-empty"> </li>';
+	$sm_recent_activity = $left.$right;
 }
 
 function warezskin_activity_snippet($message)
