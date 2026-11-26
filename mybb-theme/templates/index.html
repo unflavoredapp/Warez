@@ -1,0 +1,107 @@
+<html>
+<head>
+<title>{$mybb->settings['bbname']}</title>
+{$headerinclude}
+<script type="text/javascript">
+<!--
+	lang.no_new_posts = "{$lang->no_new_posts}";
+	lang.click_mark_read = "{$lang->click_mark_read}";
+// -->
+</script>
+</head>
+<body class="sm-page-index">
+{$header}
+
+<div class="sm-home">
+	<nav class="sm-tabs sm-home-tabs" aria-label="Categories">
+		<a class="sm-tab is-active" href="#cat_1" data-tab="1">Announcements</a>
+		<a class="sm-tab" href="#cat_2" data-tab="2">iOS</a>
+		<a class="sm-tab" href="{$mybb->settings['bburl']}/search.php?action=getdaily">Today</a>
+		<a class="sm-tab" href="{$mybb->settings['bburl']}/member.php?action=register">Join</a>
+	</nav>
+
+	<section class="sm-block sm-recent" id="sm_recent">
+		<div class="sm-block-head sm-recent-head">
+			<span>Recent Activity</span>
+			<span class="sm-recent-total">{$sm_board_posts} posts</span>
+		</div>
+		<ul class="sm-block-body sm-recent-feed sm-recent-collapsed" id="sm_recent_feed">
+			{$sm_recent_activity}
+		</ul>
+		<button type="button" class="sm-recent-more" id="sm_recent_more" hidden>View all</button>
+	</section>
+
+	<div class="sm-home-main">
+		<div class="sm-forums">
+		{$forums}
+		</div>
+	</div>
+
+	<aside class="sm-home-side">
+		{$boardstats}
+		{$whosonline}
+		{$birthdays}
+	</aside>
+</div>
+
+<br class="clear" />
+{$footer}
+
+<if $mybb->user['uid'] == 0 then>
+<aside class="sm-guest-toast" id="sm_guest_toast">
+	<button type="button" class="sm-guest-toast-x" id="sm_guest_toast_x" aria-label="Dismiss">×</button>
+	<strong class="sm-guest-toast-attn">ATTENTION:</strong>
+	Greetings — if you are reading this you are not registered.
+	<a href="{$mybb->settings['bburl']}/member.php?action=register">Click here to sign up</a> and enjoy the board.
+</aside>
+</if>
+
+<script type="text/javascript">
+(function () {
+	var tabs = document.querySelectorAll('.sm-tab[data-tab]');
+	var cats = document.querySelectorAll('.sm-cat[data-cat]');
+	function activate(id) {
+		tabs.forEach(function (t) {
+			t.classList.toggle('is-active', t.getAttribute('data-tab') === String(id));
+		});
+		cats.forEach(function (c) {
+			var show = !id || c.getAttribute('data-cat') === String(id);
+			c.style.display = show ? '' : 'none';
+		});
+	}
+	tabs.forEach(function (t) {
+		t.addEventListener('click', function (e) {
+			e.preventDefault();
+			activate(t.getAttribute('data-tab'));
+		});
+	});
+
+	var feed = document.getElementById('sm_recent_feed');
+	var more = document.getElementById('sm_recent_more');
+	if (feed && more) {
+		var items = feed.querySelectorAll('.sm-act-item');
+		if (items.length > 3) {
+			more.hidden = false;
+			more.addEventListener('click', function () {
+				var open = feed.classList.toggle('sm-recent-expanded');
+				feed.classList.toggle('sm-recent-collapsed', !open);
+				more.textContent = open ? 'Show less' : 'View all';
+			});
+		}
+	}
+
+	var toast = document.getElementById('sm_guest_toast');
+	var x = document.getElementById('sm_guest_toast_x');
+	if (toast && x) {
+		if (window.localStorage && localStorage.getItem('sm_toast_hide') === '1') {
+			toast.style.display = 'none';
+		}
+		x.addEventListener('click', function () {
+			toast.style.display = 'none';
+			try { localStorage.setItem('sm_toast_hide', '1'); } catch (e) {}
+		});
+	}
+})();
+</script>
+</body>
+</html>

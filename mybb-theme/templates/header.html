@@ -1,0 +1,67 @@
+<div id="container">
+	<a name="top" id="top"></a>
+
+	<header class="sm-topbar">
+		<div class="sm-topbar-inner">
+			<div class="sm-topbar-left">
+				<a class="sm-logo" href="{$mybb->settings['bburl']}/index.php" title="warez.skin">
+					<img src="{$mybb->settings['bburl']}/images/logo-mark.svg" width="28" height="28" alt="warez.skin" />
+				</a>
+				<button type="button" class="sm-gridbtn sm-mobile-only" id="sm_grid_toggle" aria-label="Menu" aria-expanded="false" aria-controls="sm_mega">
+					<span></span><span></span><span></span>
+					<span></span><span></span><span></span>
+					<span></span><span></span><span></span>
+				</button>
+				<nav class="sm-desk-nav sm-desktop-only" aria-label="Primary">
+					<a href="{$mybb->settings['bburl']}/search.php"><i class="sm-ico sm-ico-search"></i>Search</a>
+					<a href="{$mybb->settings['bburl']}/memberlist.php"><i class="sm-ico sm-ico-members"></i>Members</a>
+					<a href="{$mybb->settings['bburl']}/bits.php"><i class="sm-ico sm-ico-gold"></i>Bits</a>
+					<a href="{$mybb->settings['bburl']}/misc.php?action=help"><i class="sm-ico sm-ico-help"></i>Help</a>
+					<a href="{$mybb->settings['bburl']}/member.php?action=register"><i class="sm-ico sm-ico-upgrade"></i>Upgrade</a>
+					<a href="{$mybb->settings['bburl']}/Repository.php"><i class="sm-ico sm-ico-dl"></i>Repos</a>
+					<a href="{$mybb->settings['bburl']}/showteam.php"><i class="sm-ico sm-ico-shop"></i>Staff</a>
+				</nav>
+			</div>
+			<div class="sm-topbar-right">
+				{$welcomeblock}
+			</div>
+		</div>
+		<nav class="sm-mega sm-mobile-only" id="sm_mega" hidden>
+			<a href="{$mybb->settings['bburl']}/index.php">Forum</a>
+			<a href="{$mybb->settings['bburl']}/Repository.php">Repository</a>
+			<a href="{$mybb->settings['bburl']}/search.php">Search</a>
+			<a href="{$mybb->settings['bburl']}/memberlist.php">Members</a>
+			<a href="{$mybb->settings['bburl']}/misc.php?action=help">Help</a>
+			<a href="{$mybb->settings['bburl']}/bits.php">Bits</a>
+			<a href="{$mybb->settings['bburl']}/misc.php?action=help&amp;hid=3">Rules</a>
+			<a href="{$mybb->settings['bburl']}/showteam.php">Staff</a>
+		</nav>
+	</header>
+
+	<section class="sm-hero" style="background-image:url('{$mybb->settings['bburl']}/images/hero-athens.jpg')">
+		<div class="sm-hero-shade"></div>
+		<div class="sm-hero-copy">
+			<nav class="sm-crumbs sm-hero-crumbs" aria-label="Breadcrumb"><navigation></nav>
+		</div>
+	</section>
+
+	<div id="header" style="display:none"></div>
+	<div id="panel" style="display:none"></div>
+
+	<div id="content">
+		<div class="wrapper">
+			{$pm_notice}
+			{$remote_avatar_notice}
+			{$bannedwarning}
+			{$bbclosedwarning}
+			{$modnotice}
+			{$pending_joinrequests}
+			{$awaitingusers}
+			<div class="sm-utilbar sm-utilbar-actions-only">
+				<div class="sm-util-actions sm-desktop-only">
+					<a class="sm-btn" href="{$mybb->settings['bburl']}/search.php?action=getnew">New Posts</a>
+					<a class="sm-btn" href="{$mybb->settings['bburl']}/search.php?action=getdaily">Today's Posts</a>
+					<a class="sm-btn" href="{$mybb->settings['bburl']}/Repository.php">Repository</a>
+					<a class="sm-btn" href="{$mybb->settings['bburl']}/portal.php">Portal</a>
+				</div>
+			</div>

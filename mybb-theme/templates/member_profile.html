@@ -1,0 +1,98 @@
+<html>
+<head>
+<title>{$mybb->settings['bbname']} - {$lang->profile}</title>
+{$headerinclude}
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/report.js?ver=1820"></script>
+</head>
+<body class="sm-page-profile">
+{$header}
+
+{$awaybit}{$bannedbit}
+
+<section class="sm-profile">
+	<header class="sm-profile-head">
+		<div class="sm-profile-avatar">{$avatar}</div>
+		<div class="sm-profile-id">
+			<h1 class="sm-profile-name">{$formattedname}</h1>
+			<div class="sm-profile-title">{$usertitle}</div>
+			<div class="sm-profile-statusline">Status: {$online_status}</div>
+		</div>
+		<div class="sm-profile-actions">
+			<a class="sm-btn" href="{$mybb->settings['bburl']}/search.php?action=finduserthreads&amp;uid={$memprofile['uid']}">Activity</a>
+			{$sendemail}
+			{$sendpm}
+			<a class="sm-btn" href="{$mybb->settings['bburl']}/member.php?action=profile&amp;uid={$memprofile['uid']}#sm_profile_stats">Referrals</a>
+			<a class="sm-btn" href="{$mybb->settings['bburl']}/reputation.php?uid={$memprofile['uid']}">Reputation</a>
+		</div>
+	</header>
+
+	<div class="sm-profile-grid">
+		<div class="sm-profile-col">
+			<section class="sm-block">
+				<div class="sm-block-head">Activity</div>
+				<div class="sm-block-body sm-profile-rows">
+					<div class="sm-profile-row"><span>Joined</span><strong>{$memregdate}</strong></div>
+					<div class="sm-profile-row"><span>Last Visit</span><strong>{$memlastvisitdate}</strong></div>
+					<div class="sm-profile-row"><span>Bits</span><strong class="yh-bits">{$bits_display}</strong></div>
+					<div class="sm-profile-row"><span>Time Online</span><strong>{$timeonline}</strong></div>
+				</div>
+			</section>
+			<section class="sm-block">
+				<div class="sm-block-head">Contact</div>
+				<div class="sm-block-body sm-profile-contact">
+					{$website}
+					{$sendemail}
+					{$sendpm}
+				</div>
+			</section>
+		</div>
+
+		<div class="sm-profile-col sm-profile-col-mid">
+			<section class="sm-block">
+				<div class="sm-block-head">{$memprofile['username']}'s Signature</div>
+				<div class="sm-block-body">
+					{$signature}
+				</div>
+			</section>
+			<section class="sm-block">
+				<div class="sm-block-head">Additional Information</div>
+				<div class="sm-block-body sm-profile-fields">
+					{$profilefields}
+				</div>
+			</section>
+			<section class="sm-block">
+				<div class="sm-block-head">User Groups</div>
+				<div class="sm-block-body sm-profile-groups">
+					{$groupimage}
+					{$yh_additional_groups}
+				</div>
+			</section>
+		</div>
+
+		<div class="sm-profile-col" id="sm_profile_stats">
+			<section class="sm-block">
+				<div class="sm-block-head">Statistics</div>
+				<div class="sm-block-body sm-profile-rows">
+					<div class="sm-profile-row"><span>Total Posts</span><strong>{$memprofile['postnum']} {$findposts}</strong></div>
+					<div class="sm-profile-row"><span>Total Threads</span><strong>{$memprofile['threadnum']} {$findthreads}</strong></div>
+					<div class="sm-profile-row"><span>Reputation</span><strong>{$memprofile['reputation']}</strong></div>
+					{$yh_profile_referrals}
+					<div class="sm-profile-row"><span>Warnings</span><strong>{$yh_warning_count}</strong></div>
+					<div class="sm-profile-row"><span>Warning Level</span><strong>{$yh_warning_percent}%{$warn_user}</strong></div>
+				</div>
+			</section>
+			<section class="sm-block">
+				<div class="sm-block-head">Tools</div>
+				<div class="sm-block-body sm-profile-tools">
+					{$buddy_options}{$ignore_options}{$report_options}
+					{$modoptions}
+					{$adminoptions}
+				</div>
+			</section>
+		</div>
+	</div>
+</section>
+
+{$footer}
+</body>
+</html>

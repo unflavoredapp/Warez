@@ -1,0 +1,9 @@
+<section class="sm-cat" id="cat_{$forum['fid']}" data-cat="{$forum['fid']}">
+	<div class="sm-cat-head thead{$expthead}">
+		<div class="expcolimage"><img src="{$theme['imgdir']}/{$expcolimage}" id="cat_{$forum['fid']}_img" class="expander" alt="{$expaltext}" title="{$expaltext}" /></div>
+		<strong><a href="{$forum_url}">{$forum['name']}</a></strong>
+	</div>
+	<div class="sm-cat-body" style="{$expdisplay}" id="cat_{$forum['fid']}_e">
+		{$sub_forums}
+	</div>
+</section>
