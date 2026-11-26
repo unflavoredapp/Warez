@@ -735,12 +735,6 @@ function apprepos_render_portal_html($stats, $bburl, $canManage, $postKey)
 {
 	$api = htmlspecialchars_uni($bburl.'/apprepos.php');
 	$sample = htmlspecialchars_uni($bburl.'/sample-source.json');
-	$sRepos = (int)$stats['repos'];
-	$sApps = (int)$stats['apps'];
-	$sErr = (int)$stats['errors'];
-	$manageNote = $canManage === '1'
-		? 'Logged-in members can index / refresh / remove sources.'
-		: 'Browse & search are open. Log in to index new sources.';
 
 	$catBtns = '';
 	foreach (apprepos_category_defs() as $key => $def) {
@@ -754,17 +748,6 @@ function apprepos_render_portal_html($stats, $bburl, $canManage, $postKey)
 
 	return '
 <div class="yh-apprepos" id="yh-apprepos" data-api="'.$api.'" data-can-manage="'.$canManage.'" data-key="'.htmlspecialchars_uni($postKey).'" data-sample="'.$sample.'">
-	<div class="yh-ar-hero">
-		<h1 class="yh-ar-brand">IPA repo<span class="yh-ar-dot">.</span>discovery</h1>
-		<p class="yh-ar-tag">'.$manageNote.'</p>
-		<div class="yh-ar-stats" role="group" aria-label="Repository stats">
-			<div class="yh-ar-stat"><strong id="yh_ar_stat_repos">'.$sRepos.'</strong><span>'.($sRepos === 1 ? 'repo' : 'repos').'</span></div>
-			<div class="yh-ar-stat"><strong id="yh_ar_stat_apps">'.$sApps.'</strong><span>'.($sApps === 1 ? 'app' : 'apps').'</span></div>
-			<div class="yh-ar-stat"><strong id="yh_ar_stat_hits">—</strong><span>hits</span></div>
-			<div class="yh-ar-stat"><strong id="yh_ar_stat_errors">'.$sErr.'</strong><span>'.($sErr === 1 ? 'error' : 'errors').'</span></div>
-		</div>
-	</div>
-
 	<section class="yh-ar-news" id="yh_ar_news_wrap" hidden>
 		<div class="yh-ar-news-label">NEWS</div>
 		<div class="yh-ar-news-track" id="yh_ar_news"></div>

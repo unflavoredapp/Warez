@@ -105,12 +105,12 @@ img { max-width: 100%; border: 0; }
 .sm-logo img { display: block; width: 28px; height: 28px; }
 
 .sm-gridbtn {
-  width: 32px;
-  height: 32px;
-  padding: 7px;
-  border: 1px solid #333;
-  border-radius: 6px;
-  background: #1c1c1c;
+  width: 28px;
+  height: 28px;
+  padding: 4px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
   cursor: pointer;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -124,15 +124,15 @@ img { max-width: 100%; border: 0; }
   width: 4px;
   height: 4px;
   border-radius: 1px;
-  background: var(--sm-orange2);
+  background: #cfcfcf;
 }
 .sm-gridbtn:hover,
 .sm-gridbtn[aria-expanded="true"] {
-  background: #262626;
-  border-color: #444;
+  background: transparent;
+  border: 0;
 }
 .sm-gridbtn:hover span,
-.sm-gridbtn[aria-expanded="true"] span { background: #ffc078; }
+.sm-gridbtn[aria-expanded="true"] span { background: var(--sm-orange2); }
 
 .sm-mega {
   max-width: var(--sm-width);
@@ -164,19 +164,20 @@ img { max-width: 100%; border: 0; }
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: #222;
-  border: 1px solid #333;
-  border-radius: 4px;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
   color: var(--sm-orange2) !important;
   font: inherit;
   font-weight: 700;
   font-size: 13px;
   cursor: pointer;
-  padding: 6px 12px;
+  padding: 4px 2px;
   line-height: 1.2;
+  box-shadow: none;
 }
-.sm-user-toggle:hover { background: #2a2a2a; color: #ffc078 !important; }
-.sm-user-toggle[aria-expanded="true"] { background: #2a2a2a; border-color: #444; }
+.sm-user-toggle:hover { background: transparent; color: #ffc078 !important; }
+.sm-user-toggle[aria-expanded="true"] { background: transparent; border: 0; }
 .sm-user-toggle-name {
   max-width: 120px;
   overflow: hidden;
