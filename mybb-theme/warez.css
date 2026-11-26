@@ -646,61 +646,64 @@ img { max-width: 100%; border: 0; }
     line-height: 1.35;
   }
 
-  /* Showthread: stack classic postbit — no crushed author column */
+  /* Showthread: author left, post content on the right (not stacked) */
   .post.classic.yh-post {
     display: flex !important;
-    flex-direction: column !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    align-items: stretch !important;
   }
   .post.classic.yh-post .post_author {
     float: none !important;
-    width: 100% !important;
-    max-width: none !important;
-    border-right: 0 !important;
-    border-bottom: 1px solid #262626 !important;
-    padding: 12px !important;
-    text-align: left !important;
-    display: grid !important;
-    grid-template-columns: 56px 1fr;
-    grid-template-areas:
-      "avatar name"
-      "avatar group"
-      "avatar title"
-      "stats stats"
-      "foot foot";
-    column-gap: 12px;
-    row-gap: 2px;
-    align-items: start;
+    display: block !important;
+    width: 96px !important;
+    max-width: 96px !important;
+    flex: 0 0 96px !important;
+    border-right: 1px solid #262626 !important;
+    border-bottom: 0 !important;
+    padding: 10px 8px !important;
+    text-align: center !important;
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
   }
   .post.classic.yh-post .post_author .yh-user-avatar {
-    grid-area: avatar;
-    margin: 0;
+    margin: 0 auto 6px;
   }
   .post.classic.yh-post .post_author .yh-user-avatar img {
-    max-width: 56px !important;
-    width: 56px;
+    max-width: 48px !important;
+    width: 48px;
     height: auto;
     border-radius: 8px;
-    margin: 0;
+    margin: 0 auto;
   }
-  .post.classic.yh-post .post_author .yh-user-name { grid-area: name; margin: 0; font-size: 15px; text-align: left; }
-  .post.classic.yh-post .post_author .yh-user-group { grid-area: group; margin: 0; text-align: left; }
-  .post.classic.yh-post .post_author .yh-user-title { grid-area: title; margin: 0; text-align: left; }
+  .post.classic.yh-post .post_author .yh-user-name {
+    font-size: 12px;
+    margin: 0 0 2px;
+    text-align: center;
+    line-height: 1.25;
+  }
+  .post.classic.yh-post .post_author .yh-user-group {
+    font-size: 10px;
+    margin: 0 0 2px;
+    text-align: center;
+    line-height: 1.2;
+  }
+  .post.classic.yh-post .post_author .yh-user-title,
+  .post.classic.yh-post .post_author .yh-user-foot,
   .post.classic.yh-post .post_author .yh-user-stats,
   .post.classic.yh-post .post_author .author_statistics {
-    grid-area: stats;
-    margin-top: 8px;
-    display: block;
-    text-align: left;
-    font-size: 11px;
-    line-height: 1.5;
+    display: none !important; /* keep mobile author column slim */
   }
-  .post.classic.yh-post .post_author .yh-user-foot { grid-area: foot; margin-top: 4px; }
   .post.classic.yh-post .post_content {
     float: none !important;
-    width: 100% !important;
-    padding: 12px !important;
+    width: auto !important;
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 10px !important;
   }
   .post.classic.yh-post .post_controls {
+    flex: 1 0 100% !important;
     padding: 8px;
   }
   .post.classic.yh-post .postbit_buttons a,
@@ -708,14 +711,12 @@ img { max-width: 100%; border: 0; }
     padding: 8px 10px !important;
     font-size: 12px;
   }
-  /* Global MyBB classic float override */
+  /* Kill stock MyBB float classic that crushed the column */
   .post.classic .post_author {
     float: none !important;
-    width: 100% !important;
   }
   .post.classic .post_content {
     float: none !important;
-    width: 100% !important;
     margin: 0 !important;
   }
 }
