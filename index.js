@@ -104,6 +104,78 @@ function ymd(tsOrStr) {
   return s.length >= 10 ? s.slice(0, 10) : s;
 }
 
+const CATEGORIES = [
+  { id: "all", label: "ALL", icon: "◎" },
+  { id: "tools", label: "TOOLS", icon: "⚒" },
+  { id: "paid", label: "$ PAID", icon: "$" },
+  { id: "jailbreak", label: "JAILBREAK", icon: "🔒" },
+  { id: "media", label: "MEDIA", icon: "▦" },
+  { id: "social", label: "SOCIAL", icon: "☺" },
+  { id: "car", label: "CAR", icon: "▣" },
+  { id: "emu", label: "EMU", icon: "⌖" },
+];
+
+function categorizeApp(app) {
+  const hay = [
+    app.name,
+    app.bundleIdentifier,
+    app.developerName,
+    app.subtitle,
+    app.localizedDescription,
+  ]
+    .join(" ")
+    .toLowerCase();
+
+  const cats = new Set(["all"]);
+  if (
+    /\b(tool|utility|utils?|cleaner|manager|tweak|installer|sideload|signer|sign(ing)?|certificate|crack|checker)\b/.test(
+      hay
+    )
+  ) {
+    cats.add("tools");
+  }
+  if (
+    /\b(paid|premium|pro\b|vip|subscription|unlock|purchas)/.test(hay) ||
+    /\$\d/.test(hay)
+  ) {
+    cats.add("paid");
+  }
+  if (
+    /\b(jailbreak|cydia|sileo|zebra|rootless|trollstore|dopamine|unc0ver|checkra1n|palera1n|bootstrap)\b/.test(
+      hay
+    )
+  ) {
+    cats.add("jailbreak");
+  }
+  if (
+    /\b(media|music|video|stream|player|tv\b|movie|netflix|spotify|youtube|photo|camera|edit)\b/.test(
+      hay
+    )
+  ) {
+    cats.add("media");
+  }
+  if (
+    /\b(social|chat|message|discord|telegram|whatsapp|instagram|twitter|tiktok|snapchat|facebook)\b/.test(
+      hay
+    )
+  ) {
+    cats.add("social");
+  }
+  if (/\b(car|auto|vehicle|tesla|obd|dash|drive|gps|maps?)\b/.test(hay)) {
+    cats.add("car");
+  }
+  if (
+    /\b(emu|emulator|delta|ppsspp|retro|gameboy|nds|psp|n64|gamecube|switch|rom)\b/.test(
+      hay
+    )
+  ) {
+    cats.add("emu");
+  }
+  // default bucket if nothing matched besides all
+  if (cats.size === 1) cats.add("tools");
+  return [...cats];
+}
+
 function shell(title, body, ctx = {}) {
   const user = ctx.user || null;
   const needsSetup = Boolean(ctx.needsSetup);
@@ -111,7 +183,7 @@ function shell(title, body, ctx = {}) {
   const navTpl = `
     <nav class="topnav float-tabs" aria-label="Primary">
       <a href="/">[ home ]</a>
-      <a href="/#latest">[ latest apps ]</a>
+      <a href="/#cats">[ apps ]</a>
       <a href="/#search">[ search ]</a>
       <a class="buy-gold" href="/">[ <img class="coin" src="/gold.gif" width="12" height="10" alt="" />buy gold ]</a>
       <a href="/api/status">[ api ]</a>
@@ -491,73 +563,38 @@ function renderAppDetails(app, ctx = {}) {
 
 function renderIndex(ctx = {}) {
   const stats = store.stats();
-  const allApps = store.searchApps("", { limit: 500 });
-
-  // "Most" by appearing first in catalog order / name — use size as a stand-in popularity proxy
-  const most = [...allApps]
-    .sort((a, b) => (Number(b.size) || 0) - (Number(a.size) || 0))
-    .slice(0, 16);
-  const latest = [...allApps]
+  // Pull a wider latest pool so category filters have enough to show.
+  const latest = store
+    .searchApps("", { limit: 800 })
     .sort((a, b) => String(b.versionDate || "").localeCompare(String(a.versionDate || "")))
-    .slice(0, 16);
+    .slice(0, 120)
+    .map((app) => ({ ...app, categories: categorizeApp(app) }));
 
-  function appCard(app) {
-    const href = `/app/${encodeURIComponent(app.repoId)}/${encodeURIComponent(app.id)}`;
-    const icon = app.iconURL
-      ? `<img class="app-icon" src="${esc(app.iconURL)}" alt="" loading="lazy" referrerpolicy="no-referrer" />`
-      : `<div class="app-icon app-icon-fallback" aria-hidden="true"></div>`;
-    const ver = app.version ? String(app.version) : "—";
-    const sub = app.bundleIdentifier || app.developerName || app.repoName || "";
-    const meta = [
-      app.developerName && app.developerName !== sub ? `• ${app.developerName}` : "",
-      app.size ? `• ${formatBytes(app.size)}` : "",
-      app.versionDate ? `• ${ymd(app.versionDate)}` : "",
-    ]
-      .filter(Boolean)
-      .join(" ");
-    return `<a class="app-card" href="${esc(href)}">
-      ${icon}
-      <div class="app-card-body">
-        <div class="app-card-title">${esc(app.name)}</div>
-        <div class="app-card-sub">${esc(sub)}</div>
-        <div class="app-card-meta">${esc(meta)}</div>
-        <div class="app-card-foot">
-          <span class="cost"><img class="coin" src="/gold.gif" width="12" height="10" alt="" />Free</span>
-          <span class="ver-tag">${esc(ver)}</span>
-        </div>
-      </div>
-    </a>`;
-  }
+  const catsHtml = CATEGORIES.map(
+    (c, i) =>
+      `<button type="button" class="cat-pill${i === 0 ? " active" : ""}" data-cat="${esc(c.id)}"><span class="cat-ico" aria-hidden="true">${c.icon}</span>${esc(c.label)}</button>`
+  ).join("");
 
-  function appCards(apps) {
-    if (!apps.length) {
-      return `<div class="muted" style="grid-column:1/-1;padding:12px;text-align:center">No apps indexed yet.</div>`;
-    }
-    return apps.map(appCard).join("");
-  }
+  const appsJson = JSON.stringify(latest).replace(/</g, "\\u003c");
 
   const body = `
     <header class="hero">
       <img class="banner" src="/sentry-logo.svg" alt="SENTRY.MBA" width="720" height="160" />
-      <p class="blurb">IPA repository discovery — index AltStore-style sources, search apps, open listings.<br/>Style inspired by classic sentry.mba · content is app repos only.</p>
     </header>
 
-    <div class="search-row" id="search">
-      <label for="q">Search:</label>
-      <input id="q" placeholder="app name, bundle id, developer…" autocomplete="off" />
-      <button type="button" id="search-btn">Search</button>
-      <button type="button" class="btn-ghost" id="clear-btn">Clear</button>
-    </div>
-    <div id="search-results" class="panel" style="display:none">
-      <div class="section-title" style="margin-top:0">[ Search Results ]</div>
-      <div class="app-grid" id="search-grid"></div>
+    <div class="discover-bar" id="search">
+      <div class="search-pill">
+        <span class="search-ico" aria-hidden="true">⌕</span>
+        <input id="q" placeholder="… (${stats.apps} apps)" autocomplete="off" />
+      </div>
     </div>
 
-    <div class="section-title" id="latest">[ Latest Apps ]</div>
-    <div class="app-grid">${appCards(latest)}</div>
+    <div class="cat-grid" id="cats" role="tablist" aria-label="Categories">
+      ${catsHtml}
+    </div>
 
-    <div class="section-title">[ Largest Indexed Apps ]</div>
-    <div class="app-grid">${appCards(most)}</div>
+    <div class="app-grid" id="app-grid"></div>
+    <div class="muted" id="empty-msg" style="display:none;text-align:center;padding:18px">No apps in this category.</div>
 
     <div class="footer-stats">
       Total Repos: <strong id="s-repos">${stats.repos}</strong>
@@ -567,6 +604,10 @@ function renderIndex(ctx = {}) {
     </div>
 
     <script>
+      var APPS = ${appsJson};
+      var activeCat = "all";
+      var qFilter = "";
+
       function esc(s) {
         return String(s || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
       }
@@ -576,11 +617,6 @@ function renderIndex(ctx = {}) {
         while (v>=1024 && i<u.length-1) { v/=1024; i++; }
         return v.toFixed(i?1:0)+" "+u[i];
       }
-      function ymd(s) {
-        if (!s) return "—";
-        s = String(s);
-        return s.length >= 10 ? s.slice(0,10) : s;
-      }
       function cardHtml(app) {
         var href = "/app/" + encodeURIComponent(app.repoId) + "/" + encodeURIComponent(app.id);
         var icon = app.iconURL
@@ -588,42 +624,53 @@ function renderIndex(ctx = {}) {
           : "<div class='app-icon app-icon-fallback' aria-hidden='true'></div>";
         var ver = app.version ? String(app.version) : "—";
         var sub = app.bundleIdentifier || app.developerName || app.repoName || "";
-        var meta = [];
-        if (app.developerName && app.developerName !== sub) meta.push("• " + app.developerName);
-        if (app.size) meta.push("• " + bytes(app.size));
-        if (app.versionDate) meta.push("• " + ymd(app.versionDate));
+        var tip = app.subtitle || app.developerName || "";
         return "<a class='app-card' href='"+esc(href)+"'>"+icon+
           "<div class='app-card-body'>"+
           "<div class='app-card-title'>"+esc(app.name)+"</div>"+
           "<div class='app-card-sub'>"+esc(sub)+"</div>"+
-          "<div class='app-card-meta'>"+esc(meta.join(" "))+"</div>"+
+          (tip ? "<div class='app-card-meta'>• "+esc(tip)+"</div>" : "")+
           "<div class='app-card-foot'>"+
           "<span class='cost'><img class='coin' src='/gold.gif' width='12' height='10' alt='' />Free</span>"+
           "<span class='ver-tag'>"+esc(ver)+"</span>"+
           "</div></div></a>";
       }
-      async function searchApps() {
-        var q = document.getElementById("q").value.trim();
-        var box = document.getElementById("search-results");
-        var grid = document.getElementById("search-grid");
-        if (!q) { box.style.display = "none"; return; }
-        box.style.display = "block";
-        grid.innerHTML = "<div class='muted' style='grid-column:1/-1;padding:12px;text-align:center'>Searching…</div>";
-        var res = await fetch("/api/apps?q="+encodeURIComponent(q)+"&limit=100", {cache:"no-store"});
-        var data = await res.json();
-        var apps = data.apps || [];
-        grid.innerHTML = apps.length
-          ? apps.map(cardHtml).join("")
-          : "<div class='muted' style='grid-column:1/-1;padding:12px;text-align:center'>No apps matched.</div>";
+      function filtered() {
+        var q = qFilter.trim().toLowerCase();
+        return APPS.filter(function(app){
+          if (activeCat !== "all") {
+            var cats = app.categories || [];
+            if (cats.indexOf(activeCat) < 0) return false;
+          }
+          if (!q) return true;
+          var hay = [app.name, app.bundleIdentifier, app.developerName, app.subtitle, app.repoName].join(" ").toLowerCase();
+          return hay.indexOf(q) >= 0;
+        });
       }
-      document.getElementById("search-btn").onclick = function(){ searchApps().catch(console.error); };
-      document.getElementById("clear-btn").onclick = function(){
-        document.getElementById("q").value = "";
-        document.getElementById("search-results").style.display = "none";
-      };
-      document.getElementById("q").addEventListener("keydown", function(e){
-        if (e.key === "Enter") searchApps().catch(console.error);
+      function render() {
+        var list = filtered();
+        var grid = document.getElementById("app-grid");
+        var empty = document.getElementById("empty-msg");
+        if (!list.length) {
+          grid.innerHTML = "";
+          empty.style.display = "block";
+          return;
+        }
+        empty.style.display = "none";
+        grid.innerHTML = list.map(cardHtml).join("");
+      }
+      document.getElementById("cats").addEventListener("click", function(e){
+        var btn = e.target.closest("button[data-cat]");
+        if (!btn) return;
+        activeCat = btn.getAttribute("data-cat");
+        document.querySelectorAll(".cat-pill").forEach(function(b){ b.classList.toggle("active", b === btn); });
+        render();
       });
+      document.getElementById("q").addEventListener("input", function(e){
+        qFilter = e.target.value || "";
+        render();
+      });
+      render();
     </script>
   `;
 

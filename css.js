@@ -126,26 +126,79 @@ img.coin, .coin {
   max-width: 640px;
 }
 
-.search-row {
+.discover-bar {
+  display: flex;
+  justify-content: center;
+  margin: 8px 0 12px;
+}
+.search-pill {
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: 8px;
-  margin: 16px 0 18px;
-  flex-wrap: wrap;
+  width: min(520px, 100%);
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: #120a00;
+  border: 1px solid var(--muted);
 }
-.search-row label { color: var(--ink); }
-.search-row input {
-  width: min(420px, 70vw);
-  height: 26px;
-  background: #140a00;
-  border: 1px solid var(--line);
+.search-pill .search-ico {
+  color: var(--ink-dim);
+  font-size: 16px;
+}
+.search-pill input {
+  flex: 1;
+  height: 100%;
+  border: 0;
+  outline: none;
+  background: transparent;
   color: var(--ink);
-  padding: 0 8px;
   font-family: inherit;
   font-size: 13px;
 }
-.search-row button, .btn {
+.search-pill input::placeholder { color: #7a6040; }
+
+.cat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0 0 14px;
+}
+.cat-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1px solid #5a3a12;
+  background: #0c0800;
+  color: #ddd;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
+.cat-pill .cat-ico {
+  color: #bbb;
+  font-size: 12px;
+  line-height: 1;
+}
+.cat-pill.active {
+  color: #000;
+  background: var(--ink);
+  border-color: var(--ink-bright);
+  box-shadow: 0 0 10px rgba(255, 136, 0, 0.35);
+}
+.cat-pill.active .cat-ico { color: #000; }
+.cat-pill:hover:not(.active) {
+  border-color: var(--ink);
+  color: #fff;
+}
+
+.btn {
   height: 26px;
   padding: 0 12px;
   background: var(--ink);
@@ -156,7 +209,7 @@ img.coin, .coin {
   font-size: 12px;
   cursor: pointer;
 }
-.search-row button:hover, .btn:hover { background: #ffaa33; }
+.btn:hover { background: #ffaa33; }
 .btn-ghost {
   background: #000;
   color: var(--ink);
@@ -363,6 +416,8 @@ input.source {
   .shell { padding: 10px 8px 28px; }
   .topnav.float-tabs { gap: 5px; padding-bottom: 10px; }
   .topnav.float-tabs a { font-size: 11px; padding: 4px 7px; }
+  .cat-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+  .cat-pill { font-size: 10px; min-height: 32px; padding: 5px 4px; }
   .app-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
   .app-icon { width: 44px; height: 44px; border-radius: 10px; }
   .app-card { padding: 8px; min-height: 78px; gap: 8px; }
