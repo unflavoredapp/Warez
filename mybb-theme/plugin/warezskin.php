@@ -385,22 +385,22 @@ function warezskin_build_fake_online()
 	global $mybb, $cache, $lang, $sm_online_note, $sm_online_members, $sm_mostonline, $sm_newest_user;
 
 	$names = array(
-		array('nexusvoid', '#3dbdad'),
-		array('darkpacket', '#7ee0d4'),
+		array('nexusvoid', '#f0a04a'),
+		array('darkpacket', '#ffc078'),
 		array('skidbyte', '#e0a86e'),
 		array('rootmirror', '#c9a0ff'),
 		array('payloadfox', '#f0a0a0'),
 		array('nullsector', '#8ec8ff'),
-		array('warezwolf', '#3dbdad'),
+		array('warezwolf', '#e8872a'),
 		array('bitrunner', '#ffcc66'),
 		array('ghostlease', '#a8d8a8'),
 		array('cryptokitten', '#f5a3c7'),
-		array('zerodayzen', '#7ee0d4'),
+		array('zerodayzen', '#f0a04a'),
 		array('mirrorfish', '#e0a86e'),
-		array('softshell', '#8ec8ff'),
+		array('softshell', '#ffb86b'),
 		array('hexharbor', '#c9a0ff'),
 		array('packetpony', '#f0a0a0'),
-		array('dlvault', '#3dbdad'),
+		array('dlvault', '#e8872a'),
 		array('nightseed', '#ffcc66'),
 	);
 
